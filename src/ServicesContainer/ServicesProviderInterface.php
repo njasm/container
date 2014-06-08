@@ -7,7 +7,7 @@ interface ServicesProviderInterface
     /**
      * Check if service is registered.
      * 
-     * @param   string  $service The service to check
+     * @param   string  $service the service to check
      * @return  boolean true or false
      */
     public function has($service);

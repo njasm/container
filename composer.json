@@ -1,7 +1,7 @@
 {
-    "name": "njasm/container",
+    "name": "njasm/servicescontainer",
     "description": "Services Container for PHP",
-    "homepage": "http://github.com/njasm/container",
+    "homepage": "http://github.com/njasm/servicescontainer",
     "license": "MIT",
     "keywords": ["Services Locator", "Service", "Locator", "Service Container", "Container", "Dependency", "Dependency-injection", "Injection", "Ioc", "Inversion of control"],
     "authors": [
@@ -12,8 +12,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/njasm/container/issues",
-        "source": "https://github.com/njasm/container"
+        "issues": "https://github.com/njasm/servicescontainer/issues",
+        "source": "https://github.com/njasm/servicescontainer"
     },
     "minimum-stability": "dev",
     "require-dev": {

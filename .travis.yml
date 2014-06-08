@@ -1,0 +1,27 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm
+  - hhvm-nightly
+
+matrix:
+  allow_failures:
+    - php: hhvm-nightly
+    
+before_script: 
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
+  - mkdir -p build/logs
+  
+script:
+  - phpunit -v -c phpunit.xml.dist --coverage-clover build/logs/clover.xml
+  
+after_script:
+  # coveralls.io
+  - php vendor/bin/coveralls -v
+  # scrutinizer-ci
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml

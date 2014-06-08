@@ -1,7 +1,7 @@
 {
     "name": "njasm/services-container",
     "description": "Services Locator/Dependency Container for PHP",
-    "homepage": "http://github.com/njasm/servicescontainer",
+    "homepage": "http://github.com/njasm/services-container",
     "license": "MIT",
     "keywords": ["Services Locator", "Service", "Locator", "Service Locator", "Dependency Container", "Dependency", "Dependency-injection", "Injection", "Ioc", "Inversion of control"],
     "authors": [

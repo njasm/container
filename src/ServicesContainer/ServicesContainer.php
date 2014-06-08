@@ -95,7 +95,7 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
             return $this->getSingleton($service);
         }
         
-        if (is_callable($this->map[$service])) {
+        if (isset($this->map[$service])) {
             return $this->map[$service]();
         }
         

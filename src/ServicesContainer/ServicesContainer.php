@@ -107,7 +107,7 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
                 }                  
             }
           
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             throw new \Njasm\ServicesContainer\Exception\ServiceNotRegisteredException($ex->getMessage());
         }
               

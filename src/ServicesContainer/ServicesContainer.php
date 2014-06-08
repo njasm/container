@@ -99,18 +99,11 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
             return $this->map[$service]();
         }
         
-        try {
-            
-            foreach ($this->services as $serviceProvider) {
-                if ($serviceProvider->has($service)) {
-                    return $serviceProvider->get($service);
-                }                  
-            }
-          
-        } catch (\Exception $ex) {
-            throw new \Njasm\ServicesContainer\Exception\ServiceNotRegisteredException($ex->getMessage());
-        }
-              
+        foreach ($this->services as $serviceProvider) {
+            if ($serviceProvider->has($service)) {
+                return $serviceProvider->get($service);
+            }                  
+        }           
     }
     
     private function getSingleton($service)
@@ -119,7 +112,7 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
             return $this->instances[$service];
         } 
         
-        $this->instances[$service] = $this->getNewInstance($service); 
+        $this->instances[$service] = $this->map[$service]();
         
         return $this->instances[$service];
     }
@@ -127,10 +120,5 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
     private function isSingleton($service)
     {
         return isset($this->singletons[$service]);
-    }
-    
-    private function getNewInstance($service)
-    {
-        return $this->map[$service]();
     }
 }

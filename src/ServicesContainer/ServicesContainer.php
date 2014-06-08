@@ -2,6 +2,7 @@
 
 namespace Njasm\ServicesContainer;
 
+use Njasm\ServicesContainer\Exception\ServiceNotRegisteredException;
 use Njasm\ServicesContainer\ServicesProviderInterface;
 
 class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInterface
@@ -21,7 +22,7 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
      * Check if service is registered.
      * 
      * @param   string  $service    The service to check
-     * @return  boolean             true or false
+     * @return  boolean
      */    
     public function has($service)
     {
@@ -43,9 +44,9 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
      * 
      * @param   string    $service  the service key
      * @param   closure   $value    the closure that will build and return the object
-     * @return  ServicesContainer   this instance
+     * @return  ServicesContainer
      */
-    public function set($service, callable $value)
+    public function set($service, \Closure $value)
     {
         $this->map[$service] = $value;
         
@@ -57,9 +58,9 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
      * 
      * @param   string    $service  the service key
      * @param   closure   $value    the closure that will build and return the object
-     * @return  ServicesContainer   this instance
+     * @return  ServicesContainer
      */
-    public function singleton($service, callable $value)
+    public function singleton($service, \Closure $value)
     {
         $this->set($service, $value);
         $this->singletons[$service] = true;
@@ -70,8 +71,8 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
     /**
      * Registers another container into the tree
      * 
-     * @param   ServicesProviderInterface $provider the container
-     * @return  ServicesContainer                   this instance
+     * @param   ServicesProviderInterface   $provider   the container
+     * @return  ServicesContainer
      */
     public function service(ServicesProviderInterface $provider)
     {
@@ -83,14 +84,15 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
     /**
      * Returns the instanciated object
      * 
-     * @param   string $service the service to instanciate
-     * @return  Object          the instanciated service
+     * @param   string  $service    the service to instanciate
+     * @return  object
+     * 
      * @throws  ServiceNotRegisteredException
      */
     public function get($service)
     {
         if (!$this->has($service)) {
-            throw new \Njasm\ServicesContainer\Exception\ServiceNotRegisteredException();
+            throw new ServiceNotRegisteredException();
         }
         
         return $this->getRegistered($service);
@@ -100,7 +102,7 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
      * Returns the instanciated service
      * 
      * @param   string  $service    the service to instanciate
-     * @return  object              the instanciated service
+     * @return  object
      */
     private function getRegistered($service)
     {
@@ -119,7 +121,7 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
      * Returns the service registered as singleton instance
      * 
      * @param   string  $service    the singleton service to instanciate
-     * @return  object              the singleton service
+     * @return  object
      */
     private function getSingleton($service)
     {
@@ -136,7 +138,7 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
      * Checks if a service is registered as singleton
      * 
      * @param   string  $service    the service to check
-     * @return  boolean             true or false
+     * @return  boolean
      */
     private function isSingleton($service)
     {
@@ -147,7 +149,7 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
      * Get from providers the instanciated service
      * 
      * @param   string  $service    the service to instanciate
-     * @return  object              the instanciated service 
+     * @return  object
      */
     private function getFromProvider($service)
     {

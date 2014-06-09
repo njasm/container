@@ -43,7 +43,7 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
     public function testServiceFromProvider()
     {
         $provider = $this->getServiceProvider();
-        $this->container->service($provider);
+        $this->container->provider($provider);
         
         $obj = $this->container->get("SingleClassOnServiceProvider");
         $this->assertInstanceOf("Njasm\\ServicesContainer\\Tests\\SingleClassOnServiceProvider", $obj);

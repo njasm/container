@@ -10,12 +10,12 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
     private $map;
     private $singletons;
     private $instances;
-    private $services;
+    private $providers;
     
     public function __construct()
     {
         $this->map = array();
-        $this->services = new \SplObjectStorage();
+        $this->providers = new \SplObjectStorage();
     }
     
     /**
@@ -30,7 +30,18 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
             return true;
         }
         
-        foreach ($this->services as $serviceProvider) {
+        return $this->providerHas($service);
+    }
+    
+    /**
+     * Check if any sub container have the service registered.
+     * 
+     * @param   string  $service    the service to look for
+     * @return  boolean
+     */
+    protected function providerHas($service)
+    {
+        foreach ($this->providers as $serviceProvider) {
             if ($serviceProvider->has($service)) {
                 return true;
             }
@@ -74,9 +85,9 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
      * @param   ServicesProviderInterface   $provider   the container
      * @return  ServicesContainer
      */
-    public function service(ServicesProviderInterface $provider)
+    public function provider(ServicesProviderInterface $provider)
     {
-        $this->services->attach($provider);
+        $this->providers->attach($provider);
         
         return $this;        
     }
@@ -114,7 +125,7 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
             return $this->map[$service]();
         }
         
-        return $this->getFromProvider($service);
+        return $this->providerGet($service);
     }
     
     /**
@@ -151,10 +162,10 @@ class ServicesContainer implements \Njasm\ServicesContainer\ServicesProviderInte
      * @param   string  $service    the service to instanciate
      * @return  object
      */
-    private function getFromProvider($service)
+    private function providerGet($service)
     {
         $object = null;
-        foreach ($this->services as $serviceProvider) {
+        foreach ($this->providers as $serviceProvider) {
             if ($serviceProvider->has($service)) {
                 $object = $serviceProvider->get($service);
                 break;

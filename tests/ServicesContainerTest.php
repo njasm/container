@@ -50,6 +50,55 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("Object-from-Service-Provider", $obj->value);
     }
     
+    public function testNestedDependency()
+    {
+        $container = &$this->container;
+        $this->container->set(
+            "SingleClass", 
+            function() {
+                return new SingleClass();
+            }
+        );
+        
+        $this->container->set(
+            "DependentClass",
+            function() use (&$container) {
+                return new DependentClass($container->get("SingleClass"));
+            }
+        );
+        
+        $dependent = $this->container->get("DependentClass");
+        $this->assertInstanceOf("Njasm\\ServicesContainer\\Tests\\DependentClass", $dependent);
+        $this->assertInstanceOf("Njasm\\ServicesContainer\\Tests\\SingleClass", $dependent->getInjectedClass());
+    }
+    
+    public function testNestedDependencyWithSingleton()
+    {
+        $container = &$this->container;
+        $this->container->singleton(
+            "SingleClass", 
+            function() {
+                return new SingleClass();
+            }
+        );
+        
+        $this->container->set(
+            "DependentClass",
+            function() use (&$container) {
+                return new DependentClass($container->get("SingleClass"));
+            }
+        );
+        
+        //get sigleton first
+        $singleton = $this->container->get("SingleClass");
+        // now get a dependent go get the singleton and compare if it's the same object and not a new instance
+        $dependent = $this->container->get("DependentClass");
+        $this->assertInstanceOf("Njasm\\ServicesContainer\\Tests\\DependentClass", $dependent);
+        $this->assertInstanceOf("Njasm\\ServicesContainer\\Tests\\SingleClass", $dependent->getInjectedClass()); 
+        
+        $this->assertTrue($singleton === $dependent->getInjectedClass());
+    }
+    
     /** HELPER METHODS **/
     protected function setService($methodType = "set", $service = "SingleClass")
     {
@@ -87,4 +136,19 @@ class SingleClass
 class SingleClassOnServiceProvider
 {
     public $value = "Object-from-Service-Provider";
+}
+
+class DependentClass
+{
+    public $single;
+    
+    public function __construct(SingleClass $single)
+    {
+        $this->single = $single;
+    }
+    
+    public function getInjectedClass()
+    {
+        return $this->single;
+    }
 }

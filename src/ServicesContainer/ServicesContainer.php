@@ -20,7 +20,7 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     }
     
     /**
-     * Check if service is registered.
+     * Check if service is registered
      * 
      * @param   string  $service    The service to check
      * @return  boolean
@@ -35,7 +35,7 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     }
     
     /**
-     * Check if any sub container have the service registered.
+     * Check if any sub container have the service registered
      * 
      * @param   string  $service    the service to look for
      * @return  boolean
@@ -52,7 +52,7 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     }
     
     /**
-     * Register a new service in the container.
+     * Register a new service in the container
      * 
      * @param   string      $service  the service key
      * @param   \Closure    $value    the closure that will build and return the object
@@ -66,7 +66,7 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     }
     
     /**
-     * Register a new service as a singleton instance in the container.
+     * Register a new service as a singleton instance in the container
      * 
      * @param   string      $service  the service key
      * @param   \Closure    $value    the closure that will build and return the object
@@ -81,7 +81,7 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     }
     
     /**
-     * Registers a/other container into the services providers storage.
+     * Registers a/other container into the services providers storage
      * 
      * @param   ServicesProviderInterface   $provider   the container
      * @return  ServicesContainer
@@ -92,7 +92,7 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
         
         return $this;        
     }
-    
+
     /**
      * Returns the instanciated object
      * 

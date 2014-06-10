@@ -11,6 +11,13 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
         $this->container = new \Njasm\ServicesContainer\ServicesContainer();
     }
     
+    public function testHas()
+    {
+        $this->setService();
+        $this->assertTrue($this->container->has("SingleClass"));
+        $this->assertFalse($this->container->has("Non-Existent-Service"));
+    }
+    
     public function testGetException()
     {
         $this->setExpectedException('\Njasm\ServicesContainer\Exception\ServiceNotRegisteredException');
@@ -53,16 +60,12 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
     public function testNestedDependency()
     {
         $container = &$this->container;
-        $this->container->set(
-            "SingleClass", 
-            function() {
-                return new SingleClass();
-            }
-        );
+        
+        $this->setService("set", "SingleClass");
         
         $this->container->set(
             "DependentClass",
-            function() use (&$container) {
+            function () use (&$container) {
                 return new DependentClass($container->get("SingleClass"));
             }
         );
@@ -75,16 +78,12 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
     public function testNestedDependencyWithSingleton()
     {
         $container = &$this->container;
-        $this->container->singleton(
-            "SingleClass", 
-            function() {
-                return new SingleClass();
-            }
-        );
+        
+        $this->setService("singleton", "SingleClass");
         
         $this->container->set(
             "DependentClass",
-            function() use (&$container) {
+            function () use (&$container) {
                 return new DependentClass($container->get("SingleClass"));
             }
         );

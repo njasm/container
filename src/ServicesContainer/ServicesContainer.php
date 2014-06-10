@@ -54,13 +54,13 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     /**
      * Register a new service in the container.
      * 
-     * @param   string    $service  the service key
-     * @param   closure   $value    the closure that will build and return the object
+     * @param   string      $service  the service key
+     * @param   \Closure    $value    the closure that will build and return the object
      * @return  ServicesContainer
      */
-    public function set($service, \Closure $value)
+    public function set($service, \Closure $function)
     {
-        $this->map[$service] = $value;
+        $this->map[$service] = $function;
         
         return $this;
     }
@@ -68,13 +68,13 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     /**
      * Register a new service as a singleton instance in the container.
      * 
-     * @param   string    $service  the service key
-     * @param   closure   $value    the closure that will build and return the object
+     * @param   string      $service  the service key
+     * @param   \Closure    $value    the closure that will build and return the object
      * @return  ServicesContainer
      */
-    public function singleton($service, \Closure $value)
+    public function singleton($service, \Closure $function)
     {
-        $this->set($service, $value);
+        $this->set($service, $function);
         $this->singletons[$service] = true;
         
         return $this;
@@ -126,7 +126,7 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
             return $this->map[$service]();
         }
         
-        return $this->providerGet($service);
+        return $this->getFromProviders($service);
     }
     
     /**
@@ -163,7 +163,7 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
      * @param   string  $service    the service to instanciate
      * @return  object
      */
-    protected function providerGet($service)
+    protected function getFromProviders($service)
     {
         $object = null;
         foreach ($this->providers as $serviceProvider) {

@@ -5,3 +5,27 @@
 ## A Services/Dependency Container for PHP
 
 More detailed documentation soon.
+
+### Installation
+
+To include Services Container in your project, add it to your ``composer.json`` file:
+
+```javascript
+{
+    "require": {
+        "njasm/services-container": "~1.0"
+    }
+}
+```
+### Usage
+
+### Defining Services
+
+### Defining Singleton Services
+
+### Defining Sub/Nested Containers
+
+### Roadmap
+
+### Contributing
+

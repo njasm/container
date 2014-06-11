@@ -8,9 +8,11 @@ More detailed documentation soon.
 
 ### Requirements
 
+ - PHP 5.3 or higher.
+
 ### Installation
 
-To include Services Container in your project, add it to your ``composer.json`` file:
+Include ``Services-Container`` in your project, by adding it to your ``composer.json`` file.
 
 ```javascript
 {
@@ -19,12 +21,68 @@ To include Services Container in your project, add it to your ``composer.json`` 
     }
 }
 ```
-### Usage
+## Usage
+
+To create a container, simply instatiate the ``ServicesContainer`` class.
+
+```php
+use Njasm\ServicesContainer\ServicesContainer;
+
+$container = new ServicesContainer();
+```
 
 ### Defining Services
 
+The order you define your services is irrelevant. All objects will be instantiated only when requested.
+```php
+$container->set(
+    "Mail.Transport",
+    function() {
+        return MyMailTransport("smtp.example.com", "user", "password", 25);
+    }
+);
+```
+Creation of nested dependencies is also possible. You just need to pass the container to the closure.
+```php
+$container->set(
+    "Mail.Transport",
+    function() use (&$container) {
+        return MyMailTransport($container->get("Mail.Transport.Config));
+    }
+);
+
+$container->set(
+    "Mail.Transport.Config",
+    function() {
+        return MyMailTransportConfig("smtp.example.com", "username", "password", 25);
+    }
+);
+
+$mailer = $container->get("Mail.Transport");
+```
+
 ### Defining Singleton Services
 
+For singleton services, you use the singleton method invocation. the service will be instantiated the first time
+it is requested, all future requests for that service, will return the same object.
+
+```php
+$container = new ServicesContainer();
+
+$container->singleton(
+    "Database",
+    function() {
+        return MyDatabase("mysql:host=example.com;port=3306;dbname=your_db", "username", "password");
+    }
+);
+
+// MyDatabase is instantiated and stored for future requests to this service.
+$db = $container->get("Database");
+
+// now the stored object is returned.
+$db2 = $container->get("Database");
+
+```
 ### Defining Sub/Nested Containers
 
 ### Roadmap

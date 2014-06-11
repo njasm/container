@@ -38,7 +38,7 @@ The order you define your services is irrelevant. All objects will be instantiat
 $container->set(
     "Mail.Transport",
     function() {
-        return MyMailTransport("smtp.example.com", "user", "password", 25);
+        return MyMailTransport("smtp.example.com", "username", "password", 25);
     }
 );
 ```
@@ -47,7 +47,7 @@ Creation of nested dependencies is also possible. You just need to pass the cont
 $container->set(
     "Mail.Transport",
     function() use (&$container) {
-        return MyMailTransport($container->get("Mail.Transport.Config));
+        return MyMailTransport($container->get("Mail.Transport.Config"));
     }
 );
 
@@ -72,7 +72,9 @@ $container = new ServicesContainer();
 $container->singleton(
     "Database",
     function() {
-        return MyDatabase("mysql:host=example.com;port=3306;dbname=your_db", "username", "password");
+        return MyDatabase(
+            "mysql:host=example.com;port=3306;dbname=your_db", "username", "password"
+        );
     }
 );
 

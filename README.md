@@ -67,8 +67,6 @@ For singleton services, you use the singleton method invocation. the service wil
 it is requested, all future requests for that service, will return the same object.
 
 ```php
-$container = new ServicesContainer();
-
 $container->singleton(
     "Database",
     function() {
@@ -78,10 +76,10 @@ $container->singleton(
     }
 );
 
-// MyDatabase is instantiated and stored for future requests to this service.
+// MyDatabase is instantiated and stored for future requests to this service, and then returned.
 $db = $container->get("Database");
 
-// now the stored object is returned.
+// now the stored instance of MyDatabase is returned.
 $db2 = $container->get("Database");
 
 ```

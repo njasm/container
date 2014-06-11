@@ -76,7 +76,8 @@ $container->singleton(
     }
 );
 
-// MyDatabase is instantiated and stored for future requests to this service, and then returned.
+// MyDatabase is instantiated and stored, for future requests to this service, 
+// and then returned.
 $db = $container->get("Database");
 
 // now the stored instance of MyDatabase is returned.

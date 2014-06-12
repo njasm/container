@@ -6,6 +6,13 @@
 
 More detailed documentation soon.
 
+### Features
+
+ - Primitive data types container - Comming soon
+ - Lazy instantiation approach
+ - Singleton services
+ - Nested Providers/Containers 
+
 ### Requirements
 
  - PHP 5.3 or higher.
@@ -86,7 +93,21 @@ $db2 = $container->get("Database");
 ```
 ### Defining Sub/Nested Containers
 
+ TODO: write example on how to inject other containers, create example also on how to create a Decorator to implement
+ the required interface and wrap the wanted container around.
+
 ### Roadmap
 
+ - Different storage strategies
+ - allow primitive data types registration
+
 ### Contributing
+
+Do you wanna help on feature development/improve existing code through refactoring, etc?
+Pull requests are welcome as long as you follow some guidelines:
+
+ - Coding standards: PSR2 compliant.
+ - Submit tests in your pull request to your own changes / new code introduction.
+ - Tests should ``Ideally`` cover 100% of your code, or very near that.
+ - having fun.
 

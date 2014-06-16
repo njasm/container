@@ -8,9 +8,8 @@ More detailed documentation soon.
 
 ### Features
 
- - Primitive data types container - Comming soon
  - Lazy instantiation approach
- - Singleton services
+ - Singleton services available
  - Nested Providers/Containers 
 
 ### Requirements
@@ -30,7 +29,7 @@ Include ``Services-Container`` in your project, by adding it to your ``composer.
 ```
 ## Usage
 
-To create a container, simply instatiate the ``ServicesContainer`` class.
+To create a container, simply instantiate the ``ServicesContainer`` class.
 
 ```php
 use Njasm\ServicesContainer\ServicesContainer;
@@ -40,32 +39,32 @@ $container = new ServicesContainer();
 
 ### Defining Services
 
-The order you define your services is irrelevant. All objects will be instantiated only when requested.
+The order you define your services is irrelevant. All services will be instantiated only when requested.
 ```php
 $container->set(
-    "Mail.Transport",
+    "MAIL.TRANSPORT",
     function() {
-        return MyMailTransport("smtp.example.com", "username", "password", 25);
+        return \Namespace\For\My\MailTransport("smtp.example.com", "username", "password", 25);
     }
 );
 ```
 Creation of nested dependencies is also possible. You just need to pass the container to the closure.
 ```php
 $container->set(
-    "Mail.Transport",
+    "MAIL.TRANSPORT",
     function() use (&$container) {
-        return MyMailTransport($container->get("Mail.Transport.Config"));
+        return \Namespace\For\My\MailTransport($container->get("MAIL.TRANSPORT.CONFIG"));
     }
 );
 
 $container->set(
-    "Mail.Transport.Config",
+    "MAIL.TRANSPORT.CONFIG",
     function() {
-        return MyMailTransportConfig("smtp.example.com", "username", "password", 25);
+        return \Namespace\For\My\MailTransportConfig("smtp.example.com", "username", "password", 25);
     }
 );
 
-$mailer = $container->get("Mail.Transport");
+$mailer = $container->get("MAIL.TRANSPORT");
 ```
 
 ### Defining Singleton Services
@@ -75,9 +74,9 @@ it is requested, all future requests for that service, will return the same obje
 
 ```php
 $container->singleton(
-    "Database",
+    "DATABASE.CONNECTION",
     function() {
-        return MyDatabase(
+        return \Namespace\For\My\Database(
             "mysql:host=example.com;port=3306;dbname=your_db", "username", "password"
         );
     }
@@ -85,10 +84,10 @@ $container->singleton(
 
 // MyDatabase is instantiated and stored, for future requests to this service, 
 // and then returned.
-$db = $container->get("Database");
+$db = $container->get("DATABASE.CONNECTION");
 
 // now the stored instance of MyDatabase is returned.
-$db2 = $container->get("Database");
+$db2 = $container->get("DATABASE.CONNECTION");
 
 ```
 ### Defining Sub/Nested Containers
@@ -100,14 +99,14 @@ $db2 = $container->get("Database");
 
  - Different storage strategies
  - allow primitive data types registration
+ - Comply with Cointainer-interop interfaces
 
 ### Contributing
 
 Do you wanna help on feature development/improve existing code through refactoring, etc?
 Pull requests are welcome as long as you follow some guidelines:
 
- - Coding standards: PSR2 compliant.
- - Submit tests in your pull request to your own changes / new code introduction.
- - Tests should ``Ideally`` cover 100% of your code, or very near that.
+ - PSR2 compliant.
+ - Submit tests with your pull request to your own changes / new code introduction.
  - having fun.
 

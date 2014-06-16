@@ -39,10 +39,11 @@ $container = new ServicesContainer();
 
 ### Defining Services
 
+Services are defined with two params. A ``key`` and a ``Closure/Anonymous function``.
 The order you define your services is irrelevant. All services will be instantiated only when requested.
 ```php
 $container->set(
-    "MAIL.TRANSPORT",
+    "Mail.Transport",
     function() {
         return \Namespace\For\My\MailTransport("smtp.example.com", "username", "password", 25);
     }
@@ -51,20 +52,20 @@ $container->set(
 Creation of nested dependencies is also possible. You just need to pass the container to the closure.
 ```php
 $container->set(
-    "MAIL.TRANSPORT",
+    "Mail.Transport",
     function() use (&$container) {
-        return \Namespace\For\My\MailTransport($container->get("MAIL.TRANSPORT.CONFIG"));
+        return \Namespace\For\My\MailTransport($container->get("Mail.Transport.Config"));
     }
 );
 
 $container->set(
-    "MAIL.TRANSPORT.CONFIG",
+    "Mail.Transport.Config",
     function() {
         return \Namespace\For\My\MailTransportConfig("smtp.example.com", "username", "password", 25);
     }
 );
 
-$mailer = $container->get("MAIL.TRANSPORT");
+$mailer = $container->get("Mail.Transport");
 ```
 
 ### Defining Singleton Services
@@ -74,7 +75,7 @@ it is requested, all future requests for that service, will return the same obje
 
 ```php
 $container->singleton(
-    "DATABASE.CONNECTION",
+    "Database.Connection",
     function() {
         return \Namespace\For\My\Database(
             "mysql:host=example.com;port=3306;dbname=your_db", "username", "password"
@@ -84,10 +85,10 @@ $container->singleton(
 
 // MyDatabase is instantiated and stored, for future requests to this service, 
 // and then returned.
-$db = $container->get("DATABASE.CONNECTION");
+$db = $container->get("Database.Connection");
 
 // now the stored instance of MyDatabase is returned.
-$db2 = $container->get("DATABASE.CONNECTION");
+$db2 = $container->get("Database.Connection");
 
 ```
 ### Defining Sub/Nested Containers
@@ -98,12 +99,12 @@ $db2 = $container->get("DATABASE.CONNECTION");
 ### Roadmap
 
  - Different storage strategies
- - allow primitive data types registration
- - Comply with Cointainer-interop interfaces
+ - Allow primitive data types registration (without the usage of closures for that)
+ - Comply with ``Cointainer-interop`` interfaces
 
 ### Contributing
 
-Do you wanna help on feature development/improve existing code through refactoring, etc?
+Do you wanna help on feature development/improving existing code through refactoring, etc?
 Pull requests are welcome as long as you follow some guidelines:
 
  - PSR2 compliant.

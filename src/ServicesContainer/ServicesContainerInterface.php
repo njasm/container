@@ -10,19 +10,19 @@ interface ServicesContainerInterface
      * Register a new service in the container.
      * 
      * @param   string      $service    the service key
-     * @param   \Closure    $function   the closure that will build and return the object
+     * @param   \Closure    $closure    the closure that will build and return the object
      * @return  ServicesContainer
      */    
-    public function set($service, \Closure $function);
+    public function set($service, \Closure $closure);
     
     /**
      * Register a new service as a singleton instance in the container.
      * 
      * @param   string      $service    the service key
-     * @param   \Closure    $function   the closure that will build and return the object
+     * @param   \Closure    $closure    the closure that will build and return the object
      * @return  ServicesContainer
      */    
-    public function singleton($service, \Closure $function);
+    public function singleton($service, \Closure $closure);
     
     /**
      * Registers a/other container into the services providers storage.

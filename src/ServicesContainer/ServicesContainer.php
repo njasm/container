@@ -55,12 +55,12 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
      * Register a new service in the container
      * 
      * @param   string      $service    the service key
-     * @param   \Closure    $function   the closure that will build and return the object
+     * @param   \Closure    $closure    the closure that will build and return the object
      * @return  ServicesContainer
      */
-    public function set($service, \Closure $function)
+    public function set($service, \Closure $closure)
     {
-        $this->map[$service] = $function;
+        $this->map[$service] = $closure;
         
         return $this;
     }
@@ -69,12 +69,12 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
      * Register a new service as a singleton instance in the container
      * 
      * @param   string      $service    the service key
-     * @param   \Closure    $function   the closure that will build and return the object
+     * @param   \Closure    $closure    the closure that will build and return the object
      * @return  ServicesContainer
      */
-    public function singleton($service, \Closure $function)
+    public function singleton($service, \Closure $closure)
     {
-        $this->set($service, $function);
+        $this->set($service, $closure);
         $this->singletons[$service] = true;
         
         return $this;
@@ -94,9 +94,9 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     }
 
     /**
-     * Returns the instanciated object
+     * Returns the instantiated object
      * 
-     * @param   string  $service    the service to instanciate
+     * @param   string  $service    the service to instantiate
      * @return  object
      * 
      * @throws  ServiceNotRegisteredException
@@ -111,9 +111,9 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     }
     
     /**
-     * Returns the instanciated service
+     * Returns the instantiated service
      * 
-     * @param   string  $service    the service to instanciate
+     * @param   string  $service    the service to instantiate
      * @return  object
      */
     protected function getRegistered($service)
@@ -132,7 +132,7 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     /**
      * Returns the service registered as singleton instance
      * 
-     * @param   string  $service    the singleton service to instanciate
+     * @param   string  $service    the singleton service to instantiate
      * @return  object
      */
     protected function getSingleton($service)
@@ -158,9 +158,9 @@ class ServicesContainer implements ServicesContainerInterface, ServicesProviderI
     }
     
     /**
-     * Get from providers the instanciated service
+     * Get from providers the instantiated service
      * 
-     * @param   string  $service    the service to instanciate
+     * @param   string  $service    the service to instantiate
      * @return  object
      */
     protected function getFromProviders($service)

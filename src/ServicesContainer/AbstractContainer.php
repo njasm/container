@@ -4,7 +4,7 @@ namespace Njasm\ServicesContainer;
 
 use Njasm\ServicesContainer\ServicesProviderInterface;
 
-interface ServicesContainerInterface 
+abstract class AbstractContainer
 {
     /**
      * Register a new service in the container.
@@ -13,7 +13,7 @@ interface ServicesContainerInterface
      * @param   \Closure    $closure    the closure that will build and return the object
      * @return  ServicesContainer
      */    
-    public function set($service, \Closure $closure);
+    abstract public function set($service, $closure);
     
     /**
      * Register a new service as a singleton instance in the container.
@@ -22,7 +22,7 @@ interface ServicesContainerInterface
      * @param   \Closure    $closure    the closure that will build and return the object
      * @return  ServicesContainer
      */    
-    public function singleton($service, \Closure $closure);
+    abstract public function singleton($service, \Closure $closure);
     
     /**
      * Registers a/other container into the services providers storage.
@@ -30,5 +30,5 @@ interface ServicesContainerInterface
      * @param   ServicesProviderInterface   $provider   the container
      * @return  ServicesContainer
      */    
-    public function provider(ServicesProviderInterface $provider);
+    abstract public function provider(ServicesProviderInterface $provider);
 }

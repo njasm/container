@@ -8,7 +8,9 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
     
     public function setUp()
     {
-        $this->container = new \Njasm\ServicesContainer\ServicesContainer();
+        $this->container = new \Njasm\ServicesContainer\ServicesContainer(
+            new \Njasm\ServicesContainer\Storage\InMemoryStorage()
+        );
     }
     
     public function testHas()
@@ -98,6 +100,35 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($singleton === $dependent->getInjectedClass());
     }
     
+    public function testSetPrimitiveDataTypeAsService()
+    {
+        $expectedString = "VariableString";
+        $expectedBool = true;
+        $expectedInt = 123;
+        $expectedFloat = 45.678;
+        
+        $this->container->set("string", $expectedString);
+        $this->container->set("bool", $expectedBool);
+        $this->container->set("int", $expectedInt);
+        $this->container->set("float", $expectedFloat);
+        
+        $this->assertTrue($expectedString === $this->container->get("string"));
+        $this->assertTrue($expectedBool === $this->container->get("bool"));
+        $this->assertTrue($expectedInt === $this->container->get("int"));
+        $this->assertTrue($expectedFloat === $this->container->get("float")); 
+    }
+    
+    public function testInstanciatedObject()
+    {
+        $obj = new \stdClass();
+        $this->container->set("obj", $obj);
+        
+        $objResult1 = $this->container->get("obj");
+        $objResult2 = $this->container->get("obj");
+        
+        $this->assertTrue($objResult1 === $objResult2);
+    }
+    
     /** HELPER METHODS **/
     protected function setService($methodType = "set", $service = "SingleClass")
     {
@@ -111,7 +142,9 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
     
     protected function getServiceProvider()
     {
-        $provider = new \Njasm\ServicesContainer\ServicesContainer();
+        $provider = new \Njasm\ServicesContainer\ServicesContainer(
+            new \Njasm\ServicesContainer\Storage\InMemoryStorage()
+        );
         
         $provider->set(
             "SingleClassOnServiceProvider",

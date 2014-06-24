@@ -198,10 +198,10 @@ class InMemoryStorage implements StorageInterface
     
     public function reset()
     {
-        unset($this->instances);
-        unset($this->services);
-        unset($this->singletons);
-        unset($this->providers);
+        $this->instances = array();
+        $this->services = array();
+        $this->singletons = array();
+        $this->providers = new \SplObjectStorage();
         return true;
     }
 }

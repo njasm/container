@@ -161,7 +161,25 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
     
+    public function testReset()
+    {
+        $this->setService();
+        $this->assertTrue($this->container->has("SingleClass"));
+        $this->assertTrue($this->container->reset());
+        
+        $this->setExpectedException('\Njasm\ServicesContainer\Exception\ServiceNotRegisteredException');
+        $this->container->get("SingleClass");
+    }
     
+    public function testResetSingleton()
+    {
+        $this->setService("singleton", "SingleClass");
+        $this->assertTrue($this->container->has("SingleClass"));
+        $this->assertTrue($this->container->reset());
+        
+        $this->setExpectedException('\Njasm\ServicesContainer\Exception\ServiceNotRegisteredException');
+        $this->container->get("SingleClass");
+    }    
     
     /** HELPER METHODS **/
     protected function setService($methodType = "set", $service = "SingleClass")

@@ -144,6 +144,23 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($remove2 === true);
     }
     
+    public function testRemoveNotRegistered()
+    {
+        $result = $this->container->remove("No-Service-Registered");
+        $this->assertFalse($result);
+    }
+    
+    public function testRemoveSingleton()
+    {
+        $this->setService("singleton");
+        $obj = $this->container->get("SingleClass");
+        
+        $this->assertInstanceOf("\\Njasm\ServicesContainer\\Tests\\SingleClass", $obj);
+        
+        $result = $this->container->remove("SingleClass");
+        $this->assertTrue($result);
+    }
+    
     
     
     /** HELPER METHODS **/

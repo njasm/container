@@ -8,7 +8,7 @@ interface StorageInterface
 {
     public function has($service);
     public function set($service, $value);
-    public function singleton($service, \Closure $value);
+    public function singleton($service, $value);
     public function provider(ServicesProviderInterface $provider);
     public function get($service);
     public function remove($service);

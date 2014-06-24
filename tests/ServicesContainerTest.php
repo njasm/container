@@ -129,6 +129,23 @@ class ServicesContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($objResult1 === $objResult2);
     }
     
+    
+    public function testRemove()
+    {
+        $obj = new \stdClass();
+        $this->container->set("obj1", $obj);
+        $this->container->set("obj2", $obj);
+        
+        
+        $remove1 = $this->container->remove("obj1");
+        $remove2 = $this->container->remove("obj2");
+        
+        $this->assertTrue($remove1 === true);
+        $this->assertTrue($remove2 === true);
+    }
+    
+    
+    
     /** HELPER METHODS **/
     protected function setService($methodType = "set", $service = "SingleClass")
     {

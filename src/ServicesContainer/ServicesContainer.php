@@ -77,4 +77,25 @@ class ServicesContainer extends AbstractContainer implements ServicesProviderInt
     {
         return $this->storage->get($service);
     }
+    
+    /**
+     * Removes a service from the storage. This will NOT remove services from other nested providers
+     * 
+     * @param   string  $service
+     * @return  bool    true if service removed, false otherwise
+     */
+    public function remove($service)
+    {
+        return $this->storage->remove($service);
+    }
+    
+    /**
+     * Calls the storage reset
+     * 
+     * @return  bool    true on storage complete reset.
+     */ 
+    public function reset()
+    {
+        return $this->storage->reset();
+    }
 }

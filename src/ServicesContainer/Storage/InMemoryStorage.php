@@ -22,7 +22,7 @@ class InMemoryStorage implements StorageInterface
     /**
      * Check if service is registered
      * 
-     * @param   string  $service    The service to check
+     * @param   string      $service    The service to check
      * @return  boolean
      */    
     public function has($service)
@@ -38,7 +38,7 @@ class InMemoryStorage implements StorageInterface
      * Register a new service in the container
      * 
      * @param   string      $service    the service key
-     * @param   \Closure    $value      the closure that will build and return the object
+     * @param   mixed       $value      the actual service
      * @return  ServicesContainer
      */
     public function set($service, $value)
@@ -50,15 +50,17 @@ class InMemoryStorage implements StorageInterface
     /**
      * Register a new service as a singleton instance in the container
      * 
-     * @param   string      $service    the service key
-     * @param   \Closure    $value      the closure that will build and return the object
+     * @param   string              $service    the service key
+     * @param   closure|object      $value      the actual service
      * @return  ServicesContainer
      */
-    public function singleton($service, \Closure $value)
+    public function singleton($service, $value)
     {
-        $this->set($service, $value);
-        $this->singletons[$service] = true;   
-        return $this;
+        if ($value instanceof \Closure || is_object($value)) {
+            $this->set($service, $value);
+            $this->singletons[$service] = true;   
+            return $this;
+        }
     }
     
     
@@ -110,10 +112,6 @@ class InMemoryStorage implements StorageInterface
             
             // primitives
             return $this->services[$service];
-        }
-        
-        if (isset($this->params[$service])) {
-            return $this->params[$service];
         }
         
         return $this->getFromProviders($service);
@@ -185,11 +183,25 @@ class InMemoryStorage implements StorageInterface
     
     public function remove($service)
     {
+        $has = $this->has($service);
+        if ($has && $this->isSingleton($service)) {
+            unset($this->singletons[$service]);
+            unset($this->instances[$service]);
+            return true;
+        } elseif ($has) {
+            unset($this->services[$service]);
+            return true;
+        }
         
+        return false;
     }
     
     public function reset()
     {
-        
+        unset($this->instances);
+        unset($this->services);
+        unset($this->singletons);
+        unset($this->providers);
+        return true;
     }
 }

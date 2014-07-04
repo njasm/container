@@ -11,9 +11,9 @@ class BuilderService
     protected function init()
     {
         // setup factories for returning, building definitions
-        static::$builders[Types::SINGLETON] = new \Njasm\Container\Builder\SingletonBuilder();
-        static::$builders[Types::FACTORY] = new \Njasm\Container\Builder\FactoryBuilder();
-        static::$builders[Types::PRIMITIVE] = new \Njasm\Container\Builder\PrimitiveBuilder();
+        self::$builders[Types::SINGLETON] = new \Njasm\Container\Builder\SingletonBuilder();
+        self::$builders[Types::FACTORY] = new \Njasm\Container\Builder\FactoryBuilder();
+        self::$builders[Types::PRIMITIVE] = new \Njasm\Container\Builder\PrimitiveBuilder();
     }
     
     protected static function getBuilders()
@@ -27,7 +27,7 @@ class BuilderService
     
     public static function build($type, $definition)
     {
-        $builders = static::getBuilders();
+        $builders = self::getBuilders();
         
         return $builders[$type]->build($definition);
     }

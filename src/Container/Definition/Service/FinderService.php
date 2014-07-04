@@ -11,12 +11,12 @@ class FinderService
         $localFinder = new LocalFinder();
         $providersFinder = new ProvidersFinder();
         $localFinder->append($providersFinder);
-        static::$finder = $localFinder;
+        self::$finder = $localFinder;
     }
     
     protected static function getFinder()
     {
-        if (!isset(static::$finder)) {
+        if (!isset(self::$finder)) {
             self::init();
         }
         
@@ -25,6 +25,6 @@ class FinderService
     
     public static function isRegistered(Request $request)
     {
-        return static::getFinder()->has($request);
+        return self::getFinder()->has($request);
     }
 }

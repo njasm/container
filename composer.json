@@ -30,8 +30,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Njasm\\ServicesContainer\\Tests\\": "tests/",
-            "Njasm\\ServicesContainer\\Examples\\": "example/"
+            "Njasm\\Container\\Tests\\": "tests/",
+            "Njasm\\Container\\Examples\\": "example/"
         }
     }
 }

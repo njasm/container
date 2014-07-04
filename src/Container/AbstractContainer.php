@@ -1,8 +1,8 @@
 <?php
 
-namespace Njasm\ServicesContainer;
+namespace Njasm\Container;
 
-use Njasm\ServicesContainer\ServicesProviderInterface;
+use Njasm\Container\ServicesProviderInterface;
 
 abstract class AbstractContainer
 {
@@ -11,7 +11,7 @@ abstract class AbstractContainer
      * 
      * @param   string      $service    the service key
      * @param   \Closure    $closure    the closure that will build and return the object
-     * @return  ServicesContainer
+     * @return  Container
      */    
     abstract public function set($service, $closure);
     
@@ -20,7 +20,7 @@ abstract class AbstractContainer
      * 
      * @param   string      $service    the service key
      * @param   \Closure    $closure    the closure that will build and return the object
-     * @return  ServicesContainer
+     * @return  Container
      */    
     abstract public function singleton($service, \Closure $closure);
     
@@ -28,7 +28,7 @@ abstract class AbstractContainer
      * Registers a/other container into the services providers storage.
      * 
      * @param   ServicesProviderInterface   $provider   the container
-     * @return  ServicesContainer
+     * @return  Container
      */    
     abstract public function provider(ServicesProviderInterface $provider);
 }

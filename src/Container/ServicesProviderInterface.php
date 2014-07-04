@@ -1,6 +1,6 @@
 <?php
 
-namespace Njasm\ServicesContainer;
+namespace Njasm\Container;
 
 interface ServicesProviderInterface 
 {

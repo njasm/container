@@ -16,7 +16,7 @@ class BuilderService
         static::$builders[Types::PRIMITIVE] = new \Njasm\Container\Builder\PrimitiveBuilder();
     }
     
-    protected function getBuilders()
+    protected static function getBuilders()
     {
         if (!isset(static::$builders)) {
             self::init();

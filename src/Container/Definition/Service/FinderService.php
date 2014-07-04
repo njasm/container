@@ -14,7 +14,7 @@ class FinderService
         static::$finder = $localFinder;
     }
     
-    protected function getFinder()
+    protected static function getFinder()
     {
         if (!isset(static::$finder)) {
             self::init();

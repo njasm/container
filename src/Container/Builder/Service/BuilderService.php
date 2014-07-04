@@ -18,7 +18,7 @@ class BuilderService
     
     protected static function getBuilders()
     {
-        if (!isset(static::$builders)) {
+        if (!isset(self::$builders)) {
             self::init();
         }
         

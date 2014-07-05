@@ -8,9 +8,8 @@ class BuilderService
 {
     static $builders;
     
-    protected function init()
+    protected static function init()
     {
-        // setup factories for returning, building definitions
         self::$builders[Types::SINGLETON] = new \Njasm\Container\Builder\SingletonBuilder();
         self::$builders[Types::FACTORY] = new \Njasm\Container\Builder\FactoryBuilder();
         self::$builders[Types::PRIMITIVE] = new \Njasm\Container\Builder\PrimitiveBuilder();

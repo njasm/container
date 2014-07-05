@@ -6,11 +6,10 @@ class FinderService
 {
     static $finder;
     
-    protected function init()
+    protected static function init()
     {
         $localFinder = new LocalFinder();
-        $providersFinder = new ProvidersFinder();
-        $localFinder->append($providersFinder);
+        $localFinder->append(new ProvidersFinder());
         self::$finder = $localFinder;
     }
     

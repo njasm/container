@@ -55,9 +55,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testServiceFromProvider()
     {
-        $provider = $this->getServiceProvider();
+        $provider = $this->getServiceProvider("SingleClassOnServiceProvider");
         $this->container->provider($provider);
-        
+
+        //test has from provider
+        $this->assertTrue($this->container->has("SingleClassOnServiceProvider"));
+        // test get from provider
         $obj = $this->container->get("SingleClassOnServiceProvider");
         $this->assertInstanceOf("Njasm\\Container\\Tests\\SingleClassOnServiceProvider", $obj);
         $this->assertEquals("Object-from-Service-Provider", $obj->value);
@@ -207,12 +210,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         return new \Njasm\Container\Definition\ObjectDefinition($key, $value);
     }
     
-    protected function getServiceProvider()
+    protected function getServiceProvider($key = "SingleClassOnServiceProvider")
     {
         $provider = new \Njasm\Container\Container();
         
         $d = new \Njasm\Container\Definition\FactoryDefinition(
-            "SingleClassOnServiceProvider",
+            $key,
             function() {
                 return new SingleClassOnServiceProvider();
             }

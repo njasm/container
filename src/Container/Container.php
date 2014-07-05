@@ -11,8 +11,8 @@ use Njasm\Container\Definition\Service\DefinitionFinderService;
 
 class Container implements ServicesProviderInterface
 {
+    protected $map;    
     protected $providers;
-    protected $map;
     protected $registry;
     protected $singletons;
     
@@ -142,18 +142,6 @@ class Container implements ServicesProviderInterface
         return isset($this->singletons[$key]);
     }
     
-    protected function getSingleton($key)
-    {
-        if (isset($this->registry[$key])) {
-            return $this->registry[$key];
-        }
-        
-        $definition = $this->map[$key];
-        $type = $definition->getType();
-
-        return $this->registry[$key] = $this->factories[$type]->build($definition);
-    }
-    
     protected function getFromProviders($key)
     {
         foreach($this->providers as $provider) {
@@ -162,11 +150,6 @@ class Container implements ServicesProviderInterface
             }
         }
         
-        $this->throwNotFoundException();
-    }
-    
-    protected function throwNotFoundException()
-    {
-        throw new NotFoundException();        
+        throw new NotFoundException();
     }
 }

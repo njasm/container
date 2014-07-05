@@ -21,7 +21,7 @@ class BuilderService
             self::init();
         }
         
-        return static::$builders;
+        return self::$builders;
     }
     
     public static function build($type, $definition)

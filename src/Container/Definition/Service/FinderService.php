@@ -19,7 +19,7 @@ class FinderService
             self::init();
         }
         
-        return static::$finder;
+        return self::$finder;
     }
     
     public static function isRegistered(Request $request)

@@ -4,9 +4,9 @@ namespace Njasm\Container\Builder;
 
 use Njasm\Container\Definition\AbstractDefinition;
 
-class PrimitiveBuilder implements BuilderInterface
+class PrimitiveCommand implements BuilderCommand
 {
-    public function build(AbstractDefinition $definition)
+    public function execute(AbstractDefinition $definition)
     {
         return $definition->getDefinition();
     }

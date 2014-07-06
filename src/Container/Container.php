@@ -96,11 +96,9 @@ class Container implements ServicesProviderInterface
         
         if (isset($this->map[$key])) {
             $definition = $this->map[$key];
-            $type = $definition->getType();
-
-            $object = \Njasm\Container\Builder\Service\BuilderService::build($type, $definition);
+            $returnValue = \Njasm\Container\Builder\Service\BuilderService::build($definition);
              
-            return $this->isSingleton($key) ? $this->registry[$key] = $object : $object;
+            return $this->isSingleton($key) ? $this->registry[$key] = $returnValue : $returnValue;
         }
         
         return $this->getFromProviders($key);
@@ -116,6 +114,8 @@ class Container implements ServicesProviderInterface
     {
         if(isset($this->map[$key])) {
             unset($this->map[$key]);
+            unset($this->registry[$key]);
+            unset($this->singletons[$key]);
             
             return true;
         }

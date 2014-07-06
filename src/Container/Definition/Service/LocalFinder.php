@@ -4,9 +4,9 @@ namespace Njasm\Container\Definition\Service;
 
 use Njasm\Container\Definition\Service\Request;
 
-class LocalFinder extends AbstractFinder
+class LocalFinder extends FinderHandler
 {
-    protected function process(Request $request)
+    protected function handle(Request $request)
     {
         $key = $request->getKey();
         $definitions = $request->getDefinitions();

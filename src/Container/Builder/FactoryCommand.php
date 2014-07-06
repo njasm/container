@@ -4,9 +4,9 @@ namespace Njasm\Container\Builder;
 
 use Njasm\Container\Definition\AbstractDefinition;
 
-class FactoryBuilder implements BuilderInterface
+class FactoryCommand implements BuilderCommand
 {
-    public function build(AbstractDefinition $definition)
+    public function execute(AbstractDefinition $definition)
     {
         $value = $definition->getDefinition();
         return $value();

@@ -3,6 +3,7 @@
 namespace Njasm\Container\Builder\Service;
 
 use \Njasm\Container\Definition\Types;
+use \Njasm\Container\Definition\AbstractDefinition;
 
 class BuilderService
 {
@@ -10,9 +11,9 @@ class BuilderService
     
     protected static function init()
     {
-        self::$builders[Types::SINGLETON] = new \Njasm\Container\Builder\SingletonBuilder();
-        self::$builders[Types::FACTORY] = new \Njasm\Container\Builder\FactoryBuilder();
-        self::$builders[Types::PRIMITIVE] = new \Njasm\Container\Builder\PrimitiveBuilder();
+        self::$builders[Types::SINGLETON] = new \Njasm\Container\Builder\SingletonCommand();
+        self::$builders[Types::FACTORY] = new \Njasm\Container\Builder\FactoryCommand();
+        self::$builders[Types::PRIMITIVE] = new \Njasm\Container\Builder\PrimitiveCommand();
     }
     
     protected static function getBuilders()
@@ -24,10 +25,15 @@ class BuilderService
         return self::$builders;
     }
     
-    public static function build($type, $definition)
+    public static function build(AbstractDefinition $definition)
     {
         $builders = self::getBuilders();
+        if (!array_key_exists($definition->getType(), $builders)) {
+            throw new \OutOfBoundsException("No builder registered for type: {$definition->getType()}");
+        }
         
-        return $builders[$type]->build($definition);
+        return $builders[$definition->getType()]->execute($definition);
     }
+    
+    //TODO: AppendCommand() method
 }

@@ -4,12 +4,12 @@ namespace Njasm\Container\Definition\Service;
 
 use Njasm\Container\Definition\Service\Request;
 
-abstract class AbstractFinder
+abstract class FinderHandler
 {
     protected $successor;
     protected $found;
     
-    final public function append(AbstractFinder $successor)
+    final public function append(FinderHandler $successor)
     {
         if (isset($this->successor)) {
             $this->successor->append($successor);
@@ -20,7 +20,7 @@ abstract class AbstractFinder
     
     final public function has(Request $request)
     {
-        $this->found = $this->process($request);
+        $this->found = $this->handle($request);
         
         if (!$this->found) {
             if (!is_null($this->successor)) {
@@ -31,5 +31,5 @@ abstract class AbstractFinder
         return $this->found;
     }
     
-    abstract protected function process(Request $request);
+    abstract protected function handle(Request $request);
 }

@@ -4,9 +4,9 @@ namespace Njasm\Container\Builder;
 
 use Njasm\Container\Definition\AbstractDefinition;
 
-class SingletonBuilder implements BuilderInterface
+class SingletonCommand implements BuilderCommand
 {
-    public function build(AbstractDefinition $definition)
+    public function execute(AbstractDefinition $definition)
     {
         return $definition->getDefinition();
     }

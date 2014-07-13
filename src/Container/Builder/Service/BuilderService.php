@@ -2,7 +2,7 @@
 
 namespace Njasm\Container\Builder\Service;
 
-use \Njasm\Container\Definition\Types;
+use \Njasm\Container\Definition\DefinitionType;
 use \Njasm\Container\Definition\AbstractDefinition;
 
 class BuilderService
@@ -11,9 +11,9 @@ class BuilderService
     
     protected static function init()
     {
-        self::$builders[Types::SINGLETON] = new \Njasm\Container\Builder\SingletonCommand();
-        self::$builders[Types::FACTORY] = new \Njasm\Container\Builder\FactoryCommand();
-        self::$builders[Types::PRIMITIVE] = new \Njasm\Container\Builder\PrimitiveCommand();
+        self::$builders[DefinitionType::SINGLETON] = new \Njasm\Container\Builder\SingletonBuilder();
+        self::$builders[DefinitionType::FACTORY] = new \Njasm\Container\Builder\FactoryBuilder();
+        self::$builders[DefinitionType::PRIMITIVE] = new \Njasm\Container\Builder\PrimitiveBuilder();
     }
     
     protected static function getBuilders()

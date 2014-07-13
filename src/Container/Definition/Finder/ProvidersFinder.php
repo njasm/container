@@ -1,12 +1,10 @@
 <?php
 
-namespace Njasm\Container\Definition\Service;
+namespace Njasm\Container\Definition\Finder;
 
-use Njasm\Container\Definition\Service\Request;
-
-class ProvidersFinder extends FinderHandler
+class ProvidersFinder extends AbstractFinder
 {
-    protected function handle(Request $request)
+    protected function handle(FindRequest $request)
     {
         $key = $request->getKey();
         $providers = $request->getProviders();

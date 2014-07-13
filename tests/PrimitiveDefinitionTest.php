@@ -3,7 +3,7 @@
 namespace Njasm\Container\Tests\Definition;
 
 use Njasm\Container\Definition\PrimitiveDefinition;
-use Njasm\Container\Definition\Types;
+use Njasm\Container\Definition\DefinitionType;
 
 class PrimitiveDefinitionTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,7 +16,7 @@ class PrimitiveDefinitionTest extends \PHPUnit_Framework_TestCase
     public function testGetType()
     {
         $d = new PrimitiveDefinition("primitive", array("a"));
-        $this->assertTrue($d->getType() === Types::PRIMITIVE);
+        $this->assertTrue($d->getType() === DefinitionType::PRIMITIVE);
     }
     
     public function testGetKey()

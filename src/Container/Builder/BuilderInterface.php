@@ -4,7 +4,7 @@ namespace Njasm\Container\Builder;
 
 use Njasm\Container\Definition\AbstractDefinition;
 
-interface BuilderCommand
+interface BuilderInterface
 {
     public function execute(AbstractDefinition $definition);
 }

@@ -8,7 +8,7 @@ class FactoryDefinition extends AbstractDefinition
 {   
     protected function setType()
     {
-        $this->type = Types::FACTORY;
+        $this->type = DefinitionType::FACTORY;
     }
     
     protected function validateValue($value)

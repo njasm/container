@@ -8,7 +8,7 @@ class PrimitiveDefinition extends AbstractDefinition
 {   
     protected function setType()
     {
-        $this->type = Types::PRIMITIVE;
+        $this->type = DefinitionType::PRIMITIVE;
     }
     
     protected function validateValue($value)

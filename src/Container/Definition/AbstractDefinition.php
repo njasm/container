@@ -2,7 +2,7 @@
 
 namespace Njasm\Container\Definition;
 
-use Njasm\Container\Definition\Types;
+use Njasm\Container\Definition\DefinitionType;
 
 abstract class AbstractDefinition
 {   

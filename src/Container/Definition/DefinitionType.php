@@ -2,7 +2,7 @@
 
 namespace Njasm\Container\Definition;
 
-final class Types 
+final class DefinitionType 
 {
     const SINGLETON = 1;
     const FACTORY = 2;

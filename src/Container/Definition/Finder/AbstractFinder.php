@@ -1,15 +1,13 @@
 <?php
 
-namespace Njasm\Container\Definition\Service;
+namespace Njasm\Container\Definition\Finder;
 
-use Njasm\Container\Definition\Service\Request;
-
-abstract class FinderHandler
+abstract class AbstractFinder
 {
     protected $successor;
     protected $found;
     
-    final public function append(FinderHandler $successor)
+    final public function append(AbstractFinder $successor)
     {
         if (isset($this->successor)) {
             $this->successor->append($successor);
@@ -18,7 +16,7 @@ abstract class FinderHandler
         $this->successor = $successor;
     }
     
-    final public function has(Request $request)
+    final public function has(FindRequest $request)
     {
         $this->found = $this->handle($request);
         
@@ -31,5 +29,5 @@ abstract class FinderHandler
         return $this->found;
     }
     
-    abstract protected function handle(Request $request);
+    abstract protected function handle(FindRequest $request);
 }

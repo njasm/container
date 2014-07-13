@@ -4,7 +4,7 @@
 
 ## A Services/Dependency Container for PHP
 
-More detailed documentation soon.
+OUTDATED EXAMPLES - More up-to-date/detailed documentation soon.
 
 ### Features
 
@@ -29,17 +29,18 @@ Include ``Services-Container`` in your project, by adding it to your ``composer.
 ```
 ## Usage
 
-To create a container, simply instantiate the ``ServicesContainer`` class.
+To create a container, simply instantiate the ``Container`` class.
 
 ```php
-use Njasm\ServicesContainer\ServicesContainer;
+use Njasm\Container\Container;
 
-$container = new ServicesContainer();
+$container = new Container();
 ```
 
 ### Defining Services
 
-Services are defined with two params. A ``key`` and a ``Closure/Anonymous function``.
+Services are defined with two params. A ``key`` and a ``value``.
+
 The order you define your services is irrelevant. All services will be instantiated only when requested.
 ```php
 $container->set(
@@ -98,9 +99,9 @@ $db2 = $container->get("Database.Connection");
 
 ### Roadmap
 
- - Different storage strategies
- - Allow primitive data types registration (without the usage of closures for that)
- - Comply with ``Cointainer-interop`` interfaces
+ [x] Different storage strategies
+ [x] Allow primitive data types registration
+ [ ] Comply with ``Cointainer-interop`` interfaces
 
 ### Contributing
 

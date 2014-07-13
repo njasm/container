@@ -4,7 +4,7 @@ namespace Njasm\Container\Builder;
 
 use Njasm\Container\Definition\AbstractDefinition;
 
-class PrimitiveCommand implements BuilderCommand
+class SingletonBuilder implements BuilderInterface
 {
     public function execute(AbstractDefinition $definition)
     {

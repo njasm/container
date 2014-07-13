@@ -12,13 +12,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container = new \Njasm\Container\Container();
     }
 
-    // TODO: validade $value of Definition for null/empty
     public function testHas()
     {
-        $p = $this->getPrimitiveDef();
-        $this->container->set($p);
+        $this->container->set("primitive", "primitive-def");
         
-        $this->assertTrue($this->container->has($p->getKey()));
+        $this->assertTrue($this->container->has("primitive"));
         $this->assertFalse($this->container->has("Non-Existent-Service"));
     }
     
@@ -30,8 +28,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testSetAndGet()
     {
-        $o = $this->getSingleClassObjectDef();
-        $this->container->set($o);
+        $this->container->set("SingleClass", new SingleClass());
         
         $object = $this->container->get("SingleClass");
         $this->assertInstanceOf("Njasm\\Container\\Tests\\SingleClass", $object);
@@ -39,8 +36,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testSingletonAndGet()
     {
-        $o = $this->getSingleClassObjectDef();
-        $this->container->singleton($o);
+        $this->container->singleton("SingleClass", new SingleClass());
         
         $obj1 = $this->container->get("SingleClass");
         $obj2 = $this->container->get("SingleClass");
@@ -70,16 +66,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $container = &$this->container;
         
-        $o = $this->getSingleClassObjectDef();
-        $d = new \Njasm\Container\Definition\FactoryDefinition(
+        $this->container->set(
             "DependentClass",
             function () use (&$container) {
                 return new DependentClass($container->get("SingleClass"));
-            }
+            }            
         );
-            
-        $this->container->set($d);
-        $this->container->set($o);
+        
+        $this->container->set("SingleClass", new SingleClass());
         
         $dependent = $this->container->get("DependentClass");
         $this->assertInstanceOf("Njasm\\Container\\Tests\\DependentClass", $dependent);
@@ -89,17 +83,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testNestedDependencyWithSingleton()
     {
         $container = &$this->container;
-        
-        $o = $this->getSingleClassObjectDef();
-        $d = new \Njasm\Container\Definition\FactoryDefinition(
+            
+        $this->container->singleton(
             "DependentClass",
             function () use (&$container) {
                 return new DependentClass($container->get("SingleClass"));
             }
         );
-            
-        $this->container->singleton($d);
-        $this->container->set($o);
+        
+        $this->container->set("SingleClass", new SingleClass());
         
         //get sigleton first
         $singleton = $this->container->get("SingleClass");
@@ -113,15 +105,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testSetPrimitiveDataTypeAsService()
     {
-        $expectedString = $this->getPrimitiveDef("string", "VariableString");
-        $expectedBool = $this->getPrimitiveDef("bool", true);
-        $expectedInt = $this->getPrimitiveDef("int", 123);
-        $expectedFloat = $this->getPrimitiveDef("float", 45.678);
-        
-        $this->container->set($expectedString);
-        $this->container->set($expectedBool);
-        $this->container->set($expectedInt);
-        $this->container->set($expectedFloat);
+        $this->container->set("string", "VariableString");
+        $this->container->set("bool", true);
+        $this->container->set("int", 123);
+        $this->container->set("float", 45.678);
         
         $this->assertTrue("VariableString" === $this->container->get("string"));
         $this->assertTrue(true === $this->container->get("bool"));
@@ -131,8 +118,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testInstanciatedObject()
     {
-        $obj = $this->getSingleClassObjectDef("SingleClass");
-        $this->container->set($obj);
+
+        $this->container->set("SingleClass", new SingleClass());
         
         $objResult1 = $this->container->get("SingleClass");
         $objResult2 = $this->container->get("SingleClass");
@@ -143,8 +130,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testRemove()
     {
         $obj = new \stdClass();
-        $this->container->set(new \Njasm\Container\Definition\ObjectDefinition("obj1", $obj));
-        $this->container->set(new \Njasm\Container\Definition\ObjectDefinition("obj2", $obj));
+        $this->container->set("obj1", $obj);
+        $this->container->set("obj2", $obj);
         
         
         $remove1 = $this->container->remove("obj1");
@@ -162,8 +149,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testRemoveSingleton()
     {
-        $d = $this->getSingleClassObjectDef("SingleClass");
-        $this->container->singleton($d);
+        $this->container->singleton("SingleClass", new SingleClass());
         
         $obj = $this->container->get("SingleClass");
         
@@ -175,8 +161,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testReset()
     {
-        $d = $this->getSingleClassObjectDef("SingleClass");
-        $this->container->set($d);
+        $this->container->set("SingleClass", new SingleClass());
         
         $this->assertTrue($this->container->has("SingleClass"));
         $this->assertTrue($this->container->reset());
@@ -187,8 +172,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testResetSingleton()
     {
-        $d = $this->getSingleClassObjectDef("SingleClass");
-        $this->container->singleton($d);
+        $this->container->singleton("SingleClass", new singleClass());
         
         $this->assertTrue($this->container->has("SingleClass"));
         $this->assertTrue($this->container->reset());
@@ -198,10 +182,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     }    
     
     /** HELPER METHODS **/
-    protected function getPrimitiveDef($key = "primitive", $value = "primitive-def")
-    {
-        return new \Njasm\Container\Definition\PrimitiveDefinition($key, $value);
-    }
     
     protected function getSingleClassObjectDef($key = "SingleClass")
     {
@@ -214,14 +194,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $provider = new \Njasm\Container\Container();
         
-        $d = new \Njasm\Container\Definition\FactoryDefinition(
+        $provider->set(
             $key,
             function() {
                 return new SingleClassOnServiceProvider();
-            }
+            }            
         );
-        
-        $provider->set($d);
         
         return $provider;
     }

@@ -6,8 +6,17 @@ use Njasm\Container\Exception\NotFoundException;
 use Njasm\Container\ServicesProviderInterface;
 use Njasm\Container\Definition\AbstractDefinition;
 
-use Njasm\Container\Definition\Types;
-use Njasm\Container\Definition\Service\DefinitionFinderService;
+use Njasm\Container\Definition\DefinitionType;
+
+use Njasm\Container\Definition\Service\DefinitionService;
+
+use Njasm\Container\Definition\Finder\LocalFinder;
+use Njasm\Container\Definition\Finder\ProvidersFinder;
+use Njasm\Container\Definition\Finder\FindRequest;
+
+use Njasm\Container\Definition\Builder\SingletonBuilder;
+use Njasm\Container\Definition\Builder\FactoryBuilder;
+use Njasm\Container\Definition\Builder\PrimitiveBuilder;
 
 class Container implements ServicesProviderInterface
 {
@@ -16,14 +25,42 @@ class Container implements ServicesProviderInterface
     protected $registry;
     protected $singletons;
     
+    protected $definitionService;
+    protected $builder;
 
     public function __construct()
     {
-        $this->map = new Definition\DefinitionMap();
+        $this->initialize();
+    }
+
+    /**
+     * Initializes the Container.
+     * 
+     * @return void
+     */
+    protected function initialize()
+    {
         $this->providers = new \SplObjectStorage();
+        $this->map = new Definition\DefinitionMap();
+        $this->registry = array();
+        $this->singletons = array();
+        
+        // instanciate Definition Service
+        $this->definitionService = new DefinitionService();
+        
+        // setup finders chain
+        $localFinder = new LocalFinder();
+        $providersFinder = new ProvidersFinder();
+        $this->definitionService->appendFinder($localFinder);
+        $this->definitionService->appendFinder($providersFinder);
+        
+        // setup builders commands  
+        $this->definitionService->appendBuilder(DefinitionType::SINGLETON, new SingletonBuilder());
+        $this->definitionService->appendBuilder(DefinitionType::FACTORY, new FactoryBuilder());
+        $this->definitionService->appendBuilder(DefinitionType::PRIMITIVE, new PrimitiveBuilder());
         
         // register Container
-        $this->set(new Definition\ObjectDefinition('Njasm\Container\Container', $this));       
+        $this->set('Njasm\Container\Container', $this);  
     }
     
     /**
@@ -34,9 +71,7 @@ class Container implements ServicesProviderInterface
      */    
     public function has($key)
     {
-        return \Njasm\Container\Definition\Service\FinderService::isRegistered(
-            new Definition\Service\Request($key, $this->map, $this->providers)
-        );
+        return $this->definitionService->has(new FindRequest($key, $this->map, $this->providers));
     }
     
     /**
@@ -45,9 +80,15 @@ class Container implements ServicesProviderInterface
      * @param   DefinitionInterface $definition    the service key
      * @return  Container
      */
-    public function set(AbstractDefinition $definition)
+    public function set($key, $value)
     {
+        $definition = $this->definitionService->assemble($key, $value);
         $this->map[$definition->getKey()] = $definition;
+        
+        if ($definition->getType() === DefinitionType::SINGLETON) {
+            $this->registry[$key] = $definition->getDefinition();
+        }
+        
         return $this;
     }
     
@@ -57,15 +98,10 @@ class Container implements ServicesProviderInterface
      * @param   string      $definition    the service key
      * @return  Container
      */
-    public function singleton(AbstractDefinition $definition)
+    public function singleton($key, $value)
     {
-        $this->set($definition);
-        $key = $definition->getKey();
+        $this->set($key, $value);
         $this->singletons[$key] = true;
-        
-        if (is_object($definition->getDefinition()) && !$definition->getDefinition() instanceof \Closure) {
-            $this->registry[$key] = $definition->getDefinition();
-        }
         
         return $this;
     }
@@ -79,6 +115,7 @@ class Container implements ServicesProviderInterface
     public function provider(ServicesProviderInterface $provider)
     {
         $this->providers->attach($provider);
+        
         return $this;        
     }   
 
@@ -95,9 +132,9 @@ class Container implements ServicesProviderInterface
         }
         
         if (isset($this->map[$key])) {
-            $definition = $this->map[$key];
-            $returnValue = \Njasm\Container\Builder\Service\BuilderService::build($definition);
-             
+            $definition = $this->map[$key];            
+            $returnValue = $this->definitionService->build($definition);
+
             return $this->isSingleton($key) ? $this->registry[$key] = $returnValue : $returnValue;
         }
         
@@ -107,7 +144,7 @@ class Container implements ServicesProviderInterface
     /**
      * Removes a service from the storage. This will NOT remove services from other nested providers
      * 
-     * @param   string  $definition
+     * @param   string  $key
      * @return  bool    true if service removed, false otherwise
      */
     public function remove($key)
@@ -124,16 +161,13 @@ class Container implements ServicesProviderInterface
     }
     
     /**
-     * Calls the storage reset
+     * Reset all container settings.
      * 
-     * @return  bool    true on storage complete reset.
+     * @return  bool    true
      */ 
     public function reset()
     {
-        $this->providers = new \SplObjectStorage();
-        $this->map = new Definition\DefinitionMap();
-        $this->registry = array();
-        $this->singletons = array();
+        $this->initialize();
         return true;
     }
     

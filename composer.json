@@ -1,9 +1,9 @@
 {
-    "name": "njasm/services-container",
-    "description": "Service Locator/Dependency Container for PHP",
+    "name": "njasm/container",
+    "description": "Dependency Container for PHP",
     "homepage": "http://github.com/njasm/services-container",
     "license": "MIT",
-    "keywords": ["Service Locator", "Service-Locator", "Dependency Container", "Dependency-Container"],
+    "keywords": ["DiC", "IoC", "Dependency Container", "Dependency-Container"],
     "authors": [
         {
             "name": "Nelson João Morais",
@@ -12,8 +12,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/njasm/services-container/issues",
-        "source": "https://github.com/njasm/services-container"
+        "issues": "https://github.com/njasm/container/issues",
+        "source": "https://github.com/njasm/container"
     },
     "minimum-stability": "dev",
     "require-dev": {

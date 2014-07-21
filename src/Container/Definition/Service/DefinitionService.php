@@ -3,7 +3,6 @@
 namespace Njasm\Container\Definition\Service;
 
 use \Njasm\Container\Definition\AbstractDefinition;
-use \Njasm\Container\Definition\Builder\BuilderInterface;
 use Njasm\Container\Definition\Finder\AbstractFinder;
 use Njasm\Container\Definition\Request;
 
@@ -13,7 +12,7 @@ class DefinitionService
     protected $builders;
     
     public function has(Request $request)
-    {
+    {      
         return $this->finder->has($request);        
     }
     
@@ -50,14 +49,13 @@ class DefinitionService
     {
         $key        = $request->getKey();
         $map        = $request->getDefinitions();
-        $providers  = $request->getProviders();
         
         // check local
         if ($map->has($key)) {
             $factory = new \Njasm\Container\Factory\LocalFactory();
         }
         
-        // check deeper providers
+        // check in nested providers
         $providerFinder = new \Njasm\Container\Definition\Finder\ProvidersFinder();
         if ($providerFinder->has($request)) {
             $factory = new \Njasm\Container\Factory\ProviderFactory();

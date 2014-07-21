@@ -4,18 +4,11 @@ namespace Njasm\Container;
 
 use Njasm\Container\Exception\NotFoundException;
 use Njasm\Container\ServicesProviderInterface;
-
-use Njasm\Container\Definition\DefinitionType;
-
+use Njasm\Container\Definition\DefinitionMap;
 use Njasm\Container\Definition\Service\DefinitionService;
-
 use Njasm\Container\Definition\Finder\LocalFinder;
 use Njasm\Container\Definition\Finder\ProvidersFinder;
 use Njasm\Container\Definition\Request;
-
-use Njasm\Container\Definition\Builder\ObjectBuilder;
-use Njasm\Container\Definition\Builder\ClosureBuilder;
-use Njasm\Container\Definition\Builder\PrimitiveBuilder;
 
 class Container implements ServicesProviderInterface
 {
@@ -23,9 +16,7 @@ class Container implements ServicesProviderInterface
     protected $providers;
     protected $registry;
     protected $singletons;
-    
-    protected $definitionService;
-    protected $builder;
+    protected $service;
 
     public function __construct()
     {
@@ -40,7 +31,7 @@ class Container implements ServicesProviderInterface
     protected function initialize()
     {
         $this->providers = new \SplObjectStorage();
-        $this->map = new Definition\DefinitionMap();
+        $this->map = new DefinitionMap();
         $this->registry = array();
         $this->singletons = array();
         

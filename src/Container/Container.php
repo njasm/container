@@ -78,10 +78,6 @@ class Container implements ServicesProviderInterface
         $definition = $this->service->assemble($key, $value);
         $this->map->add($definition);
         
-        if ($definition->getType() === DefinitionType::OBJECT) {
-            $this->registry[$key] = $definition->getConcrete();
-        }
-        
         return $this;
     }
     
@@ -167,16 +163,5 @@ class Container implements ServicesProviderInterface
     protected function isSingleton($key)
     {
         return isset($this->singletons[$key]);
-    }
-    
-    protected function getFromProviders($key)
-    {
-        foreach($this->providers as $provider) {
-            if ($provider->has($key)) {
-                return $provider->get($key);
-            }
-        }
-        
-        throw new NotFoundException();
     }
 }

@@ -42,5 +42,11 @@ class PrimitiveDefinitionTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('\InvalidArgumentException');
         $d = new PrimitiveDefinition("primitive", function() { return "test"; });
-    }    
+    }  
+    
+    public function testInvalidKey()
+    {
+        $this->setExpectedException('\InvalidArgumentException');
+        $d = new PrimitiveDefinition(null, "A");        
+    }
 }

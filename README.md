@@ -71,8 +71,9 @@ $mailer = $container->get("Mail.Transport");
 
 ### Defining Singleton Services
 
-For singleton services, you use the singleton method invocation. the service will be instantiated the first time
-it is requested, all future requests for that service, will return the same object.
+For singleton services, you use the singleton method invocation. 
+The service will be instantiated the first time when it is requested, if declared as an anonymous function.
+You can also register an already instantiated class.
 
 ```php
 $container->singleton(
@@ -87,9 +88,9 @@ $container->singleton(
 // MyDatabase is instantiated and stored, for future requests to this service, 
 // and then returned.
 $db = $container->get("Database.Connection");
-
-// now the stored instance of MyDatabase is returned.
 $db2 = $container->get("Database.Connection");
+
+// $db === $db2 TRUE
 
 ```
 ### Defining Sub/Nested Containers
@@ -99,16 +100,16 @@ $db2 = $container->get("Database.Connection");
 
 ### Roadmap
 
- [x] Different storage strategies
- [x] Allow primitive data types registration
- [ ] Comply with ``Cointainer-interop`` interfaces
+ - [x] Different storage strategies
+ - [x] Allow primitive data types registration
+ - [ ] Comply with ``Cointainer-interop`` interfaces
 
 ### Contributing
 
 Do you wanna help on feature development/improving existing code through refactoring, etc?
 Pull requests are welcome as long as you follow some guidelines:
 
- - PSR2 compliant.
+ - PSR-2 compliant.
  - Submit tests with your pull request to your own changes / new code introduction.
  - having fun.
 

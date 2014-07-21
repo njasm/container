@@ -31,19 +31,16 @@ class LocalFactory extends AbstractFactory
                 $builder = new PrimitiveBuilder();
                 return $builder->execute($this->definition->getConcrete());
                 
-                break;
             case DefinitionType::OBJECT:
                 
                 $builder = new ObjectBuilder();
                 return $builder->execute($this->definition->getConcrete());
                 
-                break;
             case DefinitionType::CLOSURE:
                 
                 $builder = new ClosureBuilder();
                 return $builder->execute($this->definition->getConcrete());
                 
-                break;
             default:
                 
                 throw new \OutOfBoundsException("No available factory to build the requested service.");

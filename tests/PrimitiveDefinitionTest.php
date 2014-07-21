@@ -29,7 +29,7 @@ class PrimitiveDefinitionTest extends \PHPUnit_Framework_TestCase
     public function testGetDefinition()
     {
         $d = new PrimitiveDefinition("primitive", array("a"));
-        $this->assertEquals(array("a"), $d->getDefinition());
+        $this->assertEquals(array("a"), $d->getConcrete());
     }
     
     public function testInvalidDefinitionType()

@@ -5,14 +5,14 @@ namespace Njasm\Container\Definition\Service;
 use \Njasm\Container\Definition\AbstractDefinition;
 use \Njasm\Container\Definition\Builder\BuilderInterface;
 use Njasm\Container\Definition\Finder\AbstractFinder;
-use Njasm\Container\Definition\Finder\FindRequest;
+use Njasm\Container\Definition\Request;
 
 class DefinitionService
 {
     protected $finder;
     protected $builders;
     
-    public function has(FindRequest $request)
+    public function has(Request $request)
     {
         return $this->finder->has($request);        
     }
@@ -28,32 +28,42 @@ class DefinitionService
         $this->finder = $finder;
     }
     
-    public function assemble($key, $value)
+    public function assemble($key, $concrete)
     {
-        if ($value instanceof \Closure) {
-            return new \Njasm\Container\Definition\FactoryDefinition($key, $value);
-        }elseif (is_object($value)) {
-            return new \Njasm\Container\Definition\ObjectDefinition($key, $value);
-        }elseif (is_scalar($value)) {
-            return new \Njasm\Container\Definition\PrimitiveDefinition($key, $value);
+        if ($concrete instanceof \Closure) {
+            return new \Njasm\Container\Definition\ClosureDefinition($key, $concrete);
+        }elseif (is_object($concrete)) {
+            return new \Njasm\Container\Definition\ObjectDefinition($key, $concrete);
+        }elseif (is_scalar($concrete)) {
+            return new \Njasm\Container\Definition\PrimitiveDefinition($key, $concrete);
         }
         
         throw new \OutOfBoundsException("Unknown definition type.");
     }
     
-    public function build(AbstractDefinition $definition)
+    /**
+     * @todo    Reflection ?
+     * @param   \Njasm\Container\Definition\Request     $request
+     * @return  mixed
+     */
+    public function build(Request $request)
     {
-        $type = $definition->getType();
+        $key        = $request->getKey();
+        $map        = $request->getDefinitions();
+        $providers  = $request->getProviders();
         
-        if (!isset($this->builders[$type])) {
-            throw new \OutOfBoundsException("There is not registered builder for this type of definition.");
+        // check local
+        if ($map->has($key)) {
+            $factory = new \Njasm\Container\Factory\LocalFactory();
         }
         
-        return $this->builders[$type]->execute($definition->getDefinition());
-    }
-    
-    public function appendBuilder($definitionType, BuilderInterface $builder)
-    {
-        $this->builders[$definitionType] = $builder;
+        // check deeper providers
+        $providerFinder = new \Njasm\Container\Definition\Finder\ProvidersFinder();
+        if ($providerFinder->has($request)) {
+            $factory = new \Njasm\Container\Factory\ProviderFactory();
+        }
+        
+        return $factory->build($request);
+        
     }
 }

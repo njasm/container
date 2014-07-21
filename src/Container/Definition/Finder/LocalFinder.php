@@ -2,9 +2,11 @@
 
 namespace Njasm\Container\Definition\Finder;
 
+use Njasm\Container\Definition\Request;
+
 class LocalFinder extends AbstractFinder
 {
-    protected function handle(FindRequest $request)
+    protected function handle(Request $request)
     {
         $key = $request->getKey();
         $definitions = $request->getDefinitions();

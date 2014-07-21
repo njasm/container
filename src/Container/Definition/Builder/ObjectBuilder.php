@@ -2,10 +2,10 @@
 
 namespace Njasm\Container\Definition\Builder;
 
-class FactoryBuilder implements BuilderInterface
+class ObjectBuilder implements BuilderInterface
 {
     public function execute($definition)
     {
-        return $definition();
+        return $definition;
     }
 }

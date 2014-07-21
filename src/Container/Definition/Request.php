@@ -1,8 +1,8 @@
 <?php
 
-namespace Njasm\Container\Definition\Finder;
+namespace Njasm\Container\Definition;
 
-class FindRequest
+class Request
 {
     protected $key;
     protected $definitions;

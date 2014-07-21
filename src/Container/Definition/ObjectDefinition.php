@@ -6,7 +6,7 @@ class ObjectDefinition extends AbstractDefinition
 { 
     protected function setType()
     {
-        $this->type = DefinitionType::SINGLETON;
+        $this->type = DefinitionType::OBJECT;
     }
     
     public function validateValue($value)

@@ -2,7 +2,6 @@
 
 namespace Njasm\Container\Tests;
 
-
 class ContainerTest extends \PHPUnit_Framework_TestCase 
 {
     private $container;
@@ -45,8 +44,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf("Njasm\\Container\\Tests\\SingleClass", $obj2);
         
         // exactly the same object
-        $obj1->value = "SingleTone-Test";
-        $this->assertEquals($obj1->value, $obj2->value);
+        $obj1->concrete = "SingleTone-Test";
+        $this->assertEquals($obj1->concrete, $obj2->concrete);
     }
     
     public function testServiceFromProvider()

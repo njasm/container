@@ -2,6 +2,8 @@
 
 namespace Njasm\Container\Definition\Finder;
 
+use Njasm\Container\Definition\Request;
+
 abstract class AbstractFinder
 {
     protected $successor;
@@ -16,7 +18,7 @@ abstract class AbstractFinder
         $this->successor = $successor;
     }
     
-    final public function has(FindRequest $request)
+    final public function has(Request $request)
     {
         $this->found = $this->handle($request);
         
@@ -29,5 +31,5 @@ abstract class AbstractFinder
         return $this->found;
     }
     
-    abstract protected function handle(FindRequest $request);
+    abstract protected function handle(Request $request);
 }

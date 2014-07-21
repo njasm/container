@@ -7,7 +7,7 @@ use Njasm\Container\Definition\DefinitionType;
 abstract class AbstractDefinition
 {   
     protected $key;
-    protected $value;
+    protected $concrete;
     protected $type;
     
     public function __construct($key, $value)
@@ -15,7 +15,7 @@ abstract class AbstractDefinition
         $this->validateKey($key);
         $this->validateValue($value);
         $this->key = $key;
-        $this->value = $value;
+        $this->concrete = $value;
         $this->setType();
     }
     
@@ -34,9 +34,9 @@ abstract class AbstractDefinition
         return $this->key;
     }
     
-    public function getDefinition()
+    public function getConcrete()
     {
-        return $this->value;
+        return $this->concrete;
     }
     
     public function getType()

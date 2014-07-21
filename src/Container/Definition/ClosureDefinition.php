@@ -4,11 +4,11 @@ namespace Njasm\Container\Definition;
 
 use Njasm\Container\Definition\AbstractDefinition;
 
-class FactoryDefinition extends AbstractDefinition
+class ClosureDefinition extends AbstractDefinition
 {   
     protected function setType()
     {
-        $this->type = DefinitionType::FACTORY;
+        $this->type = DefinitionType::CLOSURE;
     }
     
     protected function validateValue($value)

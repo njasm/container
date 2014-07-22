@@ -23,7 +23,7 @@ Include ``Services-Container`` in your project, by adding it to your ``composer.
 ```javascript
 {
     "require": {
-        "njasm/services-container": "~1.0"
+        "njasm/container": "~1.0"
     }
 }
 ```

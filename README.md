@@ -2,7 +2,7 @@
 [![Latest Stable Version](https://poser.pugx.org/njasm/container/v/stable.png)](https://packagist.org/packages/njasm/container) [![License](https://poser.pugx.org/njasm/container/license.png)](https://packagist.org/packages/njasm/container) 
 [![HHVM Status](http://hhvm.h4cc.de/badge/njasm/container.png)](http://hhvm.h4cc.de/package/njasm/container)
 
-## A Services/Dependency Container for PHP
+## A Service Locator / Dependency Container for PHP
 
 OUTDATED EXAMPLES - More up-to-date/detailed documentation soon.
 

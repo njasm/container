@@ -2,25 +2,22 @@
 
 namespace Njasm\Container\Definition;
 
-use Njasm\Container\Definition\DefinitionType;
-
 abstract class AbstractDefinition
 {   
     protected $key;
     protected $concrete;
     protected $type;
     
-    public function __construct($key, $value)
+    public function __construct($key, $concrete, $type)
     {
         $this->validateKey($key);
-        $this->validateValue($value);
+        $this->validateConcrete($concrete);
         $this->key = $key;
-        $this->concrete = $value;
-        $this->setType();
+        $this->concrete = $concrete;
+        $this->type = $type;
     }
     
-    abstract protected function validateValue($value);
-    abstract protected function setType();
+    abstract protected function validateConcrete($concrete);
 
     protected function validateKey($key)
     {

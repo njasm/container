@@ -8,6 +8,7 @@ use \Njasm\Container\Definition\DefinitionType;
 use Njasm\Container\Definition\Builder\ClosureBuilder;
 use Njasm\Container\Definition\Builder\ObjectBuilder;
 use Njasm\Container\Definition\Builder\PrimitiveBuilder;
+use Njasm\Container\Definition\Builder\ReflectionBuilder;
 
 class LocalFactory extends AbstractFactory
 {
@@ -19,12 +20,6 @@ class LocalFactory extends AbstractFactory
         $map                = $request->getDefinitions();
         $this->definition   = $map[$key];
         
-        return $this->_build();
-
-    }
-    
-    protected function _build()
-    {
         switch ($this->definition->getType()) {
             case DefinitionType::PRIMITIVE:
                 
@@ -40,6 +35,11 @@ class LocalFactory extends AbstractFactory
                 
                 $builder = new ClosureBuilder();
                 return $builder->execute($this->definition->getConcrete());
+                
+            case DefinitionType::REFLECTION:
+                
+                $builder = new ReflectionBuilder();
+                return $builder->execute($this->definition->getKey());
                 
             default:
                 

@@ -16,14 +16,14 @@ class ClosureDefinitionTest extends \PHPUnit_Framework_TestCase
     public function testException()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $d = new ClosureDefinition("closure", new \stdClass());
+        $d = new ClosureDefinition("closure", new \stdClass(), DefinitionType::CLOSURE);
     }
     
     public function testGetAll()
     {
         $anonymous = function() { return "A"; };
         
-        $d = new ClosureDefinition("closure", $anonymous);
+        $d = new ClosureDefinition("closure", $anonymous, DefinitionType::CLOSURE);
         $this->assertTrue($d->getType() === DefinitionType::CLOSURE);
         $this->assertEquals($anonymous, $d->getConcrete());
         $this->assertTrue($d->getKey() === 'closure');        
@@ -32,6 +32,6 @@ class ClosureDefinitionTest extends \PHPUnit_Framework_TestCase
     public function testInvalidKey()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $d = new ClosureDefinition("", function() { return "test"; });        
+        $d = new ClosureDefinition("", function() { return "test"; }, DefinitionType::CLOSURE);        
     }    
 }

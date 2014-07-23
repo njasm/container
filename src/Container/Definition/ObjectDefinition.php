@@ -4,14 +4,9 @@ namespace Njasm\Container\Definition;
 
 class ObjectDefinition extends AbstractDefinition
 { 
-    protected function setType()
+    public function validateConcrete($concrete)
     {
-        $this->type = DefinitionType::OBJECT;
-    }
-    
-    public function validateValue($value)
-    {
-        if (is_object($value) && !$value instanceof \Closure) {
+        if (is_object($concrete) && !$concrete instanceof \Closure) {
             return true;
         }
         

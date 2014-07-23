@@ -16,12 +16,12 @@ class ObjectDefinitionTest extends \PHPUnit_Framework_TestCase
     public function testException()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $d = new ObjectDefinition("object", array());
+        $d = new ObjectDefinition("object", array(), DefinitionType::OBJECT);
     }
     
     public function testGetAll()
     {
-        $d = new ObjectDefinition("object", new \stdClass());
+        $d = new ObjectDefinition("object", new \stdClass(), DefinitionType::OBJECT);
         $this->assertTrue($d->getType() === DefinitionType::OBJECT);
         $this->assertInstanceOf('\stdClass', $d->getConcrete());
         $this->assertTrue($d->getKey() === 'object');
@@ -30,6 +30,6 @@ class ObjectDefinitionTest extends \PHPUnit_Framework_TestCase
     public function testInvalidKey()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $d = new ObjectDefinition(new \stdClass(), new \stdClass());        
+        $d = new ObjectDefinition(new \stdClass(), new \stdClass(), DefinitionType::OBJECT);
     }    
 }

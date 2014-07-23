@@ -2,7 +2,8 @@
 
 namespace Njasm\Container\Definition\Service;
 
-use \Njasm\Container\Definition\AbstractDefinition;
+use Njasm\Container\Definition\DefinitionType;
+use Njasm\Container\Definition\AbstractDefinition;
 use Njasm\Container\Definition\Finder\AbstractFinder;
 use Njasm\Container\Definition\Request;
 
@@ -30,11 +31,11 @@ class DefinitionService
     public function assemble($key, $concrete)
     {
         if ($concrete instanceof \Closure) {
-            return new \Njasm\Container\Definition\ClosureDefinition($key, $concrete);
+            return new \Njasm\Container\Definition\ClosureDefinition($key, $concrete, DefinitionType::CLOSURE);
         }elseif (is_object($concrete)) {
-            return new \Njasm\Container\Definition\ObjectDefinition($key, $concrete);
+            return new \Njasm\Container\Definition\ObjectDefinition($key, $concrete, DefinitionType::OBJECT);
         }elseif (is_scalar($concrete)) {
-            return new \Njasm\Container\Definition\PrimitiveDefinition($key, $concrete);
+            return new \Njasm\Container\Definition\PrimitiveDefinition($key, $concrete, DefinitionType::PRIMITIVE);
         }
         
         throw new \OutOfBoundsException("Unknown definition type.");
@@ -60,6 +61,8 @@ class DefinitionService
         if ($providerFinder->has($request)) {
             $factory = new \Njasm\Container\Factory\ProviderFactory();
         }
+        
+        // TODO: try to bail-out client call with reflection.
         
         return $factory->build($request);
         

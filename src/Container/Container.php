@@ -48,9 +48,9 @@ class Container implements ServicesProviderInterface
     }
     
     /**
-     * Check if service is registered with this container.
+     * Check if service is registered.
      * 
-     * @param   string  $key    The service to check
+     * @param   string      $key
      * @return  boolean
      */    
     public function has($key)
@@ -59,37 +59,39 @@ class Container implements ServicesProviderInterface
     }
     
     /**
-     * Register a new service in the container
+     * Register a new service in the container.
      * 
-     * @param   DefinitionInterface $definition    the service key
+     * @param   string      $key
+     * @param   mixed       $concrete
      * @return  Container
      */
-    public function set($key, $value)
+    public function set($key, $concrete)
     {
-        $definition = $this->service->assemble($key, $value);
+        $definition = $this->service->assemble($key, $concrete);
         $this->map->add($definition);
         
         return $this;
     }
     
     /**
-     * Register a new service as a singleton instance in the container
+     * Registers service as a singleton instance in the container.
      * 
-     * @param   string      $definition    the service key
+     * @param   string      $key
+     * @param   mixed       $concrete
      * @return  Container
      */
-    public function singleton($key, $value)
+    public function singleton($key, $concrete)
     {
-        $this->set($key, $value);
+        $this->set($key, $concrete);
         $this->singletons[$key] = true;
         
         return $this;
     }
     
     /**
-     * Registers a/other container into the services providers storage
+     * Registers another services provider container.
      * 
-     * @param   ServicesProviderInterface   $provider   the container
+     * @param   ServicesProviderInterface   $provider
      * @return  Container
      */
     public function provider(ServicesProviderInterface $provider)
@@ -100,10 +102,12 @@ class Container implements ServicesProviderInterface
     }   
 
     /**
-     * Returns the instantiated object
+     * Returns the service.
      * 
-     * @param   string  $definition    the service to instantiate
+     * @param   string  $key
      * @return  mixed
+     * 
+     * @throws  NotFoundException
      */
     public function get($key)
     {   
@@ -122,10 +126,11 @@ class Container implements ServicesProviderInterface
     }
     
     /**
-     * Removes a service from the storage. This will NOT remove services from other nested providers
+     * Removes a service from the container. 
+     * This will NOT remove services from other nested providers.
      * 
      * @param   string  $key
-     * @return  bool    true if service removed, false otherwise
+     * @return  boolean
      */
     public function remove($key)
     {
@@ -141,16 +146,21 @@ class Container implements ServicesProviderInterface
     }
     
     /**
-     * Reset all container settings.
+     * Reset container settings.
      * 
-     * @return  bool    true
+     * @return  void
      */ 
     public function reset()
     {
         $this->initialize();
-        return true;
     }
     
+    /**
+     * Check if service is registered as a singleton.
+     * 
+     * @param   string  $key
+     * @return  boolean
+     */
     protected function isSingleton($key)
     {
         return isset($this->singletons[$key]);

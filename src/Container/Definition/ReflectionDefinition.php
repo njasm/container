@@ -4,12 +4,12 @@ namespace Njasm\Container\Definition;
 
 use Njasm\Container\Definition\AbstractDefinition;
 
-class ClosureDefinition extends AbstractDefinition
+class ReflectionDefinition extends AbstractDefinition
 {   
     protected function validateConcrete($concrete)
     {
-        if (!$concrete instanceof \Closure) {
-            throw new \InvalidArgumentException("Only Closures allowed.");
+        if (empty($concrete)) {
+            throw new \InvalidArgumentException("Empty string not allowed.");
         }  
     }
 }

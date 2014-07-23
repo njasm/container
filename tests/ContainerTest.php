@@ -163,7 +163,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->set("SingleClass", new SingleClass());
         
         $this->assertTrue($this->container->has("SingleClass"));
-        $this->assertTrue($this->container->reset());
+        $this->container->reset();
         
         $this->setExpectedException('\Njasm\Container\Exception\NotFoundException');
         $this->container->get("SingleClass");
@@ -174,7 +174,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->singleton("SingleClass", new singleClass());
         
         $this->assertTrue($this->container->has("SingleClass"));
-        $this->assertTrue($this->container->reset());
+        $this->container->reset();
         
         $this->setExpectedException('\Njasm\Container\Exception\NotFoundException');
         $this->container->get("SingleClass");
@@ -186,7 +186,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $value = new SingleClass();
             
-        return new \Njasm\Container\Definition\ObjectDefinition($key, $value);
+        return new \Njasm\Container\Definition\ObjectDefinition($key, $concrete, \Njasm\Container\Definition\DefinitionType::OBJECT);
     }
     
     protected function getServiceProvider($key = "SingleClassOnServiceProvider")

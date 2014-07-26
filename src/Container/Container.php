@@ -4,15 +4,13 @@ namespace Njasm\Container;
 
 use Njasm\Container\Exception\NotFoundException;
 use Njasm\Container\ServicesProviderInterface;
-use Njasm\Container\Definition\DefinitionMap;
+use Njasm\Container\Definition\DefinitionsMap;
 use Njasm\Container\Definition\Service\DefinitionService;
-use Njasm\Container\Definition\Finder\LocalFinder;
-use Njasm\Container\Definition\Finder\ProvidersFinder;
-use Njasm\Container\Definition\Request;
+use Njasm\Container\Definition\Service\Request;
 
 class Container implements ServicesProviderInterface
 {
-    protected $map;    
+    protected $definitionsMap;    
     protected $providers;
     protected $registry;
     protected $singletons;
@@ -31,17 +29,11 @@ class Container implements ServicesProviderInterface
     protected function initialize()
     {
         $this->providers = new \SplObjectStorage();
-        $this->map = new DefinitionMap();
+        $this->definitionsMap = new DefinitionsMap();
         $this->registry = array();
         $this->singletons = array();
         
         $this->service = new DefinitionService();
-        
-        // setup finders chain
-        $localFinder = new LocalFinder();
-        $providersFinder = new ProvidersFinder();
-        $this->service->appendFinder($localFinder);
-        $this->service->appendFinder($providersFinder);
         
         // register Container
         $this->set('Njasm\Container\Container', $this);  
@@ -55,7 +47,7 @@ class Container implements ServicesProviderInterface
      */    
     public function has($key)
     {
-        return $this->service->has(new Request($key, $this->map, $this->providers));
+        return $this->service->has($this->getRequestObject($key));
     }
     
     /**
@@ -67,8 +59,8 @@ class Container implements ServicesProviderInterface
      */
     public function set($key, $concrete)
     {
-        $definition = $this->service->assemble($key, $concrete);
-        $this->map->add($definition);
+        $definition = $this->service->assemble($key, $concrete, $this);
+        $this->definitionsMap->add($definition);
         
         return $this;
     }
@@ -119,7 +111,7 @@ class Container implements ServicesProviderInterface
             throw new NotFoundException();
         }
         
-        $request = new Request($key, $this->map, $this->providers);
+        $request = $this->getRequestObject($key);
         $returnValue = $this->service->build($request);
 
         return $this->isSingleton($key) ? $this->registry[$key] = $returnValue : $returnValue;        
@@ -134,8 +126,8 @@ class Container implements ServicesProviderInterface
      */
     public function remove($key)
     {
-        if(isset($this->map[$key])) {
-            unset($this->map[$key]);
+        if(isset($this->definitionsMap[$key])) {
+            unset($this->definitionsMap[$key]);
             unset($this->registry[$key]);
             unset($this->singletons[$key]);
             
@@ -164,5 +156,16 @@ class Container implements ServicesProviderInterface
     protected function isSingleton($key)
     {
         return isset($this->singletons[$key]);
+    }
+    
+    /**
+     * Build a new Request value object.
+     * 
+     * @param   string      $key
+     * @return  Request
+     */
+    protected function getRequestObject($key)
+    {
+        return new Request($key, $this->definitionsMap, $this->providers, $this);
     }
 }

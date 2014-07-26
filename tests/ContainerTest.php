@@ -186,7 +186,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $value = new SingleClass();
             
-        return new \Njasm\Container\Definition\ObjectDefinition($key, $concrete, \Njasm\Container\Definition\DefinitionType::OBJECT);
+        return new \Njasm\Container\Definition\ObjectDefinition($key, $concrete, \Njasm\Container\Definition\DefinitionType::OBJECT, $this->container);
     }
     
     protected function getServiceProvider($key = "SingleClassOnServiceProvider")

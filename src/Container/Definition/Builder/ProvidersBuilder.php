@@ -2,10 +2,18 @@
 
 namespace Njasm\Container\Definition\Builder;
 
+use Njasm\Container\Definition\Service\Request;
+
 class ProvidersBuilder implements BuilderInterface
 {
-    public function execute($definition)
+    public function execute(Request $request)
     {
-        return $definition;
+        $key = $request->getKey();
+        
+        foreach($request->getProviders() as $provider) {
+            if ($provider->has($key)) {
+                return $provider->get($key);
+            }
+        }    
     }
 }

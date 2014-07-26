@@ -2,19 +2,30 @@
 
 namespace Njasm\Container\Definition\Service;
 
-use Njasm\Container\Definition\DefinitionType;
-use Njasm\Container\Definition\AbstractDefinition;
-use Njasm\Container\Definition\Finder\AbstractFinder;
-use Njasm\Container\Definition\Request;
+use Njasm\Container\Definition\Definition,
+    Njasm\Container\Definition\DefinitionType,
+    Njasm\Container\Definition\Finder\AbstractFinder,
+    Njasm\Container\Definition\Service\Request;
 
 class DefinitionService
 {
     protected $finder;
-    protected $builders;
-    
+
     public function has(Request $request)
-    {      
-        return $this->finder->has($request);        
+    {
+        return $this->localHas($request) || $this->providersHas($request);
+    }
+    
+    protected function localHas(Request $request)
+    {
+        $finder = new \Njasm\Container\Definition\Finder\LocalFinder();
+        return $finder->has($request);
+    }
+    
+    protected function providersHas(Request $request)
+    {
+        $finder = new \Njasm\Container\Definition\Finder\ProvidersFinder();
+        return $finder->has($request);
     }
     
     public function appendFinder(AbstractFinder $finder)
@@ -30,41 +41,42 @@ class DefinitionService
     
     public function assemble($key, $concrete)
     {
+        $definitionType = null;
+        
         if ($concrete instanceof \Closure) {
-            return new \Njasm\Container\Definition\ClosureDefinition($key, $concrete, DefinitionType::CLOSURE);
+            $definitionType = new DefinitionType(DefinitionType::CLOSURE);
         }elseif (is_object($concrete)) {
-            return new \Njasm\Container\Definition\ObjectDefinition($key, $concrete, DefinitionType::OBJECT);
+            $definitionType = new DefinitionType(DefinitionType::OBJECT);
         }elseif (is_scalar($concrete)) {
-            return new \Njasm\Container\Definition\PrimitiveDefinition($key, $concrete, DefinitionType::PRIMITIVE);
+            $definitionType = new DefinitionType(DefinitionType::PRIMITIVE);
         }
         
-        throw new \OutOfBoundsException("Unknown definition type.");
+        if (!$definitionType instanceof DefinitionType) {
+            throw new \OutOfBoundsException("Unknown definition type.");
+        }
+        
+        return new Definition($key, $concrete, $definitionType);
     }
     
     /**
      * @todo    Reflection ?
-     * @param   \Njasm\Container\Definition\Request     $request
+     * @param   \Njasm\Container\DefFindRequest\Request     $request
      * @return  mixed
      */
     public function build(Request $request)
     {
-        $key        = $request->getKey();
-        $map        = $request->getDefinitions();
-        
         // check local
-        if ($map->has($key)) {
+        if ($this->localHas($request)) {
             $factory = new \Njasm\Container\Factory\LocalFactory();
         }
         
         // check in nested providers
-        $providerFinder = new \Njasm\Container\Definition\Finder\ProvidersFinder();
-        if ($providerFinder->has($request)) {
+        if ($this->providersHas($request)) {
             $factory = new \Njasm\Container\Factory\ProviderFactory();
         }
         
         // TODO: try to bail-out client call with reflection.
         
-        return $factory->build($request);
-        
+        return $factory->build($request);  
     }
 }

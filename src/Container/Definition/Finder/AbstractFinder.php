@@ -2,7 +2,7 @@
 
 namespace Njasm\Container\Definition\Finder;
 
-use Njasm\Container\Definition\Request;
+use Njasm\Container\Definition\Service\Request;
 
 abstract class AbstractFinder
 {

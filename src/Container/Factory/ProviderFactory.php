@@ -2,19 +2,16 @@
 
 namespace Njasm\Container\Factory;
 
-use Njasm\Container\Definition\Request;
+use Njasm\Container\Definition\Service\Request;
+use Njasm\Container\Definition\Builder\ProvidersBuilder;
 
-class ProviderFactory extends AbstractFactory
+class ProviderFactory implements FactoryInterface
 {
     public function build(Request $request)
     {
-        $key        = $request->getKey();
-        $providers  = $request->getProviders();
+        $builder = new ProvidersBuilder();
         
-        foreach ($providers as $provider) {
-            if ($provider->has($key)) {
-                return $provider->get($key);
-            }
-        }
+        return $builder->execute($request);
+        
     }
 }

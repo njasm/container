@@ -107,9 +107,9 @@ class Container implements ServicesProviderInterface
             return $this->registry[$key];
         }
         
-        if (!$this->has($key)) {
-            throw new NotFoundException();
-        }
+//        if (!$this->has($key)) {
+//            throw new NotFoundException();
+//        }
         
         $request = $this->getRequestObject($key);
         $returnValue = $this->service->build($request);

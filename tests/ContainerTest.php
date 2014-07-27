@@ -21,7 +21,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     
     public function testGetException()
     {
-        $this->setExpectedException('\Njasm\Container\Exception\NotFoundException');
+        // ReflectionException
+        $this->setExpectedException('\Exception');
         $this->container->get("Non-existent-service");
     }
     
@@ -165,7 +166,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->container->has("SingleClass"));
         $this->container->reset();
         
-        $this->setExpectedException('\Njasm\Container\Exception\NotFoundException');
+        $this->setExpectedException('\Exception');
         $this->container->get("SingleClass");
     }
     
@@ -176,7 +177,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->container->has("SingleClass"));
         $this->container->reset();
         
-        $this->setExpectedException('\Njasm\Container\Exception\NotFoundException');
+        $this->setExpectedException('\Exception');
         $this->container->get("SingleClass");
     }    
     

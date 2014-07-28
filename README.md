@@ -8,7 +8,7 @@ OUTDATED EXAMPLES - More up-to-date/detailed documentation soon.
 
 ### Features
 
- - Primitive Parameters Registration 
+ - Primitive data-types registration
  - Automatic Dependency Resolution and Injection for non-registered Services
     - constructor injection only at the moment.
  - Lazy instantiation approach
@@ -21,7 +21,7 @@ OUTDATED EXAMPLES - More up-to-date/detailed documentation soon.
 
 ### Installation
 
-Include ``container`` in your project, by adding it to your ``composer.json`` file.
+Include ``njasm\container`` in your project, by adding it to your ``composer.json`` file.
 
 ```javascript
 {
@@ -103,7 +103,6 @@ $db2 = $container->get("Database.Connection");
 
 ### Roadmap
 
- - [x] Different storage strategies
  - [x] Allow primitive data types registration
  - [ ] Comply with ``Cointainer-interop`` interfaces
 

@@ -77,12 +77,9 @@ class DefinitionService
             $factory = new \Njasm\Container\Factory\ProviderFactory();
         }
         
-        // TODO: try to bail-out client call with reflection.
+        // try to bail-out client call with reflection.
         if ($factory === null) {
             $factory = new \Njasm\Container\Factory\LocalFactory();
-            // build new definition to inject into the definitionsMap
-            // if the ReflectionBuilder is able to instanciate an object we will register that as the concrete
-            // of the Definition, else we will remove the definition and re-throw the Exception.
             $def = new Definition($request->getKey(), null, new DefinitionType(DefinitionType::REFLECTION));
             $definitionsMap = $request->getDefinitionsMap();
             $definitionsMap->add($def);

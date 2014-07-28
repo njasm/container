@@ -8,6 +8,9 @@ OUTDATED EXAMPLES - More up-to-date/detailed documentation soon.
 
 ### Features
 
+ - Primitive Parameters Registration 
+ - Automatic Dependency Resolution and Injection for non-registered Services
+    - constructor injection only at the moment.
  - Lazy instantiation approach
  - Singleton services available
  - Nested Providers/Containers 
@@ -18,7 +21,7 @@ OUTDATED EXAMPLES - More up-to-date/detailed documentation soon.
 
 ### Installation
 
-Include ``Services-Container`` in your project, by adding it to your ``composer.json`` file.
+Include ``container`` in your project, by adding it to your ``composer.json`` file.
 
 ```javascript
 {

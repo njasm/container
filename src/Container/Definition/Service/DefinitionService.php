@@ -5,7 +5,11 @@ namespace Njasm\Container\Definition\Service;
 use Njasm\Container\Definition\Definition,
     Njasm\Container\Definition\DefinitionType,
     Njasm\Container\Definition\Finder\AbstractFinder,
-    Njasm\Container\Definition\Service\Request;
+    Njasm\Container\Definition\Finder\LocalFinder,
+    Njasm\Container\Definition\Finder\ProvidersFinder,
+    Njasm\Container\Definition\Service\Request,
+    Njasm\Container\Factory\LocalFactory,
+    Njasm\Container\Factory\ProviderFactory;
 
 class DefinitionService
 {
@@ -18,13 +22,13 @@ class DefinitionService
     
     protected function localHas(Request $request)
     {
-        $finder = new \Njasm\Container\Definition\Finder\LocalFinder();
+        $finder = new LocalFinder();
         return $finder->has($request);
     }
     
     protected function providersHas(Request $request)
     {
-        $finder = new \Njasm\Container\Definition\Finder\ProvidersFinder();
+        $finder = new ProvidersFinder();
         return $finder->has($request);
     }
     
@@ -69,20 +73,30 @@ class DefinitionService
         
         // check local
         if ($this->localHas($request)) {
-            $factory = new \Njasm\Container\Factory\LocalFactory();
+            $factory = new LocalFactory();
         }
         
         // check in nested providers
         if ($factory === null && $this->providersHas($request)) {
-            $factory = new \Njasm\Container\Factory\ProviderFactory();
+            $factory = new ProviderFactory();
         }
         
         // try to bail-out client call with reflection.
+        // if we're able to resolve all dependencies, we'll assemble a new 
+        // definition with the returned value for future use.
         if ($factory === null) {
-            $factory = new \Njasm\Container\Factory\LocalFactory();
-            $def = new Definition($request->getKey(), null, new DefinitionType(DefinitionType::REFLECTION));
+            $factory = new LocalFactory();
             $definitionsMap = $request->getDefinitionsMap();
+            $key = (string) $request->getKey();
+            
+            $def = new Definition($key, null, new DefinitionType(DefinitionType::REFLECTION));
             $definitionsMap->add($def);
+            
+            $returnValue = $factory->build($request);
+            $finalDefinition = $this->assemble($key, $returnValue);
+            $definitionsMap->add($finalDefinition);
+            
+            return $returnValue;
         }
         
         return $factory->build($request);  

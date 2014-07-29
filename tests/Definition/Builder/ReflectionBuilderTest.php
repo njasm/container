@@ -79,34 +79,19 @@ class ReflectionBuilderTest extends \PHPUnit_Framework_TestCase
             $returnValue->interface
         );
         $this->assertEquals('Default-Value', $returnValue->defaultValue);
+        
+        $returnValue2 = $this->container->get('Njasm\Container\Tests\Definition\Builder\ComplexDependency');
+        
+        $this->assertEquals($returnValue2, $returnValue);        
     }
 
-    public function testComplexTwo()
+    public function testComplexUnresolvableInterface()
     {
         // missing interface binding, will throw exception
         $this->setExpectedException('\Exception');
         
-        $this->container->set('NoConstructArgs', new NoConstructArgs());  
-        $returnValue = $this->container->get('Njasm\Container\Tests\Definition\Builder\ComplexDependency');
-        
-        $this->assertInstanceOf('Njasm\Container\Tests\Definition\Builder\ComplexDependency', $returnValue);
-        $this->assertInstanceOf(
-            'Njasm\Container\Tests\Definition\Builder\ConstructArgsString', 
-            $returnValue->resolvable
-        );
-        $this->assertInstanceOf(
-            'Njasm\Container\Tests\Definition\Builder\NoConstructArgs', 
-            $returnValue->containerRegistered
-        );
-        $this->assertInstanceOf(
-            'Njasm\Container\Tests\Definition\Builder\TestInterface',
-            $returnValue->interface
-        );
-        $this->assertInstanceOf(
-            'Njasm\Container\Tests\Definition\Builder\ImplementsInterface',
-            $returnValue->interface
-        );
-        $this->assertEquals('Default-Value', $returnValue->defaultValue);
+        $this->container->set('Njasm\Container\Tests\Definition\Builder\NoConstructArgs', new NoConstructArgs());  
+        $this->container->get('Njasm\Container\Tests\Definition\Builder\ComplexDependency');
     }
     
     public function testVariableNoDefaultValue()

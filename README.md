@@ -2,9 +2,8 @@
 [![Latest Stable Version](https://poser.pugx.org/njasm/container/v/stable.png)](https://packagist.org/packages/njasm/container) [![License](https://poser.pugx.org/njasm/container/license.png)](https://packagist.org/packages/njasm/container) 
 [![HHVM Status](http://hhvm.h4cc.de/badge/njasm/container.png)](http://hhvm.h4cc.de/package/njasm/container)
 
-## A Service Locator / Dependency Container for PHP
+## Dependency Container / Service Locator
 
-OUTDATED EXAMPLES - More up-to-date/detailed documentation soon.
 
 ### Features
 
@@ -43,8 +42,32 @@ $container = new Container();
 ### Defining Services
 
 Services are defined with two params. A ``key`` and a ``value``.
+The order you define your services is irrelevant.
 
-The order you define your services is irrelevant. All services will be instantiated only when requested.
+#### Defining Services - Primitive data-types
+
+```php
+$container->set("Username", "John");
+
+echo $container->get("Username");
+```
+
+#### Defining Services - Eager Loading
+
+```php
+$container->set(
+    "Mail.Transport",
+    \Namespace\MailTransport("smtp.example.com", "username", "password", 25)
+);
+
+$mailer = $container->get("Mail.Transport");
+```
+
+#### Defining Services - Lazy Loading
+
+There are time when you'll want to instantiate an object, only if needed in the current request. You use
+anonymous functions for that.
+
 ```php
 $container->set(
     "Mail.Transport",
@@ -52,8 +75,13 @@ $container->set(
         return \Namespace\For\My\MailTransport("smtp.example.com", "username", "password", 25);
     }
 );
+
+$mailer = $container->get("Mail.Transport");
+$mailer->setMessage($messageObject)->send();
 ```
+
 Creation of nested dependencies is also possible. You just need to pass the container to the closure.
+
 ```php
 $container->set(
     "Mail.Transport",
@@ -72,11 +100,11 @@ $container->set(
 $mailer = $container->get("Mail.Transport");
 ```
 
-### Defining Singleton Services
+#### Defining Singleton Services
 
-For singleton services, you use the singleton method invocation. 
-The service will be instantiated the first time when it is requested, if declared as an anonymous function.
-You can also register an already instantiated class.
+For registering singleton services, you use the singleton method invocation.
+The example below makes it to be a Lazy loading singleton service, cos we're registering it with 
+an anonymous function.
 
 ```php
 $container->singleton(
@@ -103,8 +131,9 @@ $db2 = $container->get("Database.Connection");
 
 ### Roadmap
 
- - [x] Allow primitive data types registration
  - [ ] Comply with ``Cointainer-interop`` interfaces
+ - [ ] Automatic load of definitions from configuration file
+ - [ ] Optimizations 
 
 ### Contributing
 

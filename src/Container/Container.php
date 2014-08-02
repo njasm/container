@@ -59,8 +59,17 @@ class Container implements ServicesProviderInterface
      */
     public function set($key, $concrete)
     {
-        $definition = $this->service->assemble($key, $concrete, $this);
+        $definition = $this->service->assemble($key, $concrete);
         $this->definitionsMap->add($definition);
+        
+        $definitionType = $definition->getType();
+        
+        if (
+            $definitionType === Definition\DefinitionType::OBJECT 
+            || $definitionType === Definition\DefinitionType::PRIMITIVE
+        ) {
+            $this->registerSingleton($key);
+        }
         
         return $this;
     }
@@ -75,6 +84,18 @@ class Container implements ServicesProviderInterface
     public function singleton($key, $concrete)
     {
         $this->set($key, $concrete);
+        
+        return $this->registerSingleton($key);
+    }
+    
+    /**
+     * Register a service key as singleton.
+     * 
+     * @param   string      $key
+     * @return  Container
+     */
+    protected function registerSingleton($key)
+    {
         $this->singletons[$key] = true;
         
         return $this;

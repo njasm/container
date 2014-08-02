@@ -69,36 +69,31 @@ class DefinitionService
      */
     public function build(Request $request)
     {
-        $factory = null;
-        
         // check local
         if ($this->localHas($request)) {
             $factory = new LocalFactory();
+            return $factory->build($request);  
         }
         
         // check in nested providers
-        if ($factory === null && $this->providersHas($request)) {
+        if ($this->providersHas($request)) {
             $factory = new ProviderFactory();
+            return $factory->build($request);  
         }
         
         // try to bail-out client call with reflection.
         // if we're able to resolve all dependencies, we'll assemble a new 
         // definition with the returned value for future use.
-        if ($factory === null) {
-            $factory = new LocalFactory();
-            $definitionsMap = $request->getDefinitionsMap();
-            $key = (string) $request->getKey();
-            
-            $def = new Definition($key, null, new DefinitionType(DefinitionType::REFLECTION));
-            $definitionsMap->add($def);
-            
-            $returnValue = $factory->build($request);
-            $finalDefinition = $this->assemble($key, $returnValue);
-            $definitionsMap->add($finalDefinition);
-            
-            return $returnValue;
-        }
+        $factory = new LocalFactory();
+        $key = (string) $request->getKey();
+
+        // temporary definition
+        $def = new Definition($key, null, new DefinitionType(DefinitionType::REFLECTION));
+        $request->getDefinitionsMap()->add($def);
+
+        $returnValue = $factory->build($request);
+        $container = $request->getContainer()->singleton($key,$returnValue);
         
-        return $factory->build($request);  
+        return $returnValue;  
     }
 }

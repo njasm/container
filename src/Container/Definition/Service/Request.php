@@ -2,8 +2,8 @@
 
 namespace Njasm\Container\Definition\Service;
 
-use Njasm\Container\ServicesProviderInterface;
-use Njasm\Container\Definition\DefinitionsMapInterface;
+use Njasm\Container\Definition\DefinitionsMap,
+    Njasm\Container\ServicesProviderInterface;
 
 class Request
 {
@@ -14,7 +14,7 @@ class Request
     
     public function __construct(
         $key,
-        DefinitionsMapInterface $definitionsMap,
+        DefinitionsMap $definitionsMap,
         \SplObjectStorage $providers,
         ServicesProviderInterface $container
     ) {

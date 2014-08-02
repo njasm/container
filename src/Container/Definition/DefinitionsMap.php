@@ -4,7 +4,7 @@ namespace Njasm\Container\Definition;
 
 use Njasm\Container\Definition\Definition;
 
-class DefinitionsMap extends \ArrayObject implements DefinitionsMapInterface
+class DefinitionsMap extends \ArrayObject
 {
     public function add(Definition $definition)
     {

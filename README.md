@@ -138,10 +138,20 @@ $db2 = $container->get("Database.Connection");
 // $db === $db2 TRUE
 
 ```
+
 ### Defining Sub/Nested Containers
 
  TODO: write example on how to inject other containers, create example also on how to create a Decorator to implement
  the required interface and wrap the wanted container around.
+
+### Automatic Resolution of Services
+
+When the Container is requested for a service that is not registered, it will try to find the class, and will 
+automatically try to resolve your class's constructor dependencies.
+
+Please check the ``ReflectionBuilderTest.php`` under the ``tests/Builder`` folder for detailed examples.
+
+TODO: create example in README.md.
 
 ### Roadmap
 

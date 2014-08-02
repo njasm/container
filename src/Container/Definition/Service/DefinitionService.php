@@ -99,10 +99,10 @@ class DefinitionService
         // if we're able to resolve all dependencies, we'll assemble a new 
         // definition with the returned value for future use.
         $factory = new LocalFactory();
-        $key = (string) $request->getKey();
+        $key = $request->getKey();
 
         // temporary definition
-        $def = new Definition($key, null, new DefinitionType(DefinitionType::REFLECTION));
+        $def = new Definition((string) $key, null, new DefinitionType(DefinitionType::REFLECTION));
         $request->getDefinitionsMap()->add($def);
 
         $returnValue = $factory->build($request);

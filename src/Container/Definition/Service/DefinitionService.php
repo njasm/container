@@ -13,36 +13,49 @@ use Njasm\Container\Definition\Definition,
 
 class DefinitionService
 {
-    protected $finder;
-
+    /**
+     * Finds if a service is defined globally. Globally means, in this Container or in a nested Container.
+     * 
+     * @param \Njasm\Container\Definition\Service\Request $request
+     * @return boolean
+     */
     public function has(Request $request)
     {
         return $this->localHas($request) || $this->providersHas($request);
     }
     
+    /**
+     * Finds if a service is defined locally in Container.
+     * 
+     * @param \Njasm\Container\Definition\Service\Request $request
+     * @return boolean
+     */
     protected function localHas(Request $request)
     {
         $finder = new LocalFinder();
         return $finder->has($request);
     }
     
+    /**
+     * Finds if a service is defined in a nested Container.
+     * 
+     * @param \Njasm\Container\Definition\Service\Request $request
+     * @return boolean
+     */    
     protected function providersHas(Request $request)
     {
         $finder = new ProvidersFinder();
         return $finder->has($request);
     }
     
-    public function appendFinder(AbstractFinder $finder)
-    {
-        if(isset($this->finder)) {
-            $this->finder->append($finder);
-
-            return;
-        }
-
-        $this->finder = $finder;
-    }
-    
+    /**
+     * Assembles a Definition Object based on the concrete value supplied.
+     * 
+     * @param   string      $key
+     * @param   \Closure    $concrete
+     * @return  \Njasm\Container\Definition\Definition
+     * @throws  \OutOfBoundsException
+     */
     public function assemble($key, $concrete)
     {
         $definitionType = null;
@@ -63,7 +76,8 @@ class DefinitionService
     }
     
     /**
-     * @todo    Reflection ?
+     * Build the requested service.
+     * 
      * @param   Request     $request
      * @return  mixed
      */
@@ -92,7 +106,7 @@ class DefinitionService
         $request->getDefinitionsMap()->add($def);
 
         $returnValue = $factory->build($request);
-        $container = $request->getContainer()->singleton($key,$returnValue);
+        $request->getContainer()->singleton($key, $returnValue);
         
         return $returnValue;  
     }

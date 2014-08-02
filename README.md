@@ -57,7 +57,7 @@ echo $container->get("Username");
 ```php
 $container->set(
     "Mail.Transport",
-    \Namespace\MailTransport("smtp.example.com", "username", "password", 25)
+    new \Namespace\For\My\MailTransport("smtp.example.com", "username", "password", 25)
 );
 
 $mailer = $container->get("Mail.Transport");
@@ -72,7 +72,12 @@ anonymous functions for that.
 $container->set(
     "Mail.Transport",
     function() {
-        return \Namespace\For\My\MailTransport("smtp.example.com", "username", "password", 25);
+        return new \Namespace\For\My\MailTransport(
+            "smtp.example.com", 
+            "username", 
+            "password", 
+            25
+        );
     }
 );
 
@@ -85,15 +90,22 @@ Creation of nested dependencies is also possible. You just need to pass the cont
 ```php
 $container->set(
     "Mail.Transport",
-    function() use (&$container) {
-        return \Namespace\For\My\MailTransport($container->get("Mail.Transport.Config"));
+    function(&$container) {
+        return new \Namespace\For\My\MailTransport(
+            $container->get("Mail.Transport.Config")
+        );
     }
 );
 
 $container->set(
     "Mail.Transport.Config",
     function() {
-        return \Namespace\For\My\MailTransportConfig("smtp.example.com", "username", "password", 25);
+        return new \Namespace\For\My\MailTransportConfig(
+            "smtp.example.com", 
+            "username", 
+            "password", 
+            25
+        );
     }
 );
 
@@ -110,8 +122,10 @@ an anonymous function.
 $container->singleton(
     "Database.Connection",
     function() {
-        return \Namespace\For\My\Database(
-            "mysql:host=example.com;port=3306;dbname=your_db", "username", "password"
+        return new \Namespace\For\My\Database(
+            "mysql:host=example.com;port=3306;dbname=your_db", 
+            "username", 
+            "password"
         );
     }
 );

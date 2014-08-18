@@ -2,7 +2,9 @@
 
 namespace Njasm\Container;
 
-interface ServicesProviderInterface 
+use Interop\Container\ContainerInterface;
+
+interface ServicesProviderInterface extends ContainerInterface
 {
     /**
      * Check if service is registered

@@ -4,7 +4,6 @@ namespace Njasm\Container\Definition\Service;
 
 use Njasm\Container\Definition\Definition,
     Njasm\Container\Definition\DefinitionType,
-    Njasm\Container\Definition\Finder\AbstractFinder,
     Njasm\Container\Definition\Finder\LocalFinder,
     Njasm\Container\Definition\Finder\ProvidersFinder,
     Njasm\Container\Definition\Service\Request,

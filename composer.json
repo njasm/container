@@ -21,7 +21,8 @@
         "satooshi/php-coveralls": "dev-master"       
     },
     "require": {
-        "php": ">=5.3"
+        "php": ">=5.3",
+        "container-interop/container-interop": "~1.0"
     },
     "autoload": {
         "psr-4": {

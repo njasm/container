@@ -10,9 +10,10 @@
  - Primitive data-types registration
  - Automatic Dependency Resolution and Injection for non-registered Services
     - constructor injection only at the moment.
- - Lazy instantiation approach
- - Singleton services available
+ - Lazy and Eager instantiation approaches
+ - Lazy and Eager Instantiation Singleton services registration
  - Nested Providers/Containers 
+ - Comply with ``Container-Interop`` interfaces
 
 ### Requirements
 
@@ -155,7 +156,7 @@ TODO: create example in README.md.
 
 ### Roadmap
 
- - [ ] Comply with ``Cointainer-interop`` interfaces
+ - [x] Comply with ``Cointainer-interop`` interfaces
  - [ ] Automatic load of definitions from configuration file
  - [ ] Optimizations 
 

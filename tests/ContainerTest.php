@@ -26,6 +26,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->get("Non-existent-service");
     }
     
+    public function testContainerInterop()
+    {
+        $this->assertInstanceOf('Interop\Container\ContainerInterface', $this->container);
+    }
+
     public function testSetAndGet()
     {
         $this->container->set("SingleClass", new SingleClass());

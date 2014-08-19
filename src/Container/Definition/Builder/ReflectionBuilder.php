@@ -3,6 +3,7 @@
 namespace Njasm\Container\Definition\Builder;
 
 use Njasm\Container\Definition\Service\Request;
+use Njasm\Container\Exception\ContainerException;
 
 class ReflectionBuilder implements BuilderInterface
 {
@@ -57,6 +58,6 @@ class ReflectionBuilder implements BuilderInterface
     
     protected function raiseException($message = null)
     {
-        throw new \Exception($message);
+        throw new ContainerException($message);
     }
 }

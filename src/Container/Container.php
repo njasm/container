@@ -2,6 +2,7 @@
 
 namespace Njasm\Container;
 
+use Njasm\Container\Config\ConfigLoader;
 use Njasm\Container\Exception\NotFoundException;
 use Njasm\Container\ServicesProviderInterface;
 use Njasm\Container\Definition\DefinitionsMap;
@@ -16,9 +17,12 @@ class Container implements ServicesProviderInterface
     protected $singletons;
     protected $service;
 
-    public function __construct()
+    public function __construct(ConfigLoader $configLoader = null)
     {
         $this->initialize();
+        if (!is_null($configLoader)) {
+            $configLoader->setConfig($this);
+        }
     }
 
     /**

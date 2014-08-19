@@ -11,7 +11,6 @@ class ProviderFactory implements FactoryInterface
     {
         $builder = new ProvidersBuilder();
         
-        return $builder->execute($request);
-        
+        return $builder->execute($request);  
     }
 }

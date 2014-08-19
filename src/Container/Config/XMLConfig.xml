@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <definitions>
+        <definition 
+            type    = "object" 
+            key     = "NoConstructArgs" 
+            value   = "Njasm\Container\Tests\Definition\Builder\NoConstructArgs"
+        />
+        <definition 
+            type    = "primitive" 
+            key     = "Username" 
+            value   = "John Doe" 
+        />
+        <definition 
+            type    = "singleton" 
+            key     = "ConstructArgsNull"
+            value   = "Njasm\Container\Tests\Definition\Builder\ConstructArgsNull" 
+        />
+        <definition 
+            type    = "reflection" 
+            key     = "ConstructArgsObject"
+            value   = "Njasm\Container\Tests\Definition\Builder\ConstructArgsObject" 
+        />
+    </definitions>
+</root>

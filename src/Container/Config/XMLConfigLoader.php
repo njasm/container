@@ -72,25 +72,35 @@ class XMLConfigLoader implements ConfigLoader
     
     protected function setDefinition(array $definitionValues, ServicesProviderInterface $container)
     {
-        if ($definitionValues['type'] === 'OBJECT') {
-            $value = new $definitionValues['value'];
-            $container->set($definitionValues['key'], $value);
+        switch ($definitionValues['type']) {
+            case 'OBJECT':
+                
+                $value = new $definitionValues['value'];
+                $container->set($definitionValues['key'], $value);
+
+                break;
             
-            return;
-        }
-        
-        if ($definitionValues['type' === 'SINGLETON']) {
-            $value = new $definitionValues['value'];
-            $container->singleton($definitionValues['key'], $value);
+            case 'SINGLETON':
+                
+                $value = new $definitionValues['value'];
+                $container->singleton($definitionValues['key'], $value);
+
+                break;
             
-            return;
-        }
-        
-        if ($definitionValues['type'] === 'PRIMITIVE') {
-            $container->set($definitionValues['key'], $definitionValues['value']);
+            case 'PRIMITIVE':
+                
+                $container->set($definitionValues['key'], $definitionValues['value']);
+
+                break;
             
-            return;
-        }
+            case 'REFLECTION':
+                // Do nothing. There's no point in declaring REFLECTION DefinitionTypes
+                break;
+            
+            case 'CLOSURE':     
+            default:
+                throw new \Exception($definitionValues['type'] . " - Not implemented yet.");
+        }  
     }
     
     protected function raiseException($message)

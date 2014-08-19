@@ -156,16 +156,22 @@ TODO: create example in README.md.
 
 ### Roadmap
 
- - [x] Comply with ``Cointainer-interop`` interfaces
- - [ ] Automatic load of definitions from configuration file
- - [ ] Optimizations 
+In no Particular order - check Milestones for a more organized picture.
+
+ - [ ] Load definitions from configuration files
+ - [ ] Support for alias keys 
+ - [ ] Support for Setter injection
+ - [ ] Support for Properties/Attributes Injection
+ - [ ] Able to override existing dependency declarations by supplying new ones when call to ``Container::get``
+ - [ ] Optimizations
 
 ### Contributing
 
 Do you wanna help on feature development/improving existing code through refactoring, etc?
-Pull requests are welcome as long as you follow some guidelines:
+Or wanna discuss a feature/bug/idea?
+Issues and Pull Requests are welcome as long as you follow some guidelines for PRs:
 
- - PSR-2 compliant.
+Pull Requests must:
+ - Be PSR-2 compliant.
  - Submit tests with your pull request to your own changes / new code introduction.
  - having fun.
-

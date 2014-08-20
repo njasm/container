@@ -19,7 +19,13 @@ class LocalFactoryTest extends \PHPUnit_Framework_TestCase
     
     public function testException()
     {
-        $definitionType = new DefinitionType(10);
+        // final classes cannot be mocked so lets use reflection to do the trick.
+        // goal is to provide an invalid DefinitionType to the factory.
+        $definitionType = new DefinitionType(DefinitionType::PRIMITIVE);
+        $reflected = new \ReflectionProperty($definitionType, 'value');
+        $reflected->setAccessible(true);
+        $reflected->setValue($definitionType, 100); // non existent type.
+        
         $definition = new Definition("TestException", null, $definitionType);
         $definitionsMap = new DefinitionsMap(array());
         $providers = new \SplObjectStorage();

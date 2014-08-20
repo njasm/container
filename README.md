@@ -6,7 +6,9 @@
 
 
 ### Features
-
+ 
+ - Alias Service Keys support
+ - Circular Dependency guard
  - Primitive data-types registration
  - Automatic Dependency Resolution and Injection for non-registered Services
     - constructor injection only at the moment.
@@ -38,6 +40,28 @@ To create a container, simply instantiate the ``Container`` class.
 use Njasm\Container\Container;
 
 $container = new Container();
+```
+
+### Using Alias
+
+There are time that your ``key`` are too long to be convenient for your client code, one example for instance,
+is when binding an ``interface`` to an ``implementation`` or when using for your ``key`` the FQCN of your classes.
+
+```php
+namespace Very\Long\Name\Space;
+
+interface SomeInterface {}
+
+class SomeImplementation implements SomeInterface
+{
+    // code here
+}
+
+$container = new Njasm\Container\Container();
+$container->set('Very\Long\Name\Space\SomeInterface', new SomeImplementation());
+$container->alias('Some', 'Very\Long\Name\Space\SomeInterface');
+
+$some = $container->get('Some');
 ```
 
 ### Defining Services
@@ -159,7 +183,6 @@ TODO: create example in README.md.
 In no Particular order - check Milestones for a more organized picture.
 
  - [ ] Load definitions from configuration files
- - [ ] Support for alias keys 
  - [ ] Support for Setter injection
  - [ ] Support for Properties/Attributes Injection
  - [ ] Able to override existing dependency declarations by supplying new ones when call to ``Container::get``

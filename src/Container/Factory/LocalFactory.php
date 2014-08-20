@@ -8,6 +8,7 @@ use Njasm\Container\Definition\Builder\ClosureBuilder;
 use Njasm\Container\Definition\Builder\ObjectBuilder;
 use Njasm\Container\Definition\Builder\PrimitiveBuilder;
 use Njasm\Container\Definition\Builder\ReflectionBuilder;
+use Njasm\Container\Definition\Builder\AliasBuilder;
 
 class LocalFactory implements FactoryInterface
 {
@@ -39,6 +40,10 @@ class LocalFactory implements FactoryInterface
             case DefinitionType::REFLECTION:
                 
                 return new ReflectionBuilder();
+                
+            case DefinitionType::ALIAS:
+                
+                return new AliasBuilder();
                 
             default:
                 

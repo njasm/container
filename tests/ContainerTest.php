@@ -19,6 +19,32 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->container->has("Non-Existent-Service"));
     }
     
+    public function testAlias()
+    {
+        $key = 'really\long\FQCN\Class';
+        $alias = 'short';
+        $value = 'value';
+        
+        $this->container->set($key, $value);
+        $this->container->alias($alias, $key);
+        
+        $returnValue = $this->container->get($alias);
+        $this->assertEquals($value, $returnValue);
+    }
+    
+    public function testAliasCircularDependency()
+    {
+        $key = 'really\long\FQCN\Class';
+        $alias = 'short';
+        $value = 'value';
+        
+        $this->container->alias($alias, $key);
+        $this->container->alias($key, $alias);
+        
+        $this->setExpectedException('Interop\Container\Exception\ContainerException');
+        $this->container->get($alias);    
+    }
+    
     public function testGetException()
     {
         // ReflectionException
@@ -83,6 +109,31 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $dependent = $this->container->get("DependentClass");
         $this->assertInstanceOf("Njasm\\Container\\Tests\\DependentClass", $dependent);
         $this->assertInstanceOf("Njasm\\Container\\Tests\\SingleClass", $dependent->getInjectedClass());
+    }
+    
+    public function testCircularDependencyWithFactories()
+    {
+        $key1 = 'key1';
+        $key2 = 'key2';
+        
+        $container = &$this->container;
+        
+        $this->container->set(
+            $key1, 
+            function() use (&$container, $key2) {
+                return $container->get($key2);
+            }
+        );
+        
+        $this->container->set(
+            $key2,
+            function() use (&$container, $key1) {
+                return $container->get($key1);
+            }
+        );
+        
+        $this->setExpectedException('Interop\Container\Exception\ContainerException');
+        $this->container->get($key1);
     }
     
     public function testNestedDependencyWithSingleton()

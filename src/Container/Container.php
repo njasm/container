@@ -36,7 +36,8 @@ class Container implements ServicesProviderInterface
         $this->service = new DefinitionService();
         
         // register Container
-        $this->set('Njasm\Container\Container', $this);  
+        $this->set('Njasm\Container\Container', $this);
+        $this->alias('Container', 'Njasm\Container\Container');
     }
     
     /**
@@ -70,6 +71,21 @@ class Container implements ServicesProviderInterface
         ) {
             $this->registerSingleton($key);
         }
+        
+        return $this;
+    }
+
+    /**
+     * Register an alias to a service key.
+     * 
+     * @param   string      $alias
+     * @param   string      $key
+     * @return  Container
+     */    
+    public function alias($alias, $key)
+    {
+        $definition = $this->service->assembleAliasDefinition($alias, $key);
+        $this->definitionsMap->add($definition);
         
         return $this;
     }
@@ -123,7 +139,7 @@ class Container implements ServicesProviderInterface
      * @throws  NotFoundException
      */
     public function get($key)
-    {   
+    {
         if (isset($this->registry[$key])) {
             return $this->registry[$key];
         }

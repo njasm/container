@@ -8,7 +8,9 @@ final class DefinitionType
     const CLOSURE       = 2;
     const PRIMITIVE     = 3;
     const REFLECTION    = 4;
-    
+    const ALIAS         = 5;
+
+
     private $value;
     
     public function __construct($value)

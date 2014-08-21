@@ -16,7 +16,7 @@
  - Lazy and Eager Instantiation Singleton services registration
  - Nested Providers/Containers support
      - [x] [Pimple 3](https://github.com/fabpot/pimple)
-     - [ ] [PHP-DI](https://github.com/mnapoli/PHP-DI)
+     - [x] [PHP-DI 4](https://github.com/mnapoli/PHP-DI)
      - [ ] [Aura.DI](https://github.com/auraphp/Aura.Di)
      - [ ] more to come...
  - Comply with ``Container-Interop`` interfaces

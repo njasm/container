@@ -14,7 +14,11 @@
     - constructor injection only at the moment.
  - Lazy and Eager instantiation approaches
  - Lazy and Eager Instantiation Singleton services registration
- - Nested Providers/Containers 
+ - Nested Providers/Containers support
+     - [x] [Pimple 3](https://github.com/fabpot/pimple)
+     - [ ] [PHP-DI](https://github.com/mnapoli/PHP-DI)
+     - [ ] [Aura.DI](https://github.com/auraphp/Aura.Di)
+     - [ ] more to come...
  - Comply with ``Container-Interop`` interfaces
 
 ### Requirements
@@ -174,9 +178,21 @@ $db2 = $container->get("Database.Connection");
 When the Container is requested for a service that is not registered, it will try to find the class, and will 
 automatically try to resolve your class's constructor dependencies.
 
-Please check the ``ReflectionBuilderTest.php`` under the ``tests/Builder`` folder for detailed examples.
+```php
+namespace My\Name\Space;
 
-TODO: create example in README.md.
+class Something
+{
+    // code
+}
+
+// without registering the Something class in the container you can...
+$container = new Njasm\Container\Container();
+$something = $container->get('My\Name\Space\Something');
+
+//$something instanceof 'My\Name\Space\Something' == true
+```
+
 
 ### Roadmap
 

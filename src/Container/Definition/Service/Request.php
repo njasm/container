@@ -15,7 +15,7 @@ class Request
     public function __construct(
         $key,
         DefinitionsMap $definitionsMap,
-        \SplObjectStorage $providers,
+        array $providers,
         ServicesProviderInterface $container
     ) {
         $key = trim($key);

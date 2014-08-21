@@ -17,7 +17,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $this->container        = new Container();
         $this->definitionsMap   = new DefinitionsMap();
-        $this->providers        = new \SplObjectStorage();
+        $this->providers        = array();
     }
     
     public function testNullKey()

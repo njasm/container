@@ -28,7 +28,7 @@ class LocalFactoryTest extends \PHPUnit_Framework_TestCase
         
         $definition = new Definition("TestException", null, $definitionType);
         $definitionsMap = new DefinitionsMap(array());
-        $providers = new \SplObjectStorage();
+        $providers = array();
         
         $definitionsMap->add($definition);
         $container = $this->getMock('Njasm\Container\ServicesProviderInterface');

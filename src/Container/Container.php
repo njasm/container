@@ -28,7 +28,7 @@ class Container implements ServicesProviderInterface
      */
     protected function initialize()
     {
-        $this->providers = new \SplObjectStorage();
+        $this->providers = array();
         $this->definitionsMap = new DefinitionsMap();
         $this->registry = array();
         $this->singletons = array();
@@ -125,8 +125,8 @@ class Container implements ServicesProviderInterface
      */
     public function provider(ServicesProviderInterface $provider)
     {
-        $this->providers->attach($provider);
-        
+        $this->providers[] = $provider;
+
         return $this;        
     }   
 

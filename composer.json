@@ -21,7 +21,8 @@
         "satooshi/php-coveralls": "dev-master",
         "mnapoli/php-di": "~4.0",
         "aura/di": "~1.0",
-        "pimple/pimple": "~3.0"
+        "pimple/pimple": "~3.0",
+        "zendframework/zend-di": "~2.0"
     },
     "require": {
         "php": ">=5.3",

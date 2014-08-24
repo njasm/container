@@ -17,8 +17,9 @@
  - Nested Providers/Containers support
      - [x] [Pimple 3.x](https://github.com/fabpot/pimple)
      - [x] [PHP-DI 4.x](https://github.com/mnapoli/PHP-DI)
-     - [X] [Aura.DI 1.x](https://github.com/auraphp/Aura.Di)
+     - [x] [Aura.DI 1.x](https://github.com/auraphp/Aura.Di)
      - [ ] [zf2 DI](https://github.com/zendframework/Component_ZendDi)
+     - [x] [Symfony 2.x](https://github.com/symfony/DependencyInjection)
      - [ ] more to come...
  - Comply with ``Container-Interop`` interfaces
 

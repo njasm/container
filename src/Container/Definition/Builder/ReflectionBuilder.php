@@ -9,9 +9,13 @@ class ReflectionBuilder implements BuilderInterface
 {
     public function execute(Request $request)
     {
-        $key = $request->getKey();          
-        $reflected = new \ReflectionClass($key);
-
+        $key = $request->getKey();
+        try {
+            $reflected = new \ReflectionClass($key);
+        } catch (\ReflectionException $e) {
+            $this->raiseException($e->getMessage());
+        }
+        
         // abstract class or interface
         if (!$reflected->isInstantiable()) {     
             $message = "Unable to resolve [{$reflected->name}]";

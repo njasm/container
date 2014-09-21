@@ -15,15 +15,16 @@
  - Lazy and Eager instantiation approaches
  - Lazy and Eager Instantiation Singleton services registration
  - Nested Providers/Containers support
-     - [x] [Aura.DI 1.x](https://github.com/auraphp/Aura.Di)
-     - [x] [Pimple 3.x](https://github.com/fabpot/pimple)
-     - [x] [PHP-DI 4.x](https://github.com/mnapoli/PHP-DI)
+     - [x] [Aura.DI ](https://github.com/auraphp/Aura.Di)
+     - [x] [Joomla DI](https://github.com/joomla-framework/di)
+     - [x] [Laravel](https://github.com/illuminate/container)
+     - [x] [Nette DI](https://github.com/nette/di)
+     - [x] [Orno DI](https://github.com/orno/di)
+     - [x] [Pimple](https://github.com/fabpot/pimple)
+     - [x] [PHP-DI](https://github.com/mnapoli/PHP-DI)
+     - [x] [Ray.DI](https://github.com/koriym/Ray.Di)
+     - [x] [Symfony](https://github.com/symfony/DependencyInjection)
      - [x] [zf2 DI](https://github.com/zendframework/Component_ZendDi)
-     - [x] [Symfony 2.x](https://github.com/symfony/DependencyInjection)
-     - [x] [Laravel 4.x](https://github.com/illuminate/container)
-     - [x] [Orno 2.x](https://github.com/orno/di)
-     - [x] [Ray.DI 1.x](https://github.com/koriym/Ray.Di)
-     - [x] [Nette DI 2.x](https://github.com/nette/di)
      - [ ] more to come...
  - Comply with ``Container-Interop`` interfaces
 

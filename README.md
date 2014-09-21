@@ -15,13 +15,14 @@
  - Lazy and Eager instantiation approaches
  - Lazy and Eager Instantiation Singleton services registration
  - Nested Providers/Containers support
+     - [x] [Aura.DI 1.x](https://github.com/auraphp/Aura.Di)
      - [x] [Pimple 3.x](https://github.com/fabpot/pimple)
      - [x] [PHP-DI 4.x](https://github.com/mnapoli/PHP-DI)
-     - [x] [Aura.DI 1.x](https://github.com/auraphp/Aura.Di)
      - [x] [zf2 DI](https://github.com/zendframework/Component_ZendDi)
      - [x] [Symfony 2.x](https://github.com/symfony/DependencyInjection)
      - [x] [Laravel 4.x](https://github.com/illuminate/container)
      - [x] [Orno 2.x](https://github.com/orno/di)
+     - [x] [Ray.DI 1.x](https://github.com/koriym/Ray.Di)
      - [ ] more to come...
  - Comply with ``Container-Interop`` interfaces
 

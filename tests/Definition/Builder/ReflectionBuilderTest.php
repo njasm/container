@@ -49,6 +49,12 @@ class ReflectionBuilderTest extends \PHPUnit_Framework_TestCase
         $returnValue = $this->container->get('\Njasm\Container\Tests\Definition\Builder\ConstructUnableResolve');
     }
     
+    public function testUnreachableObject()
+    {
+        $this->setExpectedException('\Interop\Container\Exception\ContainerException');
+        $returnValue = $this->container->get('Njasm\Container\Non\Existent');
+    }
+    
     public function testComplex()
     {
         $this->container->set(

@@ -26,9 +26,9 @@
         "symfony/dependency-injection": "~2.5",
         "illuminate/container": "~4.2",
         "nette/di": "~2.2",
-        "ray/di": "1.4.0",
-        "orno/di": "2.0.7",
-        "joomla/di": "1.2.0"
+        "ray/di": "~1.4",
+        "orno/di": "~2.0",
+        "joomla/di": "~1.2"
     },
     "require": {
         "php": ">=5.3",

@@ -20,6 +20,7 @@
      - [x] [Aura.DI 1.x](https://github.com/auraphp/Aura.Di)
      - [x] [zf2 DI](https://github.com/zendframework/Component_ZendDi)
      - [x] [Symfony 2.x](https://github.com/symfony/DependencyInjection)
+     - [x] [Laravel 4.x](https://github.com/illuminate/container)
      - [ ] more to come...
  - Comply with ``Container-Interop`` interfaces
 

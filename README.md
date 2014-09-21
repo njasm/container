@@ -23,6 +23,7 @@
      - [x] [Laravel 4.x](https://github.com/illuminate/container)
      - [x] [Orno 2.x](https://github.com/orno/di)
      - [x] [Ray.DI 1.x](https://github.com/koriym/Ray.Di)
+     - [x] [Nette DI 2.x](https://github.com/nette/di)
      - [ ] more to come...
  - Comply with ``Container-Interop`` interfaces
 

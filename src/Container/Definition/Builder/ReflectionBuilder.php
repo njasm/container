@@ -10,15 +10,11 @@ class ReflectionBuilder implements BuilderInterface
     public function execute(Request $request)
     {
         $key = $request->getKey();
-        try {
-            $reflected = new \ReflectionClass($key);
-        } catch (\ReflectionException $e) {
-            $this->raiseException($e->getMessage());
-        }
+        $reflected = $this->getReflected($key);
         
         // abstract class or interface
         if (!$reflected->isInstantiable()) {     
-            $message = "Unable to resolve [{$reflected->name}]";
+            $message = "Non-instantiable class [{$reflected->name}]";
             $this->raiseException($message);
         }
         
@@ -30,6 +26,17 @@ class ReflectionBuilder implements BuilderInterface
         }
         
         return !empty($parameters) ? $reflected->newInstanceArgs($parameters) : $reflected->newInstanceArgs();
+    }
+    
+    protected function getReflected($key)
+    {
+        try {
+            $reflected = new \ReflectionClass($key);
+        } catch (\ReflectionException $e) {
+            $this->raiseException($e->getMessage());
+        }
+        
+        return $reflected;
     }
     
     protected function getDependencies(\ReflectionMethod $constructor, $container)

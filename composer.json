@@ -3,7 +3,7 @@
     "description": "Dependency Container for PHP",
     "homepage": "http://github.com/njasm/container",
     "license": "MIT",
-    "keywords": ["DiC", "IoC", "Dependency Container", "Dependency-Container"],
+    "keywords": ["DiC", "IoC", "Dependency Injection", "Dependency-Container"],
     "authors": [
         {
             "name": "Nelson João Morais",
@@ -18,7 +18,17 @@
     "minimum-stability": "dev",
     "require-dev": {
         "phpunit/phpunit": "~4.0",
-        "satooshi/php-coveralls": "dev-master"       
+        "satooshi/php-coveralls": "dev-master",
+        "mnapoli/php-di": "~4.0",
+        "aura/di": "~1.0",
+        "pimple/pimple": "~3.0",
+        "zendframework/zend-di": "~2.0",
+        "symfony/dependency-injection": "~2.5",
+        "illuminate/container": "~4.2",
+        "nette/di": "~2.2",
+        "ray/di": "~1.4",
+        "orno/di": "~2.0",
+        "joomla/di": "~1.2"
     },
     "require": {
         "php": ">=5.3",

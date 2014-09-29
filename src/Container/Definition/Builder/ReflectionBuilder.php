@@ -3,17 +3,18 @@
 namespace Njasm\Container\Definition\Builder;
 
 use Njasm\Container\Definition\Service\Request;
+use Njasm\Container\Exception\ContainerException;
 
 class ReflectionBuilder implements BuilderInterface
 {
     public function execute(Request $request)
     {
-        $key = $request->getKey();          
-        $reflected = new \ReflectionClass($key);
-
+        $key = $request->getKey();
+        $reflected = $this->getReflected($key);
+        
         // abstract class or interface
         if (!$reflected->isInstantiable()) {     
-            $message = "Unable to resolve [{$reflected->name}]";
+            $message = "Non-instantiable class [{$reflected->name}]";
             $this->raiseException($message);
         }
         
@@ -25,6 +26,17 @@ class ReflectionBuilder implements BuilderInterface
         }
         
         return !empty($parameters) ? $reflected->newInstanceArgs($parameters) : $reflected->newInstanceArgs();
+    }
+    
+    protected function getReflected($key)
+    {
+        try {
+            $reflected = new \ReflectionClass($key);
+        } catch (\ReflectionException $e) {
+            $this->raiseException($e->getMessage());
+        }
+        
+        return $reflected;
     }
     
     protected function getDependencies(\ReflectionMethod $constructor, $container)
@@ -57,6 +69,6 @@ class ReflectionBuilder implements BuilderInterface
     
     protected function raiseException($message = null)
     {
-        throw new \Exception($message);
+        throw new ContainerException($message);
     }
 }

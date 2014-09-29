@@ -9,9 +9,15 @@ use Njasm\Container\Definition\Definition,
     Njasm\Container\Definition\Service\Request,
     Njasm\Container\Factory\LocalFactory,
     Njasm\Container\Factory\ProviderFactory;
+use Njasm\Container\Exception\ContainerException;
 
 class DefinitionService
 {
+    /**
+     * @var array Service keys being built.
+     */
+    protected $buildingKeys = array();
+    
     /**
      * Finds if a service is defined globally. Globally means, in this Container or in a nested Container.
      * 
@@ -48,7 +54,7 @@ class DefinitionService
     }
     
     /**
-     * Assembles a Definition Object based on the concrete value supplied.
+     * Assembles a Definition object based on the concrete value supplied.
      * 
      * @param   string      $key
      * @param   \Closure    $concrete
@@ -75,6 +81,18 @@ class DefinitionService
     }
     
     /**
+     * Assembles a Definition object of type Alias.
+     * 
+     * @param   string      $key
+     * @param   string      $concrete
+     * @return  \Njasm\Container\Definition\Definition
+     */
+    public function assembleAliasDefinition($key, $concrete)
+    {
+      return new Definition($key, $concrete, new DefinitionType(DefinitionType::ALIAS));  
+    }
+    
+    /**
      * Build the requested service.
      * 
      * @param   Request     $request
@@ -82,29 +100,47 @@ class DefinitionService
      */
     public function build(Request $request)
     {
+        $key = (string) $request->getKey();
+        
+        // circular dependency guard
+        if (array_key_exists($key, $this->buildingKeys)) {
+            throw new ContainerException("Circular Dependency detected for {$key}");
+        }
+        
+        $this->buildingKeys[$key] = true;
+        
         // check local
         if ($this->localHas($request)) {
             $factory = new LocalFactory();
-            return $factory->build($request);  
+            $returnValue = $factory->build($request);
+            
+            unset($this->buildingKeys[$key]);
+            
+            return $returnValue;
         }
         
         // check in nested providers
         if ($this->providersHas($request)) {
             $factory = new ProviderFactory();
-            return $factory->build($request);  
+            $returnValue = $factory->build($request);
+            
+            unset($this->buildingKeys[$key]);
+            
+            return $returnValue;
         }
         
         // try to bail-out client call with reflection.
         // if we're able to resolve all dependencies, we'll assemble a new 
         // definition with the returned value for future use.
         $factory = new LocalFactory();
-        $key = $request->getKey();
 
         // temporary definition
         $def = new Definition((string) $key, null, new DefinitionType(DefinitionType::REFLECTION));
         $request->getDefinitionsMap()->add($def);
 
         $returnValue = $factory->build($request);
+        unset($this->buildingKeys[$key]);
+        
         $request->getContainer()->singleton($key, $returnValue);
         
         return $returnValue;  

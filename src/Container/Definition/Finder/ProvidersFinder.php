@@ -10,7 +10,7 @@ class ProvidersFinder extends AbstractFinder
     {
         $key = $request->getKey();
         $providers = $request->getProviders();
-        
+
         foreach ($providers as $provider) {
             if ($provider->has($key)) {
                 return true;

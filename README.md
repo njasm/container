@@ -6,13 +6,26 @@
 
 
 ### Features
-
+ 
+ - Alias Service Keys support
+ - Circular Dependency guard
  - Primitive data-types registration
  - Automatic Dependency Resolution and Injection for non-registered Services
     - constructor injection only at the moment.
  - Lazy and Eager instantiation approaches
  - Lazy and Eager Instantiation Singleton services registration
- - Nested Providers/Containers 
+ - Nested Providers/Containers support
+     - [x] [Aura.DI ](https://github.com/auraphp/Aura.Di)
+     - [x] [Joomla DI](https://github.com/joomla-framework/di)
+     - [x] [Laravel](https://github.com/illuminate/container)
+     - [x] [Nette DI](https://github.com/nette/di)
+     - [x] [Orno DI](https://github.com/orno/di)
+     - [x] [Pimple](https://github.com/fabpot/pimple)
+     - [x] [PHP-DI](https://github.com/mnapoli/PHP-DI)
+     - [x] [Ray.DI](https://github.com/koriym/Ray.Di)
+     - [x] [Symfony](https://github.com/symfony/DependencyInjection)
+     - [x] [zf2 DI](https://github.com/zendframework/Component_ZendDi)
+     - [ ] more to come...
  - Comply with ``Container-Interop`` interfaces
 
 ### Requirements
@@ -38,6 +51,28 @@ To create a container, simply instantiate the ``Container`` class.
 use Njasm\Container\Container;
 
 $container = new Container();
+```
+
+### Using Alias
+
+There are time that your ``key`` are too long to be convenient for your client code, one example for instance,
+is when binding an ``interface`` to an ``implementation`` or when using for your ``key`` the FQCN of your classes.
+
+```php
+namespace Very\Long\Name\Space;
+
+interface SomeInterface {}
+
+class SomeImplementation implements SomeInterface
+{
+    // code here
+}
+
+$container = new Njasm\Container\Container();
+$container->set('Very\Long\Name\Space\SomeInterface', new SomeImplementation());
+$container->alias('Some', 'Very\Long\Name\Space\SomeInterface');
+
+$some = $container->get('Some');
 ```
 
 ### Defining Services
@@ -150,16 +185,31 @@ $db2 = $container->get("Database.Connection");
 When the Container is requested for a service that is not registered, it will try to find the class, and will 
 automatically try to resolve your class's constructor dependencies.
 
-Please check the ``ReflectionBuilderTest.php`` under the ``tests/Builder`` folder for detailed examples.
+```php
+namespace My\Name\Space;
 
-TODO: create example in README.md.
+class Something
+{
+    // code
+}
+
+// without registering the Something class in the container you can...
+$container = new Njasm\Container\Container();
+$something = $container->get('My\Name\Space\Something');
+
+//$something instanceof 'My\Name\Space\Something' == true
+```
+
 
 ### Roadmap
 
 In no Particular order - check Milestones for a more organized picture.
 
  - [ ] Load definitions from configuration files
+<<<<<<< HEAD
  - [ ] Support for alias keys 
+=======
+>>>>>>> origin/master
  - [ ] Support for Setter injection
  - [ ] Support for Properties/Attributes Injection
  - [ ] Able to override existing dependency declarations by supplying new ones when call to ``Container::get``
@@ -175,4 +225,3 @@ Pull Requests must:
  - Be PSR-2 compliant.
  - Submit tests with your pull request to your own changes / new code introduction.
  - having fun.
-

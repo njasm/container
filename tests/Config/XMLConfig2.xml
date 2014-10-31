@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root>
+
     <definitions>
-        <definition 
+        <definition
             type    = "object" 
             key     = "NoConstructArgs" 
             value   = "Njasm\Container\Tests\Definition\Builder\NoConstructArgs"
@@ -22,4 +22,4 @@
             value   = "Njasm\Container\Tests\Definition\Builder\ConstructArgsObject" 
         />
     </definitions>
-</root>
+

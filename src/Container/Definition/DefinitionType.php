@@ -9,6 +9,7 @@ final class DefinitionType
     const PRIMITIVE     = 3;
     const REFLECTION    = 4;
     const ALIAS         = 5;
+    const BIND          = 6;
 
     private $value;
     private static $validTypes = array();

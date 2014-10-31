@@ -235,7 +235,28 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         
         $this->setExpectedException('\Exception');
         $this->container->get("SingleClass");
-    }    
+    }
+
+    public function testBind()
+    {
+        $this->container->bind("SingleClass", '\Njasm\Container\Tests\SingleClass');
+        $obj = $this->container->get("SingleClass");
+        $obj2 = $this->container->get("SingleClass");
+
+        $this->assertFalse($obj === $obj2);
+        $this->assertInstanceOf('\Njasm\Container\Tests\SingleClass', $obj);
+    }
+
+    public function testBindSingleton()
+    {
+        $this->container->bindSingleton("SingleClass", '\Njasm\Container\Tests\SingleClass');
+        $obj = $this->container->get("SingleClass");
+        $obj2 = $this->container->get("SingleClass");
+
+        $this->assertInstanceOf('\Njasm\Container\Tests\SingleClass', $obj);
+        $this->assertInstanceOf('\Njasm\Container\Tests\SingleClass', $obj2);
+        $this->assertTrue($obj === $obj2);
+    }
     
     /** HELPER METHODS **/
     

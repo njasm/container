@@ -9,8 +9,11 @@ class ReflectionBuilder implements BuilderInterface
 {
     public function execute(Request $request)
     {
-        $key = $request->getKey();
-        $reflected = $this->getReflected($key);
+        $key        = $request->getKey();
+        $definition = $request->getDefinitionsMap()->get($key);
+        $concrete   = $definition->getConcrete();
+
+        $reflected  = $this->getReflected($concrete);
         
         // abstract class or interface
         if (!$reflected->isInstantiable()) {     

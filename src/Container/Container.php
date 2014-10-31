@@ -3,7 +3,6 @@
 namespace Njasm\Container;
 
 use Njasm\Container\Exception\NotFoundException;
-use Njasm\Container\ServicesProviderInterface;
 use Njasm\Container\Definition\DefinitionsMap;
 use Njasm\Container\Definition\Service\DefinitionService;
 use Njasm\Container\Definition\Service\Request;
@@ -89,7 +88,36 @@ class Container implements ServicesProviderInterface
         
         return $this;
     }
-    
+
+    /**
+     * Bind a key to a FQCN accessible by autoload and instantiable.
+     *
+     * @param   string      $key
+     * @param   string      $concrete  FQCN
+     * @return  Container
+     */
+    public function bind($key, $concrete)
+    {
+        $definition = $this->service->assembleBindDefinition($key, $concrete);
+        $this->definitionsMap->add($definition);
+
+        return $this;
+    }
+
+    /**
+     * Bind a key to a FQCN accessible by autoload and instantiable, registering it as a Singleton.
+     *
+     * @param   string      $key
+     * @param   string      $concrete   FQCN
+     * @return  Container
+     */
+    public function bindSingleton($key, $concrete)
+    {
+        $this->bind($key, $concrete);
+
+        return $this->registerSingleton($key);
+    }
+
     /**
      * Registers service as a singleton instance in the container.
      * 

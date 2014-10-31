@@ -91,7 +91,19 @@ class DefinitionService
     {
       return new Definition($key, $concrete, new DefinitionType(DefinitionType::ALIAS));  
     }
-    
+
+    /**
+     * Assembles a Definition object of type Bind.
+     *
+     * @param   string      $key
+     * @param   string      $concrete
+     * @return  \Njasm\Container\Definition\Definition
+     */
+    public function assembleBindDefinition($key, $concrete)
+    {
+        return new Definition($key, $concrete, new DefinitionType(DefinitionType::BIND));
+    }
+
     /**
      * Build the requested service.
      * 
@@ -135,14 +147,12 @@ class DefinitionService
         $factory = new LocalFactory();
 
         // temporary definition
-        $def = new Definition((string) $key, null, new DefinitionType(DefinitionType::REFLECTION));
+        $def = new Definition((string) $key, (string) $key, new DefinitionType(DefinitionType::REFLECTION));
         $request->getDefinitionsMap()->add($def);
 
         $returnValue = $factory->build($request);
         unset($this->buildingKeys[$key]);
-        
-        $request->getContainer()->singleton($key, $returnValue);
-        
+
         return $returnValue;  
     }
 }

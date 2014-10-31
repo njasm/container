@@ -38,13 +38,14 @@ class LocalFactory implements FactoryInterface
                 return new ClosureBuilder();
                 
             case DefinitionType::REFLECTION:
-                
+            case DefinitionType::BIND:
+
                 return new ReflectionBuilder();
                 
             case DefinitionType::ALIAS:
                 
                 return new AliasBuilder();
-                
+
             default:
                 
                 throw new \OutOfBoundsException("No available factory to build the requested service.");

@@ -8,6 +8,7 @@ use Njasm\Container\ServicesProviderInterface;
 class XMLConfigLoader implements ConfigLoader
 {
     protected $filePath;
+    protected $container;
     
     public function __construct($filePath)
     {
@@ -16,11 +17,12 @@ class XMLConfigLoader implements ConfigLoader
     
     public function setConfig(ServicesProviderInterface $container)
     {
+        $this->container = $container;
         $xmlContent = simplexml_load_file($this->filePath);
         
         foreach ($xmlContent->definitions->definition as $definition) {
             $definitionValues = $this->getDefinitionValues($definition);
-            $this->setDefinition($definitionValues, $container);
+            $this->setDefinition($definitionValues);
         }
     }
     
@@ -70,26 +72,26 @@ class XMLConfigLoader implements ConfigLoader
         return $definition->attributes()->singleton == "true" ? (bool) $definition->attributes()->singleton : false;
     }
     
-    protected function setDefinition(array $definitionValues, ServicesProviderInterface $container)
+    protected function setDefinition(array $definitionValues)
     {
         switch ($definitionValues['type']) {
             case 'OBJECT':
                 
                 $value = new $definitionValues['value'];
-                $container->set($definitionValues['key'], $value);
+                $this->container->set($definitionValues['key'], $value);
 
                 break;
             
             case 'SINGLETON':
                 
                 $value = new $definitionValues['value'];
-                $container->singleton($definitionValues['key'], $value);
+                $this->container->singleton($definitionValues['key'], $value);
 
                 break;
             
             case 'PRIMITIVE':
                 
-                $container->set($definitionValues['key'], $definitionValues['value']);
+                $this->container->set($definitionValues['key'], $definitionValues['value']);
 
                 break;
             

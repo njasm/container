@@ -2,9 +2,7 @@
 
 namespace Njasm\Container\Definition;
 
-use Njasm\Container\Definition\Definition;
-
-class DefinitionsMap extends \ArrayObject
+class DefinitionMap extends \ArrayObject
 {
     public function add(Definition $definition)
     {

@@ -4,7 +4,7 @@ namespace Njasm\Container\Tests\Factory;
 
 use Njasm\Container\Factory\LocalFactory,
     Njasm\Container\Definition\DefinitionType,
-    Njasm\Container\Definition\DefinitionsMap,
+    Njasm\Container\Definition\DefinitionMap,
     Njasm\Container\Definition\Definition,
     Njasm\Container\Definition\Service\Request;
 
@@ -27,7 +27,7 @@ class LocalFactoryTest extends \PHPUnit_Framework_TestCase
         $reflected->setValue($definitionType, 100); // non existent type.
         
         $definition = new Definition("TestException", null, $definitionType);
-        $definitionsMap = new DefinitionsMap(array());
+        $definitionsMap = new DefinitionMap(array());
         $providers = array();
         
         $definitionsMap->add($definition);

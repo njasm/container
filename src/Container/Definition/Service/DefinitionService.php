@@ -91,10 +91,10 @@ class DefinitionService
     {
       return new Definition($key, $concrete, new DefinitionType(DefinitionType::ALIAS));  
     }
-    
+
     /**
      * Build the requested service.
-     * 
+     *
      * @param   Request     $request
      * @return  mixed
      */

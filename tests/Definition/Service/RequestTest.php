@@ -4,7 +4,7 @@ namespace Njasm\Container\Tests\Definition\Service;
 
 use Njasm\Container\Definition\Service\Request,
     Njasm\Container\Container, 
-    Njasm\Container\Definition\DefinitionsMap;
+    Njasm\Container\Definition\DefinitionMap;
 
 
 class RequestTest extends \PHPUnit_Framework_TestCase
@@ -16,7 +16,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->container        = new Container();
-        $this->definitionsMap   = new DefinitionsMap();
+        $this->definitionsMap   = new DefinitionMap();
         $this->providers        = array();
     }
     

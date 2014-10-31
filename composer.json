@@ -32,7 +32,8 @@
     },
     "require": {
         "php": ">=5.3",
-        "container-interop/container-interop": "~1.0"
+        "container-interop/container-interop": "~1.0",
+        "symfony/config": "v2.5.5"
     },
     "autoload": {
         "psr-4": {

@@ -2,8 +2,8 @@
 
 namespace Njasm\Container\Definition\Service;
 
-use Njasm\Container\Definition\DefinitionsMap,
-    Njasm\Container\ServicesProviderInterface;
+use Njasm\Container\Definition\DefinitionMap;
+use Njasm\Container\ServicesProviderInterface;
 
 class Request
 {
@@ -11,10 +11,16 @@ class Request
     protected $container;
     protected $definitionsMap;
     protected $providers;
-    
+
+    /**
+     * @param $key string
+     * @param DefinitionMap $definitionMap
+     * @param array $providers
+     * @param ServicesProviderInterface $container
+     */
     public function __construct(
         $key,
-        DefinitionsMap $definitionsMap,
+        DefinitionMap $definitionMap,
         array $providers,
         ServicesProviderInterface $container
     ) {
@@ -25,7 +31,7 @@ class Request
         }
         
         $this->key              = $key;
-        $this->definitionsMap   = $definitionsMap;
+        $this->definitionMap    = $definitionMap;
         $this->providers        = $providers;
         $this->container        = $container;
     }
@@ -42,7 +48,7 @@ class Request
     
     public function getDefinitionsMap()
     {
-        return $this->definitionsMap;
+        return $this->definitionMap;
     }
     
     public function getProviders()

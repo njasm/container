@@ -4,17 +4,35 @@ namespace Njasm\Container;
 
 use Njasm\Container\Config\ConfigLoader;
 use Njasm\Container\Exception\NotFoundException;
-use Njasm\Container\ServicesProviderInterface;
-use Njasm\Container\Definition\DefinitionsMap;
+use Njasm\Container\Definition\DefinitionMap;
 use Njasm\Container\Definition\Service\DefinitionService;
 use Njasm\Container\Definition\Service\Request;
 
 class Container implements ServicesProviderInterface
 {
-    protected $definitionsMap;    
+    /**
+     * @var \Njasm\Container\Definition\DefinitionMap
+     */
+    protected $definitionMap;
+
+    /**
+     * @var array
+     */
     protected $providers;
+
+    /**
+     * @var array
+     */
     protected $registry;
+
+    /**
+     * @var array
+     */
     protected $singletons;
+
+    /**
+     * @var \Njasm\Container\Definition\Service\DefinitionService
+     */
     protected $service;
 
     public function __construct(ConfigLoader $configLoader = null)
@@ -33,7 +51,7 @@ class Container implements ServicesProviderInterface
     protected function initialize()
     {
         $this->providers = array();
-        $this->definitionsMap = new DefinitionsMap();
+        $this->definitionMap = new DefinitionMap();
         $this->registry = array();
         $this->singletons = array();
         
@@ -65,7 +83,7 @@ class Container implements ServicesProviderInterface
     public function set($key, $concrete)
     {
         $definition = $this->service->assemble($key, $concrete);
-        $this->definitionsMap->add($definition);
+        $this->definitionMap->add($definition);
         
         $definitionType = $definition->getType();
         
@@ -89,7 +107,7 @@ class Container implements ServicesProviderInterface
     public function alias($alias, $key)
     {
         $definition = $this->service->assembleAliasDefinition($alias, $key);
-        $this->definitionsMap->add($definition);
+        $this->definitionMap->add($definition);
         
         return $this;
     }
@@ -163,8 +181,8 @@ class Container implements ServicesProviderInterface
      */
     public function remove($key)
     {
-        if(isset($this->definitionsMap[$key])) {
-            unset($this->definitionsMap[$key]);
+        if(isset($this->definitionMap[$key])) {
+            unset($this->definitionMap[$key]);
             unset($this->registry[$key]);
             unset($this->singletons[$key]);
             
@@ -203,6 +221,6 @@ class Container implements ServicesProviderInterface
      */
     protected function getRequestObject($key)
     {
-        return new Request($key, $this->definitionsMap, $this->providers, $this);
+        return new Request($key, $this->definitionMap, $this->providers, $this);
     }
 }

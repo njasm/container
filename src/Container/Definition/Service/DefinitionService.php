@@ -101,7 +101,7 @@ class DefinitionService
      */
     public function assembleBindDefinition($key, $concrete)
     {
-        return new Definition($key, $concrete, new DefinitionType(DefinitionType::BIND));
+        return new Definition($key, $concrete, new DefinitionType(DefinitionType::REFLECTION));
     }
 
     /**
@@ -147,7 +147,7 @@ class DefinitionService
         $factory = new LocalFactory();
 
         // temporary definition
-        $def = new Definition((string) $key, (string) $key, new DefinitionType(DefinitionType::REFLECTION));
+        $def = $this->assembleBindDefinition((string) $key, (string) $key);
         $request->getDefinitionsMap()->add($def);
 
         $returnValue = $factory->build($request);

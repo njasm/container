@@ -4,12 +4,11 @@ namespace Njasm\Container\Definition;
 
 final class DefinitionType 
 {
-    const OBJECT        = 1;
-    const CLOSURE       = 2;
-    const PRIMITIVE     = 3;
-    const REFLECTION    = 4;
-    const ALIAS         = 5;
-    const BIND          = 6;
+    const OBJECT        = 'Object';
+    const CLOSURE       = 'Closure';
+    const PRIMITIVE     = 'Primitive';
+    const REFLECTION    = 'Reflection';
+    const ALIAS         = 'Alias';
 
     private $value;
     private static $validTypes = array();

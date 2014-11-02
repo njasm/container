@@ -2,8 +2,6 @@
 
 namespace Njasm\Container\Definition;
 
-use Njasm\Container\Definition\DefinitionType;
-
 class Definition implements DefinitionInterface
 {
     protected $key;

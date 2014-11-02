@@ -15,10 +15,12 @@ class Definition implements DefinitionInterface
         if (empty($key)) {
             throw new \InvalidArgumentException("key cannot be empty.");
         }
+
         $this->key = $key;
         $this->concrete = $concrete;
         $this->type = $type;
     }
+
     public function getKey()
     {
         return $this->key;

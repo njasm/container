@@ -49,4 +49,14 @@ class Request
     {
         return $this->providers;
     }
+
+    public function getConcrete()
+    {
+        return $this->getDefinition()->getConcrete();
+    }
+
+    protected function getDefinition()
+    {
+        return $this->definitionsMap->get($this->key);
+    }
 }

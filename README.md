@@ -10,10 +10,12 @@
  - Alias Service Keys support
  - Circular Dependency guard
  - Primitive data-types registration
- - Automatic Dependency Resolution and Injection for non-registered Services
-    - constructor injection only at the moment.
+ - Automatic Constructor Dependency Resolution and Injection for non-registered Services
  - Lazy and Eager instantiation approaches
  - Lazy and Eager Instantiation Singleton services registration
+ - Support for public Setter injection/Method calls after service instantiation
+ - Support for public Properties/Attributes Injection after Service instantiation
+ - Ability to override existing dependency (Properties & Setters) declarations by supplying new ones when call to ``Container::get``
  - Nested Providers/Containers support
      - [x] [Aura.DI ](https://github.com/auraphp/Aura.Di)
      - [x] [Joomla DI](https://github.com/joomla-framework/di)
@@ -87,6 +89,22 @@ $container->set("Username", "John");
 
 echo $container->get("Username");
 ```
+
+### Defining Services - Binding Services
+
+You can bind a ``key`` to a instantiable FCQN ``value``.
+
+ ```php
+ $container->bind("MyKey", "\My\Namespace\SomeClass");
+ ```
+ 
+ If you want to bind a Service, and register that Service as a ``Singleton`` Service.
+ ```php
+ $container->bindSingleton("MyKey", "\My\Namespace\SomeClass");
+ ```
+ 
+ Both ``Container::bind`` and ``Container::bindSingleton`` uses Lazy Loading approach, 
+ so that ``\My\Namespace\SomeClass`` will only be evaluated/instantiated when ``MyKey`` is requested.
 
 #### Defining Services - Eager Loading
 
@@ -206,9 +224,6 @@ $something = $container->get('My\Name\Space\Something');
 In no Particular order - check Milestones for a more organized picture.
 
  - [ ] Load definitions from configuration files
- - [ ] Support for Setter injection
- - [ ] Support for Properties/Attributes Injection
- - [ ] Able to override existing dependency declarations by supplying new ones when call to ``Container::get``
  - [ ] Optimizations
 
 ### Contributing

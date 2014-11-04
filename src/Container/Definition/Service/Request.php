@@ -86,11 +86,21 @@ class Request
         return $this->getDefinition()->getConcrete();
     }
 
+    /**
+     * Check if Definition exists for this key.
+     *
+     * @return bool
+     */
     protected function definitionExists()
     {
         return $this->definitionsMap->has($this->key);
     }
 
+    /**
+     * Return Definition for this key if definition exists, null otherwise.
+     *
+     * @return \Njasm\container\Definition\Definition|null
+     */
     protected function getDefinition()
     {
         return $this->definitionsMap->get($this->key);

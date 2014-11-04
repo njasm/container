@@ -32,7 +32,7 @@ class SymfonyAdapter implements ServicesProviderInterface
     public function has($id)
     {
         $hasService = $this->container->has($id);
-        
+
         if (!$hasService) {
             return $this->container->hasParameter($id);
         }

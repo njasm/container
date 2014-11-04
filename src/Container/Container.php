@@ -55,11 +55,13 @@ class Container implements ServicesProviderInterface
      * 
      * @param   string      $key
      * @param   mixed       $concrete
+     * @param   array       $paramsToInject
+     * @param   array       $methodsToCall
      * @return  Container
      */
-    public function set($key, $concrete)
+    public function set($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
     {
-        $definition = $this->service->assemble($key, $concrete);
+        $definition = $this->service->assemble($key, $concrete, $paramsToInject, $methodsToCall);
         $this->definitionsMap->add($definition);
         
         $definitionType = $definition->getType();
@@ -94,11 +96,13 @@ class Container implements ServicesProviderInterface
      *
      * @param   string      $key
      * @param   string      $concrete  FQCN
+     * @param   array       $paramsToInject
+     * @param   array       $methodsToCall
      * @return  Container
      */
-    public function bind($key, $concrete)
+    public function bind($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
     {
-        $definition = $this->service->assembleBindDefinition($key, $concrete);
+        $definition = $this->service->assembleBindDefinition($key, $concrete, $paramsToInject, $methodsToCall);
         $this->definitionsMap->add($definition);
 
         return $this;
@@ -109,11 +113,13 @@ class Container implements ServicesProviderInterface
      *
      * @param   string      $key
      * @param   string      $concrete   FQCN
+     * @param   array       $paramsToInject
+     * @param   array       $methodsToCall
      * @return  Container
      */
-    public function bindSingleton($key, $concrete)
+    public function bindSingleton($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
     {
-        $this->bind($key, $concrete);
+        $this->bind($key, $concrete, $paramsToInject, $methodsToCall);
 
         return $this->registerSingleton($key);
     }
@@ -123,11 +129,13 @@ class Container implements ServicesProviderInterface
      * 
      * @param   string      $key
      * @param   mixed       $concrete
+     * @param   array   $paramsToInject
+     * @param   array   $methodsToCall
      * @return  Container
      */
-    public function singleton($key, $concrete)
+    public function singleton($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
     {
-        $this->set($key, $concrete);
+        $this->set($key, $concrete, $paramsToInject, $methodsToCall);
         
         return $this->registerSingleton($key);
     }
@@ -162,17 +170,19 @@ class Container implements ServicesProviderInterface
      * Returns the service.
      * 
      * @param   string  $key
+     * @param   array   $paramsToInject
+     * @param   array   $methodsToCall
      * @return  mixed
      * 
      * @throws  NotFoundException
      */
-    public function get($key)
+    public function get($key, array $paramsToInject = array(), array $methodsToCall = array())
     {
         if (isset($this->registry[$key])) {
             return $this->registry[$key];
         }
         
-        $request = $this->getRequestObject($key);
+        $request = $this->getRequestObject($key, $paramsToInject, $methodsToCall);
         $returnValue = $this->service->build($request);
 
         return $this->isSingleton($key) ? $this->registry[$key] = $returnValue : $returnValue;        
@@ -223,10 +233,12 @@ class Container implements ServicesProviderInterface
      * Build a new Request value object.
      * 
      * @param   string      $key
+     * @param   array       $paramsToInject
+     * @param   array       $methodsToCall
      * @return  Request
      */
-    protected function getRequestObject($key)
+    protected function getRequestObject($key, array $paramsToInject = array(), array $methodsToCall = array())
     {
-        return new Request($key, $this->definitionsMap, $this->providers, $this);
+        return new Request($key, $this->definitionsMap, $this->providers, $this, $paramsToInject, $methodsToCall);
     }
 }

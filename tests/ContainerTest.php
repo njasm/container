@@ -257,6 +257,54 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Njasm\Container\Tests\SingleClass', $obj2);
         $this->assertTrue($obj === $obj2);
     }
+
+    public function testPropertyInjection()
+    {
+        $key = 'PropertyInjections';
+        $name = 'John Doe';
+        $email = 'john@localhost';
+
+        $this->container->set(
+            $key,
+            new PropertyInjections(),
+            array(
+                'name' => $name,
+                'email' => $email
+            )
+        );
+
+        $obj = $this->container->get($key);
+
+        $this->assertEquals($email, $obj->email);
+        $this->assertEquals($name, $obj->name);
+    }
+
+    public function testMethodCalls()
+    {
+        $key = 'PropertyInjections';
+        $name = 'John Doe';
+        $email = 'john@localhost';
+        $age = 20;
+        $month = 01;
+
+        $this->container->set(
+            $key,
+            new MethodCalls(),
+            array(),
+            array(
+                'setName' => array($name),
+                'setEmail' => array($email),
+                'setAgeAndBirthMonth' => array($age, $month)
+            )
+        );
+
+        $obj = $this->container->get($key);
+
+        $this->assertEquals($email, $obj->getEmail());
+        $this->assertEquals($name, $obj->getName());
+        $this->assertEquals($age, $obj->getAge());
+        $this->assertEquals($month, $obj->getMonth());
+    }
     
     /** HELPER METHODS **/
     
@@ -283,6 +331,58 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 }
 
 /** HELPER TEST CLASSES **/
+/** Set Properties and method calls helpers */
+class PropertyInjections
+{
+    public $name;
+    public $email;
+}
+
+class MethodCalls
+{
+    protected $name;
+    protected $email;
+    protected $age;
+    protected $birthMonth;
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setAgeAndBirthMonth($age = 0, $month = 02)
+    {
+        $this->age = $age;
+        $this->birthMonth = $month;
+    }
+
+    public function getAge()
+    {
+        return $this->age;
+    }
+
+    public function getMonth()
+    {
+        return $this->birthMonth;
+    }
+}
+
+/** Dependency resolving helpers */
 class SingleClass
 {
     public $value;

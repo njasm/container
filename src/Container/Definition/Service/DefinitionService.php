@@ -57,10 +57,12 @@ class DefinitionService
      * 
      * @param   string      $key
      * @param   \Closure    $concrete
+     * @param   array       $paramsToInject
+     * @param   array       $methodsToCall
      * @return  \Njasm\Container\Definition\Definition
      * @throws  \OutOfBoundsException
      */
-    public function assemble($key, $concrete)
+    public function assemble($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
     {
         $definitionType = null;
         
@@ -76,7 +78,7 @@ class DefinitionService
             throw new \OutOfBoundsException("Unknown definition type.");
         }
         
-        return new Definition($key, $concrete, $definitionType);
+        return new Definition($key, $concrete, $definitionType, $paramsToInject, $methodsToCall);
     }
     
     /**
@@ -96,11 +98,19 @@ class DefinitionService
      *
      * @param   string      $key
      * @param   string      $concrete
+     * @param   array       $paramsToInject
+     * @param   array       $methodsToCall
      * @return  \Njasm\Container\Definition\Definition
      */
-    public function assembleBindDefinition($key, $concrete)
+    public function assembleBindDefinition($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
     {
-        return new Definition($key, $concrete, new DefinitionType(DefinitionType::REFLECTION));
+        return new Definition(
+            $key,
+            $concrete,
+            new DefinitionType(DefinitionType::REFLECTION),
+            $paramsToInject,
+            $methodsToCall
+        );
     }
 
     /**
@@ -116,6 +126,12 @@ class DefinitionService
         $this->buildingKeys[$key] = true;
         $factory = $this->getFactory($request);
         $returnValue = $factory->build($request);
+
+        if (is_object($returnValue) && !$returnValue instanceof \Closure) {
+            $this->injectParams($returnValue, $request);
+            $this->callMethods($returnValue, $request);
+        }
+
         unset($this->buildingKeys[$key]);
 
         return $returnValue;
@@ -162,5 +178,49 @@ class DefinitionService
         $def = $this->assembleBindDefinition((string) $key, (string) $key);
         $request->getDefinitionsMap()->add($def);
         return new LocalFactory();
+    }
+
+    /**
+     * Inject Properties of the Service.
+     *
+     * @param   string    $service
+     * @param   Request   $request
+     * @return  void
+     */
+    protected function injectParams($service, Request $request)
+    {
+        $paramsToInject = $request->getParamsToInject();
+        $defaultParams  = $request->getDefaultParamsToInject();
+
+        if (empty($paramsToInject)) {
+            $paramsToInject = $defaultParams;
+        }
+
+        // array_map() might be faster or not, need further testing.
+        foreach ($paramsToInject as $param => $value) {
+            $service->{$param} = $value;
+        }
+    }
+
+    /**
+     * Call Methods of the Service.
+     *
+     * @param   string      $service
+     * @param   Request     $request
+     * @return  void
+     */
+    protected function callMethods($service, Request $request)
+    {
+        $methodsToCall = $request->getMethodCalls();
+        $defaultMethods = $request->getDefaultMethodCalls();
+
+        if (empty($methodsToCall)) {
+            $methodsToCall = $defaultMethods;
+        }
+
+        // array_map() might be faster or not, need further testing.
+        foreach ($methodsToCall as $methodName => $values) {
+            call_user_func_array(array($service, $methodName), (array) $values);
+        }
     }
 }

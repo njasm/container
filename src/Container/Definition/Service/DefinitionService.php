@@ -57,12 +57,11 @@ class DefinitionService
      * 
      * @param   string      $key
      * @param   \Closure    $concrete
-     * @param   array       $paramsToInject
-     * @param   array       $methodsToCall
+     * @param   \Njasm\Container\Definition\Service\DependencyBag   $dependencyBag
      * @return  \Njasm\Container\Definition\Definition
      * @throws  \OutOfBoundsException
      */
-    public function assemble($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
+    public function assemble($key, $concrete, DependencyBag $dependencyBag = null)
     {
         $definitionType = null;
         
@@ -78,7 +77,7 @@ class DefinitionService
             throw new \OutOfBoundsException("Unknown definition type.");
         }
         
-        return new Definition($key, $concrete, $definitionType, $paramsToInject, $methodsToCall);
+        return new Definition($key, $concrete, $definitionType, $dependencyBag);
     }
     
     /**
@@ -98,19 +97,12 @@ class DefinitionService
      *
      * @param   string      $key
      * @param   string      $concrete
-     * @param   array       $paramsToInject
-     * @param   array       $methodsToCall
+     * @param   \Njasm\Container\Definition\Service\DependencyBag   $dependencyBag
      * @return  \Njasm\Container\Definition\Definition
      */
-    public function assembleBindDefinition($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
+    public function assembleBindDefinition($key, $concrete, DependencyBag $dependencyBag = null)
     {
-        return new Definition(
-            $key,
-            $concrete,
-            new DefinitionType(DefinitionType::REFLECTION),
-            $paramsToInject,
-            $methodsToCall
-        );
+        return new Definition($key, $concrete, new DefinitionType(DefinitionType::REFLECTION), $dependencyBag);
     }
 
     /**
@@ -189,8 +181,8 @@ class DefinitionService
      */
     protected function injectParams($service, Request $request)
     {
-        $paramsToInject = $request->getParamsToInject();
-        $defaultParams  = $request->getDefaultParamsToInject();
+        $paramsToInject = $request->getProperties();
+        $defaultParams  = $request->getDefaultProperties();
 
         if (empty($paramsToInject)) {
             $paramsToInject = $defaultParams;

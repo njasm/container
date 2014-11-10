@@ -2,6 +2,7 @@
 
 namespace Njasm\Container;
 
+use Njasm\Container\Definition\Service\DependencyBag;
 use Njasm\Container\Exception\NotFoundException;
 use Njasm\Container\Definition\DefinitionsMap;
 use Njasm\Container\Definition\Service\DefinitionService;
@@ -47,7 +48,7 @@ class Container implements ServicesProviderInterface
      */    
     public function has($key)
     {
-        return $this->service->has($this->getRequestObject($key));
+        return $this->service->has($this->getRequest($key));
     }
     
     /**
@@ -55,13 +56,20 @@ class Container implements ServicesProviderInterface
      * 
      * @param   string      $key
      * @param   mixed       $concrete
-     * @param   array       $paramsToInject
-     * @param   array       $methodsToCall
-     * @return  Container
+     * @param   array       $construct
+     * @param   array       $properties
+     * @param   array       $methods
+     * @return  Definition
      */
-    public function set($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
-    {
-        $definition = $this->service->assemble($key, $concrete, $paramsToInject, $methodsToCall);
+    public function set(
+        $key,
+        $concrete,
+        array $construct = array(),
+        array $properties = array(),
+        array $methods = array()
+    ) {
+        $dependencyBag = $this->getDependencyBag($construct, $properties, $methods);
+        $definition = $this->service->assemble($key, $concrete, $dependencyBag);
         $this->definitionsMap->add($definition);
         
         $definitionType = $definition->getType();
@@ -73,7 +81,7 @@ class Container implements ServicesProviderInterface
             $this->registerSingleton($key);
         }
         
-        return $this;
+        return $definition;
     }
 
     /**
@@ -81,14 +89,14 @@ class Container implements ServicesProviderInterface
      * 
      * @param   string      $alias
      * @param   string      $key
-     * @return  Container
+     * @return  Definition
      */    
     public function alias($alias, $key)
     {
         $definition = $this->service->assembleAliasDefinition($alias, $key);
         $this->definitionsMap->add($definition);
         
-        return $this;
+        return $definition;
     }
 
     /**
@@ -96,16 +104,23 @@ class Container implements ServicesProviderInterface
      *
      * @param   string      $key
      * @param   string      $concrete  FQCN
-     * @param   array       $paramsToInject
-     * @param   array       $methodsToCall
-     * @return  Container
+     * @param   array       $construct
+     * @param   array       $properties
+     * @param   array       $methods
+     * @return  Definition
      */
-    public function bind($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
-    {
-        $definition = $this->service->assembleBindDefinition($key, $concrete, $paramsToInject, $methodsToCall);
+    public function bind(
+        $key,
+        $concrete,
+        array $construct = array(),
+        array $properties = array(),
+        array $methods = array()
+    ) {
+        $dependencyBag = $this->getDependencyBag($construct, $properties, $methods);
+        $definition = $this->service->assembleBindDefinition($key, $concrete, $dependencyBag);
         $this->definitionsMap->add($definition);
 
-        return $this;
+        return $definition;
     }
 
     /**
@@ -113,15 +128,22 @@ class Container implements ServicesProviderInterface
      *
      * @param   string      $key
      * @param   string      $concrete   FQCN
-     * @param   array       $paramsToInject
-     * @param   array       $methodsToCall
-     * @return  Container
+     * @param   array       $construct
+     * @param   array       $properties
+     * @param   array       $methods
+     * @return  Definition
      */
-    public function bindSingleton($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
-    {
-        $this->bind($key, $concrete, $paramsToInject, $methodsToCall);
+    public function bindSingleton(
+        $key,
+        $concrete,
+        array $construct = array(),
+        array $properties = array(),
+        array $methods = array()
+    ) {
+        $definition = $this->bind($key, $concrete, $construct, $properties, $methods);
+        $this->registerSingleton($key);
 
-        return $this->registerSingleton($key);
+        return $definition;
     }
 
     /**
@@ -129,15 +151,22 @@ class Container implements ServicesProviderInterface
      * 
      * @param   string      $key
      * @param   mixed       $concrete
-     * @param   array   $paramsToInject
-     * @param   array   $methodsToCall
-     * @return  Container
+     * @param   array       $construct
+     * @param   array       $properties
+     * @param   array       $methods
+     * @return  Definition
      */
-    public function singleton($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
-    {
-        $this->set($key, $concrete, $paramsToInject, $methodsToCall);
-        
-        return $this->registerSingleton($key);
+    public function singleton(
+        $key,
+        $concrete,
+        array $construct = array(),
+        array $properties = array(),
+        array $methods = array()
+    ) {
+        $definition = $this->set($key, $concrete, $construct, $properties, $methods);
+        $this->registerSingleton($key);
+
+        return $definition;
     }
     
     /**
@@ -169,20 +198,22 @@ class Container implements ServicesProviderInterface
     /**
      * Returns the service.
      * 
-     * @param   string  $key
-     * @param   array   $paramsToInject
-     * @param   array   $methodsToCall
+     * @param   string      $key
+     * @param   array       $construct
+     * @param   array       $properties
+     * @param   array       $methods
      * @return  mixed
      * 
      * @throws  NotFoundException
      */
-    public function get($key, array $paramsToInject = array(), array $methodsToCall = array())
+    public function get($key, array $construct = array(), array $properties = array(), array $methods = array())
     {
         if (isset($this->registry[$key])) {
             return $this->registry[$key];
         }
-        
-        $request = $this->getRequestObject($key, $paramsToInject, $methodsToCall);
+
+        $dependencyBag = $this->getDependencyBag($construct, $properties, $methods);
+        $request = $this->getRequest($key, $dependencyBag);
         $returnValue = $this->service->build($request);
 
         return $this->isSingleton($key) ? $this->registry[$key] = $returnValue : $returnValue;        
@@ -229,16 +260,23 @@ class Container implements ServicesProviderInterface
         return isset($this->singletons[$key]);
     }
     
+    protected function getDependencyBag(
+        array $construct = array(),
+        array $properties = array(),
+        array $methods = array()
+    ) {
+        return new DependencyBag($construct, $properties, $methods);
+    }
+
     /**
      * Build a new Request value object.
      * 
-     * @param   string      $key
-     * @param   array       $paramsToInject
-     * @param   array       $methodsToCall
+     * @param   string              $key
+     * @param   DependencyBag       $dependencyBag
      * @return  Request
      */
-    protected function getRequestObject($key, array $paramsToInject = array(), array $methodsToCall = array())
+    protected function getRequest($key, DependencyBag $dependencyBag = null)
     {
-        return new Request($key, $this->definitionsMap, $this->providers, $this, $paramsToInject, $methodsToCall);
+        return new Request($key, $this->definitionsMap, $this->providers, $this, $dependencyBag);
     }
 }

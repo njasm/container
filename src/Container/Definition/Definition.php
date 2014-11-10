@@ -2,18 +2,24 @@
 
 namespace Njasm\Container\Definition;
 
+use Njasm\Container\Definition\Service\DependencyBag;
+
 class Definition implements DefinitionInterface
 {
+    /** @var string */
     protected $key;
+
+    /** @var mixed */
     protected $concrete;
+
+    /** @var DefinitionType */
     protected $type;
 
-    protected $paramsToInject;
-    protected $methodsToCall;
+    /** @var DependencyBag */
+    protected $dependencyBag;
     
-    public function __construct(
-        $key, $concrete, DefinitionType $type, array $params = array(), array $methods = array()
-    ) {
+    public function __construct($key, $concrete, DefinitionType $type, DependencyBag $dependencyBag = null)
+    {
         if (empty($key)) {
             throw new \InvalidArgumentException("key cannot be empty.");
         }
@@ -21,8 +27,7 @@ class Definition implements DefinitionInterface
         $this->key = $key;
         $this->concrete = $concrete;
         $this->type = $type;
-        $this->paramsToInject = $params;
-        $this->methodsToCall = $methods;
+        $this->dependencyBag = $dependencyBag ?: new DependencyBag();
     }
 
     public function getKey()
@@ -40,14 +45,76 @@ class Definition implements DefinitionInterface
         return $this->type->__toString();
     }
 
-    public function getParamsToInject()
+    public function setConstructorArgument($argumentIndex, $value)
     {
-        return $this->paramsToInject;
+        $this->dependencyBag->setConstructorArgument($argumentIndex, $value);
+
+        return $this;
     }
 
-    public function getMethodsToCall()
+    public function setConstructorArguments(array $arguments)
     {
-        return $this->methodsToCall;
+        $this->dependencyBag->setConstructorArguments($arguments);
+
+        return $this;
+    }
+
+    public function getConstructorArguments()
+    {
+        return $this->dependencyBag->getConstructorArguments();
+    }
+
+    public function getConstructorArgument($index)
+    {
+        return $this->getConstructorArgument($index);
+    }
+
+    public function getProperties()
+    {
+        return $this->dependencyBag->getProperties();
+    }
+
+    public function setProperties(array $properties)
+    {
+        $this->dependencyBag->setProperties($properties);
+
+        return $this;
+    }
+
+    public function getProperty($propertyName)
+    {
+        return $this->dependencyBag->getProperty($propertyName);
+    }
+
+    public function setProperty($propertyName, $value)
+    {
+        $this->dependencyBag->setProperty($propertyName, $value);
+
+        return $this;
+    }
+
+    public function callMethod($methodName, array $methodArguments = array())
+    {
+        $this->dependencyBag->callMethod($methodName, $methodArguments);
+
+        return $this;
+    }
+
+    public function callMethods(array $methods)
+    {
+        $this->dependencyBag->callMethods($methods);
+
+        return $this;
+    }
+
+    public function getCallMethod($methodName)
+    {
+        return $this->dependencyBag->getCallMethod($methodName);
+    }
+
+    public function getCallMethods()
+    {
+        return $this->dependencyBag->getCallMethods();
     }
 }
 

@@ -7,20 +7,27 @@ use Njasm\Container\ServicesProviderInterface;
 
 class Request
 {
+    /** @var string */
     protected $key;
+
+    /** @var ServicesProviderInterface */
     protected $container;
+
+    /** @var DefinitionsMap */
     protected $definitionsMap;
+
+    /** @var array */
     protected $providers;
-    protected $paramsToInject;
-    protected $methodsToCall;
+
+    /** @var DependencyBag */
+    protected $dependencyBag;
     
     public function __construct(
         $key,
         DefinitionsMap $definitionsMap,
         array $providers,
         ServicesProviderInterface $container,
-        $params = array(),
-        $methods = array()
+        DependencyBag $dependencyBag = null
     ) {
         $key = trim($key);
         
@@ -32,8 +39,7 @@ class Request
         $this->definitionsMap   = $definitionsMap;
         $this->providers        = $providers;
         $this->container        = $container;
-        $this->paramsToInject   = $params;
-        $this->methodsToCall    = $methods;
+        $this->dependencyBag    = $dependencyBag ?: new DependencyBag();
     }
 
     /**
@@ -111,9 +117,9 @@ class Request
      *
      * @return array
      */
-    public function getParamsToInject()
+    public function getProperties()
     {
-        return $this->paramsToInject;
+        return $this->dependencyBag->getProperties();
     }
 
     /**
@@ -123,21 +129,21 @@ class Request
      */
     public function getMethodCalls()
     {
-        return $this->methodsToCall;
+        return $this->dependencyBag->getCallMethods();
     }
 
     /**
-     * Default Parameters and values to set when this service was registered.
+     * Default Properties and values to set when this service was registered.
      *
      * @return array
      */
-    public function getDefaultParamsToInject()
+    public function getDefaultProperties()
     {
         if (!$this->definitionExists()) {
             return array();
         }
 
-        return $this->getDefinition()->getParamsToInject();
+        return $this->getDefinition()->getProperties();
     }
 
     /**
@@ -151,6 +157,6 @@ class Request
             return array();
         }
 
-        return $this->getDefinition()->getMethodsToCall();
+        return $this->getDefinition()->getCallMethods();
     }
 }

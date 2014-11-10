@@ -267,11 +267,29 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->set(
             $key,
             new PropertyInjections(),
+            array(),
             array(
                 'name' => $name,
                 'email' => $email
             )
         );
+
+        $obj = $this->container->get($key);
+
+        $this->assertEquals($email, $obj->email);
+        $this->assertEquals($name, $obj->name);
+    }
+
+    public function testPropertyInjectionThroughDefinition()
+    {
+        $key = 'PropertyInjections';
+        $name = 'John Doe';
+        $email = 'john@localhost';
+
+        $definition = $this->container->set($key, new PropertyInjections());
+
+        $definition->setProperty('name', $name);
+        $definition->setProperty('email', $email);
 
         $obj = $this->container->get($key);
 
@@ -291,6 +309,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             $key,
             new MethodCalls(),
             array(),
+            array(),
             array(
                 'setName' => array($name),
                 'setEmail' => array($email),
@@ -305,16 +324,35 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($age, $obj->getAge());
         $this->assertEquals($month, $obj->getMonth());
     }
-    
-    /** HELPER METHODS **/
-    
-    protected function getSingleClassObjectDef($key = "SingleClass")
+
+    public function testMethodCallsThoughDefinition()
     {
-        $value = new SingleClass();
-            
-        return new \Njasm\Container\Definition\ObjectDefinition($key, $concrete, \Njasm\Container\Definition\DefinitionType::OBJECT, $this->container);
+        $key = 'PropertyInjections';
+        $name = 'John Doe';
+        $email = 'john@localhost';
+        $age = 20;
+        $month = 01;
+
+        $name2 = 'Jane Doe';
+        $email2 = 'jane@localhost';
+        $age2 = 40;
+        $month2 = 12;
+
+        $definition = $this->container->bind($key, '\Njasm\Container\Tests\MethodCalls');
+        $definition->callMethod('setName', array($name));
+        $definition->callMethod('setEmail', array($email));
+        $definition->callMethod('setAgeAndBirthMonth', array($age, $month));
+
+        $obj = $this->container->get($key);
+
+        $this->assertEquals($email, $obj->getEmail());
+        $this->assertEquals($name, $obj->getName());
+        $this->assertEquals($age, $obj->getAge());
+        $this->assertEquals($month, $obj->getMonth());
     }
-    
+
+    /** HELPER METHODS **/
+
     protected function getServiceProvider($key = "SingleClassOnServiceProvider")
     {
         $provider = new \Njasm\Container\Container();

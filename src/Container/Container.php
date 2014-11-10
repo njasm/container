@@ -208,12 +208,13 @@ class Container implements ServicesProviderInterface
      */
     public function get($key, array $construct = array(), array $properties = array(), array $methods = array())
     {
-        if (isset($this->registry[$key])) {
-            return $this->registry[$key];
-        }
-
         $dependencyBag = $this->getDependencyBag($construct, $properties, $methods);
         $request = $this->getRequest($key, $dependencyBag);
+
+        if (isset($this->registry[$key])) {
+            return $this->service->injectValues($this->registry[$key], $request);
+        }
+
         $returnValue = $this->service->build($request);
 
         return $this->isSingleton($key) ? $this->registry[$key] = $returnValue : $returnValue;        

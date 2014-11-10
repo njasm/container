@@ -264,6 +264,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $name = 'John Doe';
         $email = 'john@localhost';
 
+        $name2 = 'Jane Doe';
+        $email2 = 'jane@localhost';
+
         $this->container->set(
             $key,
             new PropertyInjections(),
@@ -278,6 +281,12 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($email, $obj->email);
         $this->assertEquals($name, $obj->name);
+
+        // call override
+        $obj = $this->container->get($key, array(), array('name' => $name2, 'email' => $email2));
+
+        $this->assertEquals($email2, $obj->email);
+        $this->assertEquals($name2, $obj->name);
     }
 
     public function testPropertyInjectionThroughDefinition()
@@ -338,7 +347,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $age2 = 40;
         $month2 = 12;
 
-        $definition = $this->container->bind($key, '\Njasm\Container\Tests\MethodCalls');
+        $definition = $this->container->bind($key, new MethodCalls());
         $definition->callMethod('setName', array($name));
         $definition->callMethod('setEmail', array($email));
         $definition->callMethod('setAgeAndBirthMonth', array($age, $month));
@@ -349,6 +358,17 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($name, $obj->getName());
         $this->assertEquals($age, $obj->getAge());
         $this->assertEquals($month, $obj->getMonth());
+
+        // call override
+        $obj = $this->container->get(
+            $key, array(), array(),
+            array('setName' => array($name2), 'setEmail' => array($email2), 'setAgeAndBirthMonth' => array($age2, $month2)));
+
+        $this->assertEquals($email2, $obj->getEmail());
+        $this->assertEquals($name2, $obj->getName());
+        $this->assertEquals($age2, $obj->getAge());
+        $this->assertEquals($month2, $obj->getMonth());
+
     }
 
     /** HELPER METHODS **/

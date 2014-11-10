@@ -215,4 +215,21 @@ class DefinitionService
             call_user_func_array(array($service, $methodName), (array) $values);
         }
     }
+
+    /**
+     * Injecto properties and call methods on Objects already instantiated.
+     *
+     * @param   Object  $concrete
+     * @param   Request $request
+     * @return  Object
+     */
+    public function injectValues($concrete, Request $request)
+    {
+        if (is_object($concrete) && !$concrete instanceof \Closure) {
+            $this->injectParams($concrete, $request);
+            $this->callMethods($concrete, $request);
+        }
+
+        return $concrete;
+    }
 }

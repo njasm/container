@@ -113,6 +113,16 @@ class Request
     }
 
     /**
+     * Constructor arguments to be injected.
+     *
+     * @return array
+     */
+    public function getConstructorArguments()
+    {
+        return $this->dependencyBag->getConstructorArguments();
+    }
+
+    /**
      * Properties to be injected, when service was requested to the container.
      *
      * @return array
@@ -130,6 +140,16 @@ class Request
     public function getMethodCalls()
     {
         return $this->dependencyBag->getCallMethods();
+    }
+
+    /**
+     * Defualt Constructor arguments to be injected.
+     *
+     * @return array
+     */
+    public function getDefaultConstructorArguments()
+    {
+        return $this->getDefinition()->getConstructorArguments();
     }
 
     /**

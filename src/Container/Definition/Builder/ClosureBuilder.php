@@ -8,10 +8,7 @@ class ClosureBuilder implements BuilderInterface
 {
     public function execute(Request $request)
     {
-        $key            = $request->getKey();
-        $definitionsMap = $request->getDefinitionsMap();
-        $definition     = $definitionsMap[$key];
-        $concrete       = $definition->getConcrete();
+        $concrete = $request->getConcrete();
         
         return $concrete();
     }

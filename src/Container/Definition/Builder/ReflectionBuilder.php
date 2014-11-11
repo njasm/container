@@ -20,17 +20,7 @@ class ReflectionBuilder implements BuilderInterface
             return $reflected->newInstanceArgs();
         }
 
-        $parameters = array();
-        $defaultArguments = $request->getDefaultConstructorArguments();
-        $arguments = $request->getConstructorArguments();
-
-        if (!empty($arguments)) {
-            $parameters = $arguments;
-        } elseif (!empty($defaultArguments)) {
-            $parameters = $defaultArguments;
-        } else {
-            $parameters = $this->getDependencies($constructor, $request->getContainer());
-        }
+        $parameters = $this->getConstructorArguments($constructor, $request);
         
         return $reflected->newInstanceArgs($parameters);
     }
@@ -53,6 +43,22 @@ class ReflectionBuilder implements BuilderInterface
             $message = "Non-instantiable class [{$reflected->name}]";
             $this->raiseException($message);
         }
+    }
+
+    protected function getConstructorArguments(\ReflectionMethod $constructor, Request $request)
+    {
+        $defaultArguments = $request->getDefaultConstructorArguments();
+        $arguments = $request->getConstructorArguments();
+
+        if (!empty($arguments)) {
+            $parameters = $arguments;
+        } elseif (!empty($defaultArguments)) {
+            $parameters = $defaultArguments;
+        } else {
+            $parameters = $this->getDependencies($constructor, $request->getContainer());
+        }
+
+        return $parameters;
     }
 
     protected function getDependencies(\ReflectionMethod $constructor, $container)

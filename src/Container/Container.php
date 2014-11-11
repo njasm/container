@@ -131,7 +131,7 @@ class Container implements ServicesProviderInterface
      * @param   array       $construct
      * @param   array       $properties
      * @param   array       $methods
-     * @return  Definition
+     * @return  Definition\Definition
      */
     public function bindSingleton(
         $key,
@@ -281,7 +281,7 @@ class Container implements ServicesProviderInterface
      * Build a new Request value object.
      * 
      * @param   string              $key
-     * @param   DependencyBag       $dependencyBag
+     * @param   null|DependencyBag       $dependencyBag
      * @return  Request
      */
     protected function getRequest($key, DependencyBag $dependencyBag = null)

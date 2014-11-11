@@ -35,7 +35,7 @@ class LocalFactory implements FactoryInterface
 
         if(
             !class_exists($builder)
-            || !class_implements($builder, self::BUILDERS_INTERFACE)
+            || !in_array(self::BUILDERS_INTERFACE, class_implements($builder))
         ) {
             $message = "No available factory to build the requested service";
             $message .= " or factory does not implement " . self::BUILDERS_INTERFACE;

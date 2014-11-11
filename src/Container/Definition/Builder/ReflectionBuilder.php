@@ -14,23 +14,25 @@ class ReflectionBuilder implements BuilderInterface
         
         $this->guardAgainstNonInstantiable($reflected);
         
-        $constructor = $reflected->getConstructor();  
-        $parameters = array();
+        $constructor = $reflected->getConstructor();
         
-        if (!is_null($constructor)) {
-            $defaultArguments = $request->getDefaultConstructorArguments();
-            $arguments = $request->getConstructorArguments();
+        if (is_null($constructor)) {
+            return $reflected->newInstanceArgs();
+        }
 
-            if (!empty($arguments)) {
-                $parameters = $arguments;
-            } elseif (!empty($defaultArguments)) {
-                $parameters = $defaultArguments;
-            } else {
-                $parameters = $this->getDependencies($constructor, $request->getContainer());
-            }
+        $parameters = array();
+        $defaultArguments = $request->getDefaultConstructorArguments();
+        $arguments = $request->getConstructorArguments();
+
+        if (!empty($arguments)) {
+            $parameters = $arguments;
+        } elseif (!empty($defaultArguments)) {
+            $parameters = $defaultArguments;
+        } else {
+            $parameters = $this->getDependencies($constructor, $request->getContainer());
         }
         
-        return !empty($parameters) ? $reflected->newInstanceArgs($parameters) : $reflected->newInstanceArgs();
+        return $reflected->newInstanceArgs($parameters);
     }
     
     protected function getReflected($key)

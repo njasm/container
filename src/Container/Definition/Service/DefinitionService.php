@@ -57,7 +57,7 @@ class DefinitionService
      * 
      * @param   string      $key
      * @param   \Closure    $concrete
-     * @param   \Njasm\Container\Definition\Service\DependencyBag   $dependencyBag
+     * @param   null|\Njasm\Container\Definition\Service\DependencyBag   $dependencyBag
      * @return  \Njasm\Container\Definition\Definition
      * @throws  \OutOfBoundsException
      */
@@ -97,7 +97,7 @@ class DefinitionService
      *
      * @param   string      $key
      * @param   string      $concrete
-     * @param   \Njasm\Container\Definition\Service\DependencyBag   $dependencyBag
+     * @param   null|\Njasm\Container\Definition\Service\DependencyBag   $dependencyBag
      * @return  \Njasm\Container\Definition\Definition
      */
     public function assembleBindDefinition($key, $concrete, DependencyBag $dependencyBag = null)
@@ -175,8 +175,8 @@ class DefinitionService
     /**
      * Inject Properties of the Service.
      *
-     * @param   string    $service
-     * @param   Request   $request
+     * @param   mixed       $service
+     * @param   Request     $request
      * @return  void
      */
     protected function injectParams($service, Request $request)
@@ -197,7 +197,7 @@ class DefinitionService
     /**
      * Call Methods of the Service.
      *
-     * @param   string      $service
+     * @param   mixed       $service
      * @param   Request     $request
      * @return  void
      */
@@ -217,11 +217,11 @@ class DefinitionService
     }
 
     /**
-     * Injecto properties and call methods on Objects already instantiated.
+     * Inject properties and call methods on Objects already instantiated.
      *
      * @param   Object  $concrete
      * @param   Request $request
-     * @return  Object
+     * @return  mixed
      */
     public function injectValues($concrete, Request $request)
     {

@@ -17,8 +17,17 @@ class ReflectionBuilder implements BuilderInterface
         $constructor = $reflected->getConstructor();  
         $parameters = array();
         
-        if (!is_null($constructor)) {         
-            $parameters = $this->getDependencies($constructor, $request->getContainer());
+        if (!is_null($constructor)) {
+            $defaultArguments = $request->getDefaultConstructorArguments();
+            $arguments = $request->getConstructorArguments();
+
+            if (!empty($arguments)) {
+                $parameters = $arguments;
+            } elseif (!empty($defaultArguments)) {
+                $parameters = $defaultArguments;
+            } else {
+                $parameters = $this->getDependencies($constructor, $request->getContainer());
+            }
         }
         
         return !empty($parameters) ? $reflected->newInstanceArgs($parameters) : $reflected->newInstanceArgs();

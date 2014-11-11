@@ -347,7 +347,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $age2 = 40;
         $month2 = 12;
 
-        $definition = $this->container->bind($key, new MethodCalls());
+        //$definition = $this->container->bind($key, new MethodCalls());
+        $definition = $this->container->bind($key, '\Njasm\Container\Tests\MethodCalls');
         $definition->callMethod('setName', array($name));
         $definition->callMethod('setEmail', array($email));
         $definition->callMethod('setAgeAndBirthMonth', array($age, $month));
@@ -369,6 +370,27 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($age2, $obj->getAge());
         $this->assertEquals($month2, $obj->getMonth());
 
+    }
+
+    public function testConstructorInjection()
+    {
+        $key = 'ConstructorInjection';
+        $name = 'John Doe';
+        $email = 'john@localhost';
+
+        $name2 = 'Jane Doe';
+        $email2 = 'jane@localhost';
+
+        $this->container->bind($key, '\Njasm\Container\Tests\ConstructorInjection', array($name, $email));
+
+        $object = $this->container->get($key);
+        $this->assertEquals($name, $object->getName());
+        $this->assertEquals($email, $object->getEmail());
+
+        //override call
+        $object2 = $this->container->get($key, array($name2, $email2));
+        $this->assertEquals($name2, $object2->getName());
+        $this->assertEquals($email2, $object2->getEmail());
     }
 
     /** HELPER METHODS **/
@@ -437,6 +459,28 @@ class MethodCalls
     public function getMonth()
     {
         return $this->birthMonth;
+    }
+}
+
+class ConstructorInjection
+{
+    protected $name;
+    protected $email;
+
+    public function __construct($name, $email)
+    {
+        $this->name = $name;
+        $this->email = $email;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
     }
 }
 

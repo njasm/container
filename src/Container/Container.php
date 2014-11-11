@@ -59,7 +59,7 @@ class Container implements ServicesProviderInterface
      * @param   array       $construct
      * @param   array       $properties
      * @param   array       $methods
-     * @return  Definition
+     * @return  Definition\Definition
      */
     public function set(
         $key,
@@ -89,7 +89,7 @@ class Container implements ServicesProviderInterface
      * 
      * @param   string      $alias
      * @param   string      $key
-     * @return  Definition
+     * @return  Definition\Definition
      */    
     public function alias($alias, $key)
     {
@@ -107,7 +107,7 @@ class Container implements ServicesProviderInterface
      * @param   array       $construct
      * @param   array       $properties
      * @param   array       $methods
-     * @return  Definition
+     * @return  Definition\Definition
      */
     public function bind(
         $key,
@@ -154,7 +154,7 @@ class Container implements ServicesProviderInterface
      * @param   array       $construct
      * @param   array       $properties
      * @param   array       $methods
-     * @return  Definition
+     * @return  Definition\Definition
      */
     public function singleton(
         $key,
@@ -260,7 +260,15 @@ class Container implements ServicesProviderInterface
     {
         return isset($this->singletons[$key]);
     }
-    
+
+    /**
+     * Build a new DependencyBag value object.
+     *
+     * @param   array           $construct
+     * @param   array           $properties
+     * @param   array           $methods
+     * @return  DependencyBag
+     */
     protected function getDependencyBag(
         array $construct = array(),
         array $properties = array(),

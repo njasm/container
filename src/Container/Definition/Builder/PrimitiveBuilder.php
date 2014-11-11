@@ -8,10 +8,6 @@ class PrimitiveBuilder implements BuilderInterface
 {
     public function execute(Request $request)
     {
-        $key    = $request->getKey();
-        $definitionsMap = $request->getDefinitionsMap();
-        $definition = $definitionsMap[$key];
-        
-        return $definition->getConcrete();
+        return $request->getConcrete();
     }
 }

@@ -57,12 +57,11 @@ class DefinitionService
      * 
      * @param   string      $key
      * @param   \Closure    $concrete
-     * @param   array       $paramsToInject
-     * @param   array       $methodsToCall
+     * @param   null|\Njasm\Container\Definition\Service\DependencyBag   $dependencyBag
      * @return  \Njasm\Container\Definition\Definition
      * @throws  \OutOfBoundsException
      */
-    public function assemble($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
+    public function assemble($key, $concrete, DependencyBag $dependencyBag = null)
     {
         $definitionType = null;
         
@@ -78,7 +77,7 @@ class DefinitionService
             throw new \OutOfBoundsException("Unknown definition type.");
         }
         
-        return new Definition($key, $concrete, $definitionType, $paramsToInject, $methodsToCall);
+        return new Definition($key, $concrete, $definitionType, $dependencyBag);
     }
     
     /**
@@ -98,19 +97,12 @@ class DefinitionService
      *
      * @param   string      $key
      * @param   string      $concrete
-     * @param   array       $paramsToInject
-     * @param   array       $methodsToCall
+     * @param   null|\Njasm\Container\Definition\Service\DependencyBag   $dependencyBag
      * @return  \Njasm\Container\Definition\Definition
      */
-    public function assembleBindDefinition($key, $concrete, array $paramsToInject = array(), array $methodsToCall = array())
+    public function assembleBindDefinition($key, $concrete, DependencyBag $dependencyBag = null)
     {
-        return new Definition(
-            $key,
-            $concrete,
-            new DefinitionType(DefinitionType::REFLECTION),
-            $paramsToInject,
-            $methodsToCall
-        );
+        return new Definition($key, $concrete, new DefinitionType(DefinitionType::REFLECTION), $dependencyBag);
     }
 
     /**
@@ -183,14 +175,14 @@ class DefinitionService
     /**
      * Inject Properties of the Service.
      *
-     * @param   string    $service
-     * @param   Request   $request
+     * @param   mixed       $service
+     * @param   Request     $request
      * @return  void
      */
     protected function injectParams($service, Request $request)
     {
-        $paramsToInject = $request->getParamsToInject();
-        $defaultParams  = $request->getDefaultParamsToInject();
+        $paramsToInject = $request->getProperties();
+        $defaultParams  = $request->getDefaultProperties();
 
         if (empty($paramsToInject)) {
             $paramsToInject = $defaultParams;
@@ -205,7 +197,7 @@ class DefinitionService
     /**
      * Call Methods of the Service.
      *
-     * @param   string      $service
+     * @param   mixed       $service
      * @param   Request     $request
      * @return  void
      */
@@ -222,5 +214,22 @@ class DefinitionService
         foreach ($methodsToCall as $methodName => $values) {
             call_user_func_array(array($service, $methodName), (array) $values);
         }
+    }
+
+    /**
+     * Inject properties and call methods on Objects already instantiated.
+     *
+     * @param   Object  $concrete
+     * @param   Request $request
+     * @return  mixed
+     */
+    public function injectValues($concrete, Request $request)
+    {
+        if (is_object($concrete) && !$concrete instanceof \Closure) {
+            $this->injectParams($concrete, $request);
+            $this->callMethods($concrete, $request);
+        }
+
+        return $concrete;
     }
 }

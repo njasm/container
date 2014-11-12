@@ -18,7 +18,6 @@
     "minimum-stability": "dev",
     "require-dev": {
         "phpunit/phpunit": "4.4.*@dev",
-        "phpunit/php-code-coverage": "dev-master",
         "satooshi/php-coveralls": "dev-master",
         "mnapoli/php-di": "~4.0",
         "aura/di": "~1.0",

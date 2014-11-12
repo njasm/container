@@ -66,7 +66,7 @@ class Definition implements DefinitionInterface
 
     public function getConstructorArgument($index)
     {
-        return $this->getConstructorArgument($index);
+        return $this->dependencyBag->getConstructorArgument($index);
     }
 
     public function getProperties()

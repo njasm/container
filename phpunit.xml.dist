@@ -13,8 +13,6 @@
     <testsuites>
         <testsuite name="Container API Tests">
             <directory suffix="Test.php">./tests</directory>
-            <exclude>./vendor</exclude>
-            <exclude>./tests</exclude>
         </testsuite>
     </testsuites> 
 

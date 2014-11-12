@@ -20,7 +20,7 @@ before_script:
   - mkdir -p build/logs
   
 script:
-  - phpunit -v -c phpunit.xml.dist --coverage-clover build/logs/clover.xml
+  - ./vendor/bin/phpunit -v -c phpunit.xml.dist --coverage-clover build/logs/clover.xml
   
 after_script:
   # coveralls.io

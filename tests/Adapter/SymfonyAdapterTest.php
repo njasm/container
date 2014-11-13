@@ -26,9 +26,15 @@ class SymfonyAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->container->has('non-existent'));
     }
     
-    public function testHasTrue()
+    public function testHasTrueParameter()
     {
         $this->assertTrue($this->container->has('hello'));
+    }
+
+    public function testHasTrueService()
+    {
+        $this->symfony->set('world', new \stdClass());
+        $this->assertTrue($this->container->has('world'));
     }
     
     public function testGet()

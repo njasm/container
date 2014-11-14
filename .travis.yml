@@ -32,7 +32,7 @@ after_script:
 notifications:
   webhooks:
     urls:
-      - https://webhooks.gitter.im/e/eeff60d0e5dc4669aa8a
+      - https://webhooks.gitter.im/e/8325a02313797dd6c619
     on_success: always  # options: [always|never|change] default: always
     on_failure: always  # options: [always|never|change] default: always
     on_start: false     # default: false

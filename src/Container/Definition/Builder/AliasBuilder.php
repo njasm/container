@@ -13,4 +13,3 @@ class AliasBuilder implements BuilderInterface
         return $request->getContainer()->get($value);
     }
 }
-

@@ -2,8 +2,8 @@
 
 namespace Njasm\Container\Factory;
 
-use Njasm\Container\Definition\Service\Request;
 use Njasm\Container\Definition\Builder\ProvidersBuilder;
+use Njasm\Container\Definition\Service\Request;
 
 class ProviderFactory implements FactoryInterface
 {
@@ -12,6 +12,5 @@ class ProviderFactory implements FactoryInterface
         $builder = new ProvidersBuilder();
         
         return $builder->execute($request);
-        
     }
 }

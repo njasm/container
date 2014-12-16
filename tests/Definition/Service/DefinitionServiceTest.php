@@ -1,12 +1,12 @@
 <?php
 
-namespace Njasm\Container\Tests\Definition\Service;
+namespace Njasm\Container\tests\Definition\Service;
 
-use Njasm\Container\Definition\Service\DefinitionService,
-    Njasm\Container\Definition\DefinitionType,
-    Njasm\Container\Definition\DefinitionsMap,
-    Njasm\Container\Definition\Definition,
-    Njasm\Container\Definition\Service\Request;
+use Njasm\Container\Definition\Definition;
+use Njasm\Container\Definition\DefinitionsMap;
+use Njasm\Container\Definition\DefinitionType;
+use Njasm\Container\Definition\Service\DefinitionService;
+use Njasm\Container\Definition\Service\Request;
 
 class DefinitionServiceTest extends \PHPUnit_Framework_TestCase
 {

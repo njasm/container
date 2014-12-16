@@ -117,4 +117,3 @@ class Definition implements DefinitionInterface
         return $this->dependencyBag->getCallMethods();
     }
 }
-

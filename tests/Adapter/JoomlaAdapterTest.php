@@ -1,10 +1,10 @@
 <?php
 
-namespace Njasm\Container\Tests\Adapter;
+namespace Njasm\Container\tests\Adapter;
 
-use Njasm\Container\Container;
-use Njasm\Container\Adapter\JoomlaAdapter;
 use Joomla\DI\Container as JoomlaContainer;
+use Njasm\Container\Adapter\JoomlaAdapter;
+use Njasm\Container\Container;
 
 class JoomlaAdapterTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,9 +32,9 @@ class JoomlaAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $key = 'hello';
         $value = new \stdClass();
-        $this->joomla->set($key, $value);        
+        $this->joomla->set($key, $value);
 
-        $this->assertTrue($this->container->has($key));        
+        $this->assertTrue($this->container->has($key));
     }
         
     public function testGet()
@@ -64,5 +64,5 @@ class JoomlaAdapterTest extends \PHPUnit_Framework_TestCase
             
         $this->assertInstanceOf('stdClass', $this->container->get($key1));
         $this->assertInstanceOf('stdClass', $this->container->get($key2));
-    }      
+    }
 }

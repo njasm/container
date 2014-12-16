@@ -64,15 +64,14 @@ class ReflectionBuilder implements BuilderInterface
     protected function getDependencies(\ReflectionMethod $constructor, $container)
     {
         $parameters = array();
-        foreach($constructor->getParameters() as $param) {
-            
-            if(!$param->isDefaultValueAvailable()) {
+        foreach ($constructor->getParameters() as $param) {
+            if (!$param->isDefaultValueAvailable()) {
                 $parameters[] = $this->getDependency($param, $container);
                 continue;
             }
 
             $parameters[] = $param->getDefaultValue();
-        } 
+        }
         
         return $parameters;
     }
@@ -86,7 +85,7 @@ class ReflectionBuilder implements BuilderInterface
             $this->raiseException($message);
         }
 
-        return $container->get($dependency->name);        
+        return $container->get($dependency->name);
     }
     
     protected function raiseException($message = null)

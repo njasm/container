@@ -25,7 +25,7 @@ class ZendAdapter implements ServicesProviderInterface
         try {
             $this->container->get($id);
             return true;
-        }catch(ClassNotFoundException $e) {
+        } catch (ClassNotFoundException $e) {
             return false;
         }
     }

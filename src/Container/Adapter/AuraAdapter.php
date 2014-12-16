@@ -2,8 +2,8 @@
 
 namespace Njasm\Container\Adapter;
 
-use Njasm\Container\ServicesProviderInterface;
 use Aura\Di\Container as AuraContainer;
+use Njasm\Container\ServicesProviderInterface;
 
 class AuraAdapter implements ServicesProviderInterface
 {

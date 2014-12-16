@@ -2,8 +2,8 @@
 
 namespace Njasm\Container\Adapter;
 
-use Njasm\Container\ServicesProviderInterface;
 use Joomla\DI\Container as JoomlaContainer;
+use Njasm\Container\ServicesProviderInterface;
 
 class JoomlaAdapter implements ServicesProviderInterface
 {

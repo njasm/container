@@ -2,8 +2,8 @@
 
 namespace Njasm\Container\Adapter;
 
-use Njasm\Container\ServicesProviderInterface;
 use Nette\DI\Container as NetteContainer;
+use Njasm\Container\ServicesProviderInterface;
 
 class NetteAdapter implements ServicesProviderInterface
 {

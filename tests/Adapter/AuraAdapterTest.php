@@ -1,12 +1,12 @@
 <?php
 
-namespace Njasm\Container\Tests\Adapter;
+namespace Njasm\Container\tests\Adapter;
 
-use Njasm\Container\Container;
-use Njasm\Container\Adapter\AuraAdapter;
+use Aura\Di\Config;
 use Aura\Di\Container as AuraContainer;
 use Aura\Di\Forge;
-use Aura\Di\Config;
+use Njasm\Container\Adapter\AuraAdapter;
+use Njasm\Container\Container;
 
 class AuraAdapterTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,7 +20,7 @@ class AuraAdapterTest extends \PHPUnit_Framework_TestCase
         $this->auraAdapter = new AuraAdapter($this->aura);
         $this->container = new Container();
 
-        $this->container->provider($this->auraAdapter);        
+        $this->container->provider($this->auraAdapter);
     }
     
     public function testHasTrue()
@@ -64,5 +64,5 @@ class AuraAdapterTest extends \PHPUnit_Framework_TestCase
             
         $this->assertEquals($value1, $this->container->get($key1));
         $this->assertEquals($value2, $this->container->get($key2));
-    }    
+    }
 }

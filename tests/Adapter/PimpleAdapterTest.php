@@ -1,9 +1,9 @@
 <?php
 
-namespace Njasm\Container\Tests\Adapter;
+namespace Njasm\Container\tests\Adapter;
 
-use Njasm\Container\Container;
 use Njasm\Container\Adapter\PimpleAdapter;
+use Njasm\Container\Container;
 use Pimple\Container as PimpleContainer;
 
 class PimpleAdapterTest extends \PHPUnit_Framework_TestCase
@@ -18,7 +18,7 @@ class PimpleAdapterTest extends \PHPUnit_Framework_TestCase
         $this->pimpleAdapter = new PimpleAdapter($this->pimple);
         $this->container = new Container();
 
-        $this->container->provider($this->pimpleAdapter);        
+        $this->container->provider($this->pimpleAdapter);
     }
     
     public function testPimpleHas()
@@ -35,7 +35,7 @@ class PimpleAdapterTest extends \PHPUnit_Framework_TestCase
         $key = 'hello';
         $value = 'World';
         
-        $this->registerPimpleDefinition($key, $value); 
+        $this->registerPimpleDefinition($key, $value);
         $this->assertEquals($value, $this->container->get($key));
     }
     
@@ -60,10 +60,9 @@ class PimpleAdapterTest extends \PHPUnit_Framework_TestCase
     protected function registerPimpleDefinition($key, $value)
     {
         $this->pimple[$key] = $this->pimple->factory(
-            function() use ($value) {
+            function () use ($value) {
                 return $value;
             }
-        );        
+        );
     }
 }
-

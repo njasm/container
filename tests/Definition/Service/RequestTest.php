@@ -1,10 +1,10 @@
 <?php
 
-namespace Njasm\Container\Tests\Definition\Service;
+namespace Njasm\Container\tests\Definition\Service;
 
-use Njasm\Container\Definition\Service\Request,
-    Njasm\Container\Container, 
-    Njasm\Container\Definition\DefinitionsMap;
+use Njasm\Container\Container;
+use Njasm\Container\Definition\DefinitionsMap;
+use Njasm\Container\Definition\Service\Request;
 
 
 class RequestTest extends \PHPUnit_Framework_TestCase
@@ -29,13 +29,13 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testEmptyKey()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $request = $this->helperGetRequestObject("");        
+        $request = $this->helperGetRequestObject("");
     }
     
     public function testWhiteSpaceKey()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $request = $this->helperGetRequestObject("   ");        
+        $request = $this->helperGetRequestObject("   ");
     }
     
     public function testGet()

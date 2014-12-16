@@ -1,9 +1,9 @@
 <?php
 
-namespace Njasm\Container\Tests\Adapter;
+namespace Njasm\Container\tests\Adapter;
 
-use Njasm\Container\Container;
 use Njasm\Container\Adapter\ZendAdapter;
+use Njasm\Container\Container;
 use Zend\Di\Di;
 
 class ZendAdapterTest extends \PHPUnit_Framework_TestCase
@@ -39,6 +39,6 @@ class ZendAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $returnValue = $this->zendAdapter->has('stdClass');
         
-        $this->assertTrue($returnValue);        
+        $this->assertTrue($returnValue);
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Njasm\Container\Tests\Adapter;
+namespace Njasm\Container\tests\Adapter;
 
-use Njasm\Container\Container;
-use Njasm\Container\Adapter\PHPDIAdapter;
 use DI\ContainerBuilder;
+use Njasm\Container\Adapter\PHPDIAdapter;
+use Njasm\Container\Container;
 
 class PHPDIAdapterTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,7 +20,7 @@ class PHPDIAdapterTest extends \PHPUnit_Framework_TestCase
         $this->phpDiAdapter = new PHPDIAdapter($this->phpDI);
         $this->container = new Container();
 
-        $this->container->provider($this->phpDiAdapter);        
+        $this->container->provider($this->phpDiAdapter);
     }
 
     public function testDIHasTrue()
@@ -65,5 +65,4 @@ class PHPDIAdapterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($value1, $this->container->get($key1));
         $this->assertEquals($value2, $this->container->get($key2));
     }
-        
 }

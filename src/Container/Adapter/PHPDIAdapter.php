@@ -2,8 +2,8 @@
 
 namespace Njasm\Container\Adapter;
 
-use Njasm\Container\ServicesProviderInterface;
 use DI\Container as PHPDIContainerBuilder;
+use Njasm\Container\ServicesProviderInterface;
 
 class PHPDIAdapter implements ServicesProviderInterface
 {

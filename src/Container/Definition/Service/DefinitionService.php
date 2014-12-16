@@ -6,9 +6,9 @@ use Njasm\Container\Definition\Definition;
 use Njasm\Container\Definition\DefinitionType;
 use Njasm\Container\Definition\Finder\LocalFinder;
 use Njasm\Container\Definition\Finder\ProvidersFinder;
+use Njasm\Container\Exception\ContainerException;
 use Njasm\Container\Factory\LocalFactory;
 use Njasm\Container\Factory\ProviderFactory;
-use Njasm\Container\Exception\ContainerException;
 
 class DefinitionService
 {
@@ -19,7 +19,7 @@ class DefinitionService
     
     /**
      * Finds if a service is defined globally. Globally means, in this Container or in a nested Container.
-     * 
+     *
      * @param \Njasm\Container\Definition\Service\Request $request
      * @return boolean
      */
@@ -30,7 +30,7 @@ class DefinitionService
     
     /**
      * Finds if a service is defined locally in Container.
-     * 
+     *
      * @param \Njasm\Container\Definition\Service\Request $request
      * @return boolean
      */
@@ -42,10 +42,10 @@ class DefinitionService
     
     /**
      * Finds if a service is defined in a nested Container.
-     * 
+     *
      * @param \Njasm\Container\Definition\Service\Request $request
      * @return boolean
-     */    
+     */
     protected function providersHas(Request $request)
     {
         $finder = new ProvidersFinder();
@@ -54,7 +54,7 @@ class DefinitionService
     
     /**
      * Assembles a Definition object based on the concrete value supplied.
-     * 
+     *
      * @param   string      $key
      * @param   \Closure    $concrete
      * @param   null|\Njasm\Container\Definition\Service\DependencyBag   $dependencyBag
@@ -67,9 +67,9 @@ class DefinitionService
         
         if ($concrete instanceof \Closure) {
             $definitionType = new DefinitionType(DefinitionType::CLOSURE);
-        }elseif (is_object($concrete)) {
+        } elseif (is_object($concrete)) {
             $definitionType = new DefinitionType(DefinitionType::OBJECT);
-        }elseif (is_scalar($concrete)) {
+        } elseif (is_scalar($concrete)) {
             $definitionType = new DefinitionType(DefinitionType::PRIMITIVE);
         }
         
@@ -82,14 +82,14 @@ class DefinitionService
     
     /**
      * Assembles a Definition object of type Alias.
-     * 
+     *
      * @param   string      $key
      * @param   string      $concrete
      * @return  \Njasm\Container\Definition\Definition
      */
     public function assembleAliasDefinition($key, $concrete)
     {
-      return new Definition($key, $concrete, new DefinitionType(DefinitionType::ALIAS));  
+        return new Definition($key, $concrete, new DefinitionType(DefinitionType::ALIAS));
     }
 
     /**
@@ -107,7 +107,7 @@ class DefinitionService
 
     /**
      * Build the requested service.
-     * 
+     *
      * @param   Request     $request
      * @return  mixed
      */

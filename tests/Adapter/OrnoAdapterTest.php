@@ -1,9 +1,9 @@
 <?php
 
-namespace Njasm\Container\Tests\Adapter;
+namespace Njasm\Container\tests\Adapter;
 
-use Njasm\Container\Container;
 use Njasm\Container\Adapter\OrnoAdapter;
+use Njasm\Container\Container;
 use Orno\Di\Container as OrnoContainer;
 
 class OrnoAdapterTest extends \PHPUnit_Framework_TestCase
@@ -18,7 +18,7 @@ class OrnoAdapterTest extends \PHPUnit_Framework_TestCase
         $this->ornoAdapter = new OrnoAdapter($this->orno);
         $this->container = new Container();
 
-        $this->container->provider($this->ornoAdapter);        
+        $this->container->provider($this->ornoAdapter);
     }
     
     public function testHasTrue()
@@ -61,5 +61,5 @@ class OrnoAdapterTest extends \PHPUnit_Framework_TestCase
             
         $this->assertInstanceOf($value1, $this->container->get($key1));
         $this->assertInstanceOf($value2, $this->container->get($key2));
-    }    
+    }
 }

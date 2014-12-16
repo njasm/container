@@ -2,7 +2,7 @@
 
 namespace Njasm\Container\Tests;
 
-class ContainerTest extends \PHPUnit_Framework_TestCase 
+class ContainerTest extends \PHPUnit_Framework_TestCase
 {
     private $container;
     
@@ -42,7 +42,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->alias($key, $alias);
         
         $this->setExpectedException('Interop\Container\Exception\ContainerException');
-        $this->container->get($alias);    
+        $this->container->get($alias);
     }
     
     public function testGetException()
@@ -101,7 +101,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             "DependentClass",
             function () use (&$container) {
                 return new DependentClass($container->get("SingleClass"));
-            }            
+            }
         );
         
         $this->container->set("SingleClass", new SingleClass());
@@ -119,15 +119,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $container = &$this->container;
         
         $this->container->set(
-            $key1, 
-            function() use (&$container, $key2) {
+            $key1,
+            function () use (&$container, $key2) {
                 return $container->get($key2);
             }
         );
         
         $this->container->set(
             $key2,
-            function() use (&$container, $key1) {
+            function () use (&$container, $key1) {
                 return $container->get($key1);
             }
         );
@@ -154,7 +154,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         // now get a dependent go get the singleton and compare if it's the same object and not a new instance
         $dependent = $this->container->get("DependentClass");
         $this->assertInstanceOf("Njasm\\Container\\Tests\\DependentClass", $dependent);
-        $this->assertInstanceOf("Njasm\\Container\\Tests\\SingleClass", $dependent->getInjectedClass()); 
+        $this->assertInstanceOf("Njasm\\Container\\Tests\\SingleClass", $dependent->getInjectedClass());
         
         $this->assertTrue($singleton === $dependent->getInjectedClass());
     }
@@ -169,12 +169,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue("VariableString" === $this->container->get("string"));
         $this->assertTrue(true === $this->container->get("bool"));
         $this->assertTrue(123 === $this->container->get("int"));
-        $this->assertTrue(45.678 === $this->container->get("float")); 
+        $this->assertTrue(45.678 === $this->container->get("float"));
     }
     
     public function testInstanciatedObject()
     {
-
         $this->container->set("SingleClass", new SingleClass());
         
         $objResult1 = $this->container->get("SingleClass");
@@ -369,7 +368,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($name2, $obj->getName());
         $this->assertEquals($age2, $obj->getAge());
         $this->assertEquals($month2, $obj->getMonth());
-
     }
 
     public function testConstructorInjection()
@@ -401,9 +399,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         
         $provider->set(
             $key,
-            function() {
+            function () {
                 return new SingleClassOnServiceProvider();
-            }            
+            }
         );
         
         return $provider;

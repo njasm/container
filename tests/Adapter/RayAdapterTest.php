@@ -1,12 +1,12 @@
 <?php
 
-namespace Njasm\Container\Tests\Adapter;
+namespace Njasm\Container\tests\Adapter;
 
-use Njasm\Container\Container;
-use Njasm\Container\Adapter\RayAdapter;
-use Ray\Di\Container as RayContainer;
-use Aura\Di\Forge;
 use Aura\Di\Config;
+use Aura\Di\Forge;
+use Njasm\Container\Adapter\RayAdapter;
+use Njasm\Container\Container;
+use Ray\Di\Container as RayContainer;
 
 class RayAdapterTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,7 +20,7 @@ class RayAdapterTest extends \PHPUnit_Framework_TestCase
         $this->rayAdapter = new RayAdapter($this->ray);
         $this->container = new Container();
 
-        $this->container->provider($this->rayAdapter);        
+        $this->container->provider($this->rayAdapter);
     }
     
     public function testHasTrue()
@@ -63,5 +63,5 @@ class RayAdapterTest extends \PHPUnit_Framework_TestCase
             
         $this->assertEquals($value1, $this->container->get($key1));
         $this->assertEquals($value2, $this->container->get($key2));
-    }    
+    }
 }

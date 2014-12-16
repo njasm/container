@@ -1,10 +1,10 @@
 <?php
 
-namespace Njasm\Container\Tests\Adapter;
+namespace Njasm\Container\tests\Adapter;
 
-use Njasm\Container\Container;
-use Njasm\Container\Adapter\IlluminateAdapter;
 use Illuminate\Container\Container as IlluminateContainer;
+use Njasm\Container\Adapter\IlluminateAdapter;
+use Njasm\Container\Container;
 
 class IlluminateAdapterTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class IlluminateAdapterTest extends \PHPUnit_Framework_TestCase
         $this->illuminateAdapter = new IlluminateAdapter($this->illuminate);
         $this->container = new Container();
 
-        $this->container->provider($this->illuminateAdapter);        
+        $this->container->provider($this->illuminateAdapter);
     }
     
     public function testHasTrue()
@@ -62,5 +62,5 @@ class IlluminateAdapterTest extends \PHPUnit_Framework_TestCase
             
         $this->assertEquals($value1, $this->container->get($key1));
         $this->assertEquals($value2, $this->container->get($key2));
-    }    
+    }
 }

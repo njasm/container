@@ -2,15 +2,15 @@
 
 namespace Njasm\Container;
 
-use Njasm\Container\Definition\Service\DependencyBag;
-use Njasm\Container\Exception\NotFoundException;
 use Njasm\Container\Definition\DefinitionsMap;
 use Njasm\Container\Definition\Service\DefinitionService;
+use Njasm\Container\Definition\Service\DependencyBag;
 use Njasm\Container\Definition\Service\Request;
+use Njasm\Container\Exception\NotFoundException;
 
 class Container implements ServicesProviderInterface
 {
-    protected $definitionsMap;    
+    protected $definitionsMap;
     protected $providers;
     protected $registry;
     protected $singletons;
@@ -23,7 +23,7 @@ class Container implements ServicesProviderInterface
 
     /**
      * Initializes the Container.
-     * 
+     *
      * @return void
      */
     protected function initialize()
@@ -42,10 +42,10 @@ class Container implements ServicesProviderInterface
     
     /**
      * Check if service is registered.
-     * 
+     *
      * @param   string      $key
      * @return  boolean
-     */    
+     */
     public function has($key)
     {
         return $this->service->has($this->getRequest($key));
@@ -53,7 +53,7 @@ class Container implements ServicesProviderInterface
     
     /**
      * Register a new service in the container.
-     * 
+     *
      * @param   string      $key
      * @param   mixed       $concrete
      * @param   array       $construct
@@ -75,7 +75,7 @@ class Container implements ServicesProviderInterface
         $definitionType = $definition->getType();
         
         if (
-            $definitionType === Definition\DefinitionType::OBJECT 
+            $definitionType === Definition\DefinitionType::OBJECT
             || $definitionType === Definition\DefinitionType::PRIMITIVE
         ) {
             $this->registerSingleton($key);
@@ -86,11 +86,11 @@ class Container implements ServicesProviderInterface
 
     /**
      * Register an alias to a service key.
-     * 
+     *
      * @param   string      $alias
      * @param   string      $key
      * @return  Definition\Definition
-     */    
+     */
     public function alias($alias, $key)
     {
         $definition = $this->service->assembleAliasDefinition($alias, $key);
@@ -148,7 +148,7 @@ class Container implements ServicesProviderInterface
 
     /**
      * Registers service as a singleton instance in the container.
-     * 
+     *
      * @param   string      $key
      * @param   mixed       $concrete
      * @param   array       $construct
@@ -171,7 +171,7 @@ class Container implements ServicesProviderInterface
     
     /**
      * Register a service key as singleton.
-     * 
+     *
      * @param   string      $key
      * @return  Container
      */
@@ -184,7 +184,7 @@ class Container implements ServicesProviderInterface
     
     /**
      * Registers another services provider container.
-     * 
+     *
      * @param   ServicesProviderInterface   $provider
      * @return  Container
      */
@@ -192,18 +192,18 @@ class Container implements ServicesProviderInterface
     {
         $this->providers[] = $provider;
 
-        return $this;        
-    }   
+        return $this;
+    }
 
     /**
      * Returns the service.
-     * 
+     *
      * @param   string      $key
      * @param   array       $construct
      * @param   array       $properties
      * @param   array       $methods
      * @return  mixed
-     * 
+     *
      * @throws  NotFoundException
      */
     public function get($key, array $construct = array(), array $properties = array(), array $methods = array())
@@ -217,19 +217,19 @@ class Container implements ServicesProviderInterface
 
         $returnValue = $this->service->build($request);
 
-        return $this->isSingleton($key) ? $this->registry[$key] = $returnValue : $returnValue;        
+        return $this->isSingleton($key) ? $this->registry[$key] = $returnValue : $returnValue;
     }
     
     /**
-     * Removes a service from the container. 
+     * Removes a service from the container.
      * This will NOT remove services from other nested providers.
-     * 
+     *
      * @param   string  $key
      * @return  boolean
      */
     public function remove($key)
     {
-        if(isset($this->definitionsMap[$key])) {
+        if (isset($this->definitionsMap[$key])) {
             unset($this->definitionsMap[$key]);
             unset($this->registry[$key]);
             unset($this->singletons[$key]);
@@ -242,9 +242,9 @@ class Container implements ServicesProviderInterface
     
     /**
      * Reset container settings.
-     * 
+     *
      * @return  void
-     */ 
+     */
     public function reset()
     {
         $this->initialize();
@@ -252,7 +252,7 @@ class Container implements ServicesProviderInterface
     
     /**
      * Check if service is registered as a singleton.
-     * 
+     *
      * @param   string  $key
      * @return  boolean
      */
@@ -279,7 +279,7 @@ class Container implements ServicesProviderInterface
 
     /**
      * Build a new Request value object.
-     * 
+     *
      * @param   string              $key
      * @param   null|DependencyBag       $dependencyBag
      * @return  Request

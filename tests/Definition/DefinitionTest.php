@@ -1,6 +1,6 @@
 <?php
 
-namespace Njasm\Container\Tests\Definition;
+namespace Njasm\Container\tests\Definition;
 
 use Njasm\Container\Container;
 use Njasm\Container\Definition\Definition;
@@ -23,7 +23,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     {
         $key = "primitive";
         $d = new Definition($key, array("a"),  new DefinitionType(DefinitionType::PRIMITIVE));
-        $this->assertTrue($d->getKey() === $key);        
+        $this->assertTrue($d->getKey() === $key);
     }
     
     public function testGetDefinition()
@@ -47,11 +47,11 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($d->getCallMethods());
 
         // setter constructor
-        $d->setConstructorArgument(1,2);
+        $d->setConstructorArgument(1, 2);
         $this->assertEquals(2, $d->getConstructorArgument(1));
 
         // setter constructor
-        $d->setConstructorArguments(array(3,4));
+        $d->setConstructorArguments(array(3, 4));
         $this->assertEquals(3, $d->getConstructorArgument(0));
 
         //exception

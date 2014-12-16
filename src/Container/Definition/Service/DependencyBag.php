@@ -2,7 +2,6 @@
 
 namespace Njasm\Container\Definition\Service;
 
-
 class DependencyBag
 {
     /** @var array */

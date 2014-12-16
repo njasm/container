@@ -18,7 +18,7 @@ class SymfonyAdapter implements ServicesProviderInterface
     {
         try {
             return $this->container->get($id);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             // try a parameter
             try {
                 return $this->container->getParameter($id);
@@ -39,6 +39,4 @@ class SymfonyAdapter implements ServicesProviderInterface
         
         return $hasService;
     }
-
 }
-

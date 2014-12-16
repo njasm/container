@@ -1,10 +1,10 @@
 <?php
 
-namespace Njasm\Container\Tests\Adapter;
+namespace Njasm\Container\tests\Adapter;
 
-use Njasm\Container\Container;
-use Njasm\Container\Adapter\NetteAdapter;
 use Nette\DI\Container as NetteContainer;
+use Njasm\Container\Adapter\NetteAdapter;
+use Njasm\Container\Container;
 
 class NetteAdapterTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,9 +32,9 @@ class NetteAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $key = 'hello';
         $value = new \stdClass();
-        $this->nette->addService($key, $value);        
+        $this->nette->addService($key, $value);
 
-        $this->assertTrue($this->container->has($key));        
+        $this->assertTrue($this->container->has($key));
     }
         
     public function testGet()
@@ -64,5 +64,5 @@ class NetteAdapterTest extends \PHPUnit_Framework_TestCase
             
         $this->assertInstanceOf('stdClass', $this->container->get($key1));
         $this->assertInstanceOf('stdClass', $this->container->get($key2));
-    }      
+    }
 }

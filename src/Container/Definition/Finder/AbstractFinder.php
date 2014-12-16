@@ -13,7 +13,6 @@ abstract class AbstractFinder
     final public function has(Request $request)
     {
         return (bool) $this->handle($request);
-
     }
     
     abstract protected function handle(Request $request);

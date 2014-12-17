@@ -8,12 +8,12 @@ use Njasm\Container\ServicesProviderInterface;
 class JoomlaAdapter implements ServicesProviderInterface
 {
     protected $container;
-    
+
     public function __construct(JoomlaContainer $container)
     {
         $this->container = $container;
     }
-    
+
     public function get($id)
     {
         return $this->container->get($id);

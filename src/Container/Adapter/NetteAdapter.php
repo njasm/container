@@ -8,12 +8,12 @@ use Njasm\Container\ServicesProviderInterface;
 class NetteAdapter implements ServicesProviderInterface
 {
     protected $container;
-    
+
     public function __construct(NetteContainer $container)
     {
         $this->container = $container;
     }
-    
+
     public function get($id)
     {
         return $this->container->getService($id);

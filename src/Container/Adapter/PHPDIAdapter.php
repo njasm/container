@@ -8,12 +8,12 @@ use Njasm\Container\ServicesProviderInterface;
 class PHPDIAdapter implements ServicesProviderInterface
 {
     protected $container;
-    
+
     public function __construct(PHPDIContainerBuilder $container)
     {
         $this->container = $container;
     }
-    
+
     public function get($id)
     {
         return $this->container->get($id);

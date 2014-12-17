@@ -32,14 +32,14 @@ class Container implements ServicesProviderInterface
         $this->definitionsMap = new DefinitionsMap();
         $this->registry = array();
         $this->singletons = array();
-        
+
         $this->service = new DefinitionService();
-        
+
         // register Container
         $this->set('Njasm\Container\Container', $this);
         $this->alias('Container', 'Njasm\Container\Container');
     }
-    
+
     /**
      * Check if service is registered.
      *
@@ -50,7 +50,7 @@ class Container implements ServicesProviderInterface
     {
         return $this->service->has($this->getRequest($key));
     }
-    
+
     /**
      * Register a new service in the container.
      *
@@ -71,16 +71,16 @@ class Container implements ServicesProviderInterface
         $dependencyBag = $this->getDependencyBag($construct, $properties, $methods);
         $definition = $this->service->assemble($key, $concrete, $dependencyBag);
         $this->definitionsMap->add($definition);
-        
+
         $definitionType = $definition->getType();
-        
+
         if (
             $definitionType === Definition\DefinitionType::OBJECT
             || $definitionType === Definition\DefinitionType::PRIMITIVE
         ) {
             $this->registerSingleton($key);
         }
-        
+
         return $definition;
     }
 
@@ -95,7 +95,7 @@ class Container implements ServicesProviderInterface
     {
         $definition = $this->service->assembleAliasDefinition($alias, $key);
         $this->definitionsMap->add($definition);
-        
+
         return $definition;
     }
 
@@ -168,7 +168,7 @@ class Container implements ServicesProviderInterface
 
         return $definition;
     }
-    
+
     /**
      * Register a service key as singleton.
      *
@@ -178,10 +178,10 @@ class Container implements ServicesProviderInterface
     protected function registerSingleton($key)
     {
         $this->singletons[$key] = true;
-        
+
         return $this;
     }
-    
+
     /**
      * Registers another services provider container.
      *
@@ -219,7 +219,7 @@ class Container implements ServicesProviderInterface
 
         return $this->isSingleton($key) ? $this->registry[$key] = $returnValue : $returnValue;
     }
-    
+
     /**
      * Removes a service from the container.
      * This will NOT remove services from other nested providers.
@@ -233,13 +233,13 @@ class Container implements ServicesProviderInterface
             unset($this->definitionsMap[$key]);
             unset($this->registry[$key]);
             unset($this->singletons[$key]);
-            
+
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Reset container settings.
      *
@@ -249,7 +249,7 @@ class Container implements ServicesProviderInterface
     {
         $this->initialize();
     }
-    
+
     /**
      * Check if service is registered as a singleton.
      *

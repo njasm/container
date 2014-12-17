@@ -10,7 +10,7 @@ class ProviderFactory implements FactoryInterface
     public function build(Request $request)
     {
         $builder = new ProvidersBuilder();
-        
+
         return $builder->execute($request);
     }
 }

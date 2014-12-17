@@ -16,7 +16,7 @@ class DefinitionService
      * @var array Service keys being built.
      */
     protected $buildingKeys = array();
-    
+
     /**
      * Finds if a service is defined globally. Globally means, in this Container or in a nested Container.
      *
@@ -27,7 +27,7 @@ class DefinitionService
     {
         return $this->localHas($request) || $this->providersHas($request);
     }
-    
+
     /**
      * Finds if a service is defined locally in Container.
      *
@@ -39,7 +39,7 @@ class DefinitionService
         $finder = new LocalFinder();
         return $finder->has($request);
     }
-    
+
     /**
      * Finds if a service is defined in a nested Container.
      *
@@ -51,7 +51,7 @@ class DefinitionService
         $finder = new ProvidersFinder();
         return $finder->has($request);
     }
-    
+
     /**
      * Assembles a Definition object based on the concrete value supplied.
      *
@@ -64,7 +64,7 @@ class DefinitionService
     public function assemble($key, $concrete, DependencyBag $dependencyBag = null)
     {
         $definitionType = null;
-        
+
         if ($concrete instanceof \Closure) {
             $definitionType = new DefinitionType(DefinitionType::CLOSURE);
         } elseif (is_object($concrete)) {
@@ -72,14 +72,14 @@ class DefinitionService
         } elseif (is_scalar($concrete)) {
             $definitionType = new DefinitionType(DefinitionType::PRIMITIVE);
         }
-        
+
         if (!$definitionType instanceof DefinitionType) {
             throw new \OutOfBoundsException("Unknown definition type.");
         }
-        
+
         return new Definition($key, $concrete, $definitionType, $dependencyBag);
     }
-    
+
     /**
      * Assembles a Definition object of type Alias.
      *

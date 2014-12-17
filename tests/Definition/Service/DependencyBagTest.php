@@ -1,5 +1,5 @@
 <?php
-namespace Njasm\Container\tests\Definition\Service;
+namespace Njasm\Container\Tests\Definition\Service;
 
 use Njasm\Container\Definition\Service\DependencyBag;
 

@@ -10,7 +10,7 @@ class LocalFinder extends AbstractFinder
     {
         $key            = $request->getKey();
         $definitions    = $request->getDefinitionsMap();
-        
+
         return $definitions->has($key);
     }
 }

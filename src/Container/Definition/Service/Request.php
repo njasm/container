@@ -21,7 +21,7 @@ class Request
 
     /** @var DependencyBag */
     protected $dependencyBag;
-    
+
     public function __construct(
         $key,
         DefinitionsMap $definitionsMap,
@@ -30,11 +30,11 @@ class Request
         DependencyBag $dependencyBag = null
     ) {
         $key = trim($key);
-        
+
         if (empty($key)) {
             throw new \InvalidArgumentException("Key cannot be empty.");
         }
-        
+
         $this->key              = $key;
         $this->definitionsMap   = $definitionsMap;
         $this->providers        = $providers;

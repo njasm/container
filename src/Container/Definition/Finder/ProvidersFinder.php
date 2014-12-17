@@ -16,7 +16,7 @@ class ProvidersFinder extends AbstractFinder
                 return true;
             }
         }
-        
+
         return false;
     }
 }

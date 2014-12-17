@@ -9,7 +9,7 @@ class AliasBuilder implements BuilderInterface
     public function execute(Request $request)
     {
         $value = $request->getConcrete();
-        
+
         return $request->getContainer()->get($value);
     }
 }

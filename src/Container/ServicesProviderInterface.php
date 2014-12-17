@@ -13,7 +13,7 @@ interface ServicesProviderInterface extends ContainerInterface
      * @return  boolean
      */
     public function has($key);
-    
+
     /**
      * Return the requested service instanciated
      *

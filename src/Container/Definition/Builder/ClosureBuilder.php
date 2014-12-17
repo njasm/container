@@ -9,7 +9,7 @@ class ClosureBuilder implements BuilderInterface
     public function execute(Request $request)
     {
         $concrete = $request->getConcrete();
-        
+
         return $concrete();
     }
 }

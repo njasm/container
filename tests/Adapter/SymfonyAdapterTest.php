@@ -2,6 +2,7 @@
 
 namespace Njasm\Container\Tests\Adapter;
 
+use Njasm\Container\Adapter\SymfonyAdapter;
 use Njasm\Container\Container;
 use Symfony\Component\DependencyInjection\Container as SymfonyContainer;
 

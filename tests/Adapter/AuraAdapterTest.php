@@ -8,6 +8,9 @@ use Aura\Di\Forge;
 use Njasm\Container\Adapter\AuraAdapter;
 use Njasm\Container\Container;
 
+/**
+ * @requires PHP 5.4
+ */
 class AuraAdapterTest extends \PHPUnit_Framework_TestCase
 {
     protected $aura;

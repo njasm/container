@@ -2,7 +2,7 @@
 
 namespace Njasm\Container\Definition;
 
-final class DefinitionType 
+final class DefinitionType
 {
     const OBJECT        = 'Object';
     const CLOSURE       = 'Closure';
@@ -19,19 +19,19 @@ final class DefinitionType
             $class = new \ReflectionClass($this);
             self::$validTypes = $class->getConstants();
         }
-        
+
         $this->validateType($value);
-        
+
         $this->value = $value;
     }
-    
+
     protected function validateType($value)
     {
-        if (!in_array($value, self::$validTypes)) {
+        if (!in_array($value, self::$validTypes, true)) {
             throw new \InvalidArgumentException("DefinitionType of type: {$value} not allowed.");
         }
     }
-    
+
     public function __toString()
     {
         return $this->value;

@@ -26,16 +26,16 @@ class LocalFactory implements FactoryInterface
         $definition         = $definitionsMap->get($key);
         $builder            = $this->getBuilder($definition->getType());
 
-        return $builder->execute($request);       
+        return $builder->execute($request);
     }
 
     protected function getBuilder($builderType)
     {
         $builder = $this->buildersNamespace . ucfirst($builderType) . $this->buildersSuffix;
 
-        if(
+        if (
             !class_exists($builder)
-            || !in_array(self::BUILDERS_INTERFACE, class_implements($builder))
+            || !in_array(self::BUILDERS_INTERFACE, class_implements($builder), true)
         ) {
             $message = "No available factory to build the requested service";
             $message .= " or factory does not implement " . self::BUILDERS_INTERFACE;

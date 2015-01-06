@@ -9,7 +9,9 @@ class ClosureBuilder implements BuilderInterface
     public function execute(Request $request)
     {
         $concrete = $request->getConcrete();
-        
-        return $concrete();
+        $arguments = $request->getConstructorArguments();
+        $closure = new \ReflectionFunction($concrete);
+
+        return $closure->invokeArgs($arguments);
     }
 }

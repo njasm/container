@@ -8,12 +8,12 @@ use Orno\Di\Container as OrnoContainer;
 class OrnoAdapter implements ServicesProviderInterface
 {
     protected $container;
-    
+
     public function __construct(OrnoContainer $container)
     {
         $this->container = $container;
     }
-    
+
     public function get($id)
     {
         return $this->container->get($id);

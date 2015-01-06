@@ -17,7 +17,7 @@ class Definition implements DefinitionInterface
 
     /** @var DependencyBag */
     protected $dependencyBag;
-    
+
     public function __construct($key, $concrete, DefinitionType $type, DependencyBag $dependencyBag = null)
     {
         if (empty($key)) {
@@ -34,12 +34,12 @@ class Definition implements DefinitionInterface
     {
         return $this->key;
     }
-    
+
     public function getConcrete()
     {
         return $this->concrete;
     }
-    
+
     public function getType()
     {
         return $this->type->__toString();
@@ -117,4 +117,3 @@ class Definition implements DefinitionInterface
         return $this->dependencyBag->getCallMethods();
     }
 }
-

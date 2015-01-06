@@ -22,6 +22,4 @@ interface DefinitionInterface
     public function callMethods(array $methods);
     public function getCallMethod($methodName);
     public function getCallMethods();
-
 }
-

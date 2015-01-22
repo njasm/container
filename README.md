@@ -90,7 +90,7 @@ $container->set("Username", "John");
 echo $container->get("Username");
 ```
 
-### Defining Services - Binding Services (Lazy Loading)
+#### Defining Services - Binding Services (Lazy Loading)
 
 You can bind a ``key`` to a instantiable FCQN ``value``.
 
@@ -148,7 +148,12 @@ echo $person->getAge();  // 33
 echo $person->genre      // Female
 
 // calling services and overriding declared dependencies 
-$person2 = $container->get("Person", array("Mark"), array("genre" => "Male"), array("setAge" => array(55)));
+$person2 = $container->get(
+    "Person", 
+    array("Mark"), 
+    array("genre" => "Male"), 
+    array("setAge" => array(55))
+);
 echo $person2->getName(); // Mark
 echo $person2->getAge();  // 55
 echo $person2->genre      // Male
@@ -189,7 +194,7 @@ $complex = $container->get("Complex");
 $complexJane = $container->get("Complex", array("Jane", "Fonda")); 
 ```
 
-#### Defining Services - Complex builds With Nested Dependecies (Lazy Loading)
+#### Defining Services - Complex builds With Nested Dependencies (Lazy Loading)
 Creation of nested dependencies is also possible. You just need to pass the container to the closure.
 
 ```php

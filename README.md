@@ -90,7 +90,7 @@ $container->set("Username", "John");
 echo $container->get("Username");
 ```
 
-### Defining Services - Binding Services
+### Defining Services - Binding Services (Lazy Loading)
 
 You can bind a ``key`` to a instantiable FCQN ``value``.
 
@@ -98,53 +98,104 @@ You can bind a ``key`` to a instantiable FCQN ``value``.
  $container->bind("MyKey", "\My\Namespace\SomeClass");
  ```
  
- If you want to bind a Service, and register that Service as a ``Singleton`` Service.
+If you want to bind a Service, and register that Service as a ``Singleton`` Service.
  ```php
  $container->bindSingleton("MyKey", "\My\Namespace\SomeClass");
  ```
  
- Both ``Container::bind`` and ``Container::bindSingleton`` uses Lazy Loading approach, 
- so that ``\My\Namespace\SomeClass`` will only be evaluated/instantiated when ``MyKey`` is requested.
+Both ``Container::bind`` and ``Container::bindSingleton`` uses Lazy Loading approach, 
+so that ``\My\Namespace\SomeClass`` will only be evaluated/instantiated when ``MyKey`` is requested.
 
-#### Defining Services - Eager Loading
+When binding a service, constructor dependencies can be declared, public attributes be set and methods called with
+arguments, so they are injected/setted when instantiating the service.
 
 ```php
-$container->set(
-    "Mail.Transport",
-    new \Namespace\For\My\MailTransport("smtp.example.com", "username", "password", 25)
+namespace \App\Actors;
+
+class Person {
+    protected $name;
+    protected $age = 24;
+    public genre = 'Male';
+    
+    public function __construct($name = 'John') {
+        $this->name = $name;
+    }
+    
+    public function getName() {
+        return $this->name;
+    }
+    
+    public function getAge() {
+        return $this->age;
+    }
+    
+    public function setAge($age) {
+        $this->age = (int) $age;
+    }
+}
+
+$container->bind(
+    "Person",                       // key
+    "\App\Actors\Person",           // FQCN
+    array("Jane"),                  // constructor dependencies
+    array("genre" => "Female"),     // attributes injection
+    array("setAge" => array(33))    // call methods
 );
 
-$mailer = $container->get("Mail.Transport");
+$person = $container->get("Person");
+echo $person->getName(); // Jane
+echo $person->getAge();  // 33
+echo $person->genre      // Female
+
+// calling services and overriding declared dependencies 
+$person2 = $container->get("Person", array("Mark"), array("genre" => "Male"), array("setAge" => array(55)));
+echo $person2->getName(); // Mark
+echo $person2->getAge();  // 55
+echo $person2->genre      // Male
 ```
 
-#### Defining Services - Lazy Loading
+#### Defining Services - Objects (Eager Loading)
 
-There are time when you'll want to instantiate an object, only if needed in the current request. You use
-anonymous functions for that.
+```php
+$mailer = new \Namespace\For\My\MailTransport("smtp.example.com", "username", "password", 25); 
+$container->set("Mail.Transport", $mailer, array(), array(), array("withSSL" => array(false)));
+
+$mailerTransport = $container->get("Mail.Transport");
+
+// calling methods and injecting attributes is also possible
+$mailerTransportSsl = $container->get("Mail.Transport", array(), array(), array("withSSL" => array(true)));
+```
+
+#### Defining Services - Complex builds (Lazy Loading)
+
+There are time when you'll want to instantiate an object, but the build process is reall complex and you want to
+control that process. You use anonymous functions for that.
 
 ```php
 $container->set(
-    "Mail.Transport",
-    function() {
-        return new \Namespace\For\My\MailTransport(
-            "smtp.example.com", 
-            "username", 
-            "password", 
-            25
-        );
+    "Complex",
+    function($firstName = "John", $lastName = "Doe") {
+        // complex logic here
+        // ...
+        $theComplexObject = new Complex($firstName, $lastName);
+        
+        return $theComplexObject;
     }
 );
 
-$mailer = $container->get("Mail.Transport");
-$mailer->setMessage($messageObject)->send();
+$complex = $container->get("Complex");
+
+// injecting closure dependencies is also possible
+$complexJane = $container->get("Complex", array("Jane", "Fonda")); 
 ```
 
+#### Defining Services - Complex builds With Nested Dependecies (Lazy Loading)
 Creation of nested dependencies is also possible. You just need to pass the container to the closure.
 
 ```php
 $container->set(
     "Mail.Transport",
-    function(&$container) {
+    function() use (&$container) {
         return new \Namespace\For\My\MailTransport(
             $container->get("Mail.Transport.Config")
         );
@@ -169,8 +220,6 @@ $mailer = $container->get("Mail.Transport");
 #### Defining Singleton Services
 
 For registering singleton services, you use the singleton method invocation.
-The example below makes it to be a Lazy loading singleton service, cos we're registering it with 
-an anonymous function.
 
 ```php
 $container->singleton(
@@ -190,13 +239,26 @@ $db = $container->get("Database.Connection");
 $db2 = $container->get("Database.Connection");
 
 // $db === $db2 TRUE
-
 ```
 
 ### Defining Sub/Nested Containers
 
- TODO: write example on how to inject other containers, create example also on how to create a Decorator to implement
- the required interface and wrap the wanted container around.
+Nesting container is possible as long as you use an existing Container Adapter for your application existing container.
+The Adapter class must implement the ``ServicesProviderInterface`` for more examples please see the ``Adapter``folder.
+ 
+```php
+$pimple; // is your instantiated pimple container
+$pimple["Name"] = $pimple->factory(function() {
+   return "John";
+}
+ 
+$pimpleAdapter = new \Njasm\Container\Adapter\PimpleAdapter($pimple);
+$mainContainer = new \Njasm\Container\Container();
+$mainContainer->provider($pimpleAdapter);
+ 
+$mainContainer->has("Name"); // TRUE
+echo $mainContainer->get("Name"); // John
+```
 
 ### Automatic Resolution of Services
 
@@ -216,6 +278,14 @@ $container = new Njasm\Container\Container();
 $something = $container->get('My\Name\Space\Something');
 
 //$something instanceof 'My\Name\Space\Something' == true
+
+//once again you can also inject dependencies when calling get method.
+$something = $container->get(
+    "My\Name\Space\Something", 
+    array("constructor value 1", "constructor value 2"),
+    array("attributeName" => "value 1"), // attributes
+    array("methodName" => array("value 1", "value 2"))
+);
 ```
 
 

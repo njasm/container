@@ -142,6 +142,13 @@ $container->bind(
     array("setAge" => array(33))    // call methods
 );
 
+// binding with chaining methods 
+$container->bind("Person", '\App\Actors\Person')
+    ->setConstructorArguments(array("Jane"))        // setConstructorArgument($index, $argument)
+    ->setProperty("genre" => "Female")              // setProperties(array("genre" => "Female", ...) also work
+    ->callMethod("setAge", array(33));              // callMethods(array('methodName' => 'methodValue', ...));
+    
+// retrieving the object    
 $person = $container->get("Person");
 echo $person->getName(); // Jane
 echo $person->getAge();  // 33
@@ -162,13 +169,33 @@ echo $person2->genre      // Male
 #### Defining Services - Objects (Eager Loading)
 
 ```php
-$mailer = new \Namespace\For\My\MailTransport("smtp.example.com", "username", "password", 25); 
-$container->set("Mail.Transport", $mailer, array(), array(), array("withSSL" => array(false)));
+$mailer = new \Namespace\For\My\MailTransport(
+    "smtp.example.com", 
+    "username", 
+    "password", 
+    25
+); 
+
+$container->set(
+    "Mail.Transport", 
+    $mailer, 
+    array(), // constructor args 
+    array(), // public properties injection
+    array("withSSL" => array(false)) // calling methods
+);
 
 $mailerTransport = $container->get("Mail.Transport");
+```
+Overwriting existent declared dependencies is also possible for ``set`` definitions.
 
+```php
 // calling methods and injecting attributes is also possible
-$mailerTransportSsl = $container->get("Mail.Transport", array(), array(), array("withSSL" => array(true)));
+$mailerTransportSsl = $container->get(
+    "Mail.Transport", 
+    array(), 
+    array(), 
+    array("withSSL" => array(true))
+);
 ```
 
 #### Defining Services - Complex builds (Lazy Loading)

@@ -4,11 +4,9 @@ namespace Njasm\Container\Definition\Service;
 
 use Njasm\Container\Definition\Definition;
 use Njasm\Container\Definition\DefinitionType;
-use Njasm\Container\Definition\Finder\LocalFinder;
-use Njasm\Container\Definition\Finder\ProvidersFinder;
+use Njasm\Container\Definition\Finder\DefinitionFinder;
 use Njasm\Container\Exception\ContainerException;
-use Njasm\Container\Factory\LocalFactory;
-use Njasm\Container\Factory\ProviderFactory;
+use Njasm\Container\Factory\DefinitionFactory;
 
 class DefinitionService
 {
@@ -25,30 +23,8 @@ class DefinitionService
      */
     public function has(Request $request)
     {
-        return $this->localHas($request) || $this->providersHas($request);
-    }
+        $finder = new DefinitionFinder();
 
-    /**
-     * Finds if a service is defined locally in Container.
-     *
-     * @param \Njasm\Container\Definition\Service\Request $request
-     * @return boolean
-     */
-    protected function localHas(Request $request)
-    {
-        $finder = new LocalFinder();
-        return $finder->has($request);
-    }
-
-    /**
-     * Finds if a service is defined in a nested Container.
-     *
-     * @param \Njasm\Container\Definition\Service\Request $request
-     * @return boolean
-     */
-    protected function providersHas(Request $request)
-    {
-        $finder = new ProvidersFinder();
         return $finder->has($request);
     }
 
@@ -148,18 +124,12 @@ class DefinitionService
      * Return a factory to build the service.
      *
      * @param   Request     $request
-     * @return  LocalFactory|ProviderFactory
+     * @return  DefinitionFactoryf
      */
     protected function getFactory(Request $request)
     {
-        // check local
-        if ($this->localHas($request)) {
-            return new LocalFactory();
-        }
-
-        // check in nested providers
-        if ($this->providersHas($request)) {
-            return new ProviderFactory();
+        if ($this->has($request)) {
+            return new DefinitionFactory();
         }
 
         // try to bail-out client called service.
@@ -169,7 +139,7 @@ class DefinitionService
         $key = $request->getKey();
         $def = $this->assembleBindDefinition((string) $key, (string) $key);
         $request->getDefinitionsMap()->add($def);
-        return new LocalFactory();
+        return new DefinitionFactory();
     }
 
     /**

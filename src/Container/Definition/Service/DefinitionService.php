@@ -11,9 +11,19 @@ use Njasm\Container\Factory\DefinitionFactory;
 class DefinitionService
 {
     /**
+     * @var DefinitionFinder
+     */
+    protected $definitionFinder;
+
+    /**
      * @var array Service keys being built.
      */
     protected $buildingKeys = array();
+
+    public function __construct()
+    {
+        $this->definitionFinder = new DefinitionFinder();
+    }
 
     /**
      * Finds if a service is defined globally. Globally means, in this Container or in a nested Container.
@@ -23,9 +33,7 @@ class DefinitionService
      */
     public function has(Request $request)
     {
-        $finder = new DefinitionFinder();
-
-        return $finder->has($request);
+        return $this->definitionFinder->has($request);
     }
 
     /**

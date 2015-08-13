@@ -2,8 +2,11 @@
 
 namespace Njasm\Container\Definition\Builder;
 
+use Njasm\Container\Definition\Service\DependencyBag;
 use Njasm\Container\Definition\Service\Request;
 use Njasm\Container\Exception\ContainerException;
+use Njasm\Container\Definition\Definition;
+use Njasm\Container\Definition\DefinitionType;
 
 class ReflectionBuilder implements BuilderInterface
 {
@@ -21,13 +24,14 @@ class ReflectionBuilder implements BuilderInterface
                 return $reflected->newInstanceArgs();
             };
 
-            $request->getContainer()->set(
-                $request->getKey(),
-                $cacheDefinition,
+            $bag = new DependencyBag(
                 $request->getDefaultConstructorArguments(),
                 $request->getDefaultProperties(),
                 $request->getDefaultMethodCalls()
             );
+
+            $definition = new Definition($request->getKey(), $cacheDefinition, DefinitionType::CLOSURE_CACHE, $bag);
+            $request->getDefinitionsMap()->add($definition);
 
             return $reflected->newInstanceArgs();
         }
@@ -38,13 +42,14 @@ class ReflectionBuilder implements BuilderInterface
             return $reflected->newInstanceArgs(empty($suppliedParameters) ? $parameters : $suppliedParameters);
         };
 
-        $request->getContainer()->set(
-            $request->getKey(),
-            $cacheDefinition,
+        $bag = new DependencyBag(
             $parameters,
             $request->getDefaultProperties(),
             $request->getDefaultMethodCalls()
         );
+
+        $definition = new Definition($request->getKey(), $cacheDefinition, DefinitionType::CLOSURE_CACHE, $bag);
+        $request->getDefinitionsMap()->add($definition);
 
         return $reflected->newInstanceArgs($parameters);
     }

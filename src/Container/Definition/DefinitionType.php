@@ -9,4 +9,5 @@ final class DefinitionType
     const PRIMITIVE     = 'Primitive';
     const REFLECTION    = 'Reflection';
     const ALIAS         = 'Alias';
+    const CLOSURE_CACHE = 'Cache';
 }

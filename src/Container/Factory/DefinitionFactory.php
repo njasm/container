@@ -18,6 +18,7 @@ class DefinitionFactory implements FactoryInterface
         switch ($defType) {
             case DefinitionType::ALIAS :
                 return $this->buildAlias($request);
+            case DefinitionType::CLOSURE_CACHE :
             case DefinitionType::CLOSURE :
                 return $this->buildClosure($request);
             case DefinitionType::OBJECT :
@@ -41,14 +42,12 @@ class DefinitionFactory implements FactoryInterface
     {
         $concrete           = $request->getConcrete();
         $arguments          = $request->getConstructorArguments();
-        $closure            = new \ReflectionFunction($concrete);
-        $params             = $closure->getParameters();
+        $defType            = $request->getDefinitionsMap()->get($request->getKey())->getType();
 
-        if (count($params) > 0 && $params[0]->isArray()) {
-            $arguments = array($arguments);
-        }
-
-        return $closure->invokeArgs($arguments);
+        return call_user_func_array(
+            $concrete,
+            $defType == DefinitionType::CLOSURE_CACHE ? array($arguments) : $arguments
+        );
     }
 
     protected function buildConcrete(Request $request)

@@ -346,7 +346,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $age2 = 40;
         $month2 = 12;
 
-        //$definition = $this->container->bind($key, new MethodCalls());
+        //$definition = $this->container->set($key, new MethodCalls());
         $definition = $this->container->bind($key, '\Njasm\Container\Tests\MethodCalls');
         $definition->callMethod('setName', array($name));
         $definition->callMethod('setEmail', array($email));
@@ -362,7 +362,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         // call override
         $obj = $this->container->get(
             $key, array(), array(),
-            array('setName' => array($name2), 'setEmail' => array($email2), 'setAgeAndBirthMonth' => array($age2, $month2)));
+            array('setName' => array($name2), 'setEmail' => array($email2), 'setAgeAndBirthMonth' => array($age2, $month2))
+        );
 
         $this->assertEquals($email2, $obj->getEmail());
         $this->assertEquals($name2, $obj->getName());

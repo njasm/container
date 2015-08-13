@@ -17,10 +17,34 @@ class ReflectionBuilder implements BuilderInterface
         $constructor = $reflected->getConstructor();
 
         if (is_null($constructor)) {
+            $cacheDefinition = function() use ($reflected) {
+                return $reflected->newInstanceArgs();
+            };
+
+            $request->getContainer()->set(
+                $request->getKey(),
+                $cacheDefinition,
+                $request->getDefaultConstructorArguments(),
+                $request->getDefaultProperties(),
+                $request->getDefaultMethodCalls()
+            );
+
             return $reflected->newInstanceArgs();
         }
 
         $parameters = $this->getConstructorArguments($constructor, $request);
+
+        $cacheDefinition = function(array $suppliedParameters = []) use ($reflected, $parameters) {
+            return $reflected->newInstanceArgs(empty($suppliedParameters) ? $parameters : $suppliedParameters);
+        };
+
+        $request->getContainer()->set(
+            $request->getKey(),
+            $cacheDefinition,
+            $parameters,
+            $request->getDefaultProperties(),
+            $request->getDefaultMethodCalls()
+        );
 
         return $reflected->newInstanceArgs($parameters);
     }

@@ -102,12 +102,7 @@ class DefinitionService
         $this->buildingKeys[$key] = true;
         $factory = $this->getFactory($request);
         $returnValue = $factory->build($request);
-
-        if (is_object($returnValue) && !$returnValue instanceof \Closure) {
-            $this->injectParams($returnValue, $request);
-            $this->callMethods($returnValue, $request);
-        }
-
+        $this->injectValues($returnValue, $request);
         unset($this->buildingKeys[$key]);
 
         return $returnValue;

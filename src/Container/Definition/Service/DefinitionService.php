@@ -16,6 +16,11 @@ class DefinitionService
     protected $definitionFinder;
 
     /**
+     * @var DefinitionFactory
+     */
+    protected $factory;
+
+    /**
      * @var array Service keys being built.
      */
     protected $buildingKeys = array();
@@ -23,6 +28,7 @@ class DefinitionService
     public function __construct()
     {
         $this->definitionFinder = new DefinitionFinder();
+        $this->factory = new DefinitionFactory();
     }
 
     /**
@@ -98,37 +104,24 @@ class DefinitionService
     public function build(Request $request)
     {
         $key = (string) $request->getKey();
-        $this->guardAgainstCircularDependency($key);
 
-        if (!$this->has($request)) {
-            // try to bail-out client called service. We'll assemble a new reflection definition and will,
-            // if class exists, try to resolve all dependencies and instantiate the object if possible.
-            $key = $request->getKey();
-            $def = $this->assembleBindDefinition((string) $key, (string) $key);
-            $request->getDefinitionsMap()->add($def);
-        }
-
-        $factory = new DefinitionFactory();
-        $returnValue = $factory->build($request);
-        unset($this->buildingKeys[$key]);
-
-        return $returnValue;
-    }
-
-    /**
-     * Guard against circular dependency when resolving dependencies.
-     *
-     * @param   string      $key
-     * @return  void
-     * @throws  ContainerException
-     */
-    protected function guardAgainstCircularDependency($key)
-    {
         // circular dependency guard
         if (array_key_exists($key, $this->buildingKeys)) {
             throw new ContainerException("Circular Dependency detected for {$key}");
         }
 
         $this->buildingKeys[$key] = true;
+
+        if (!$this->definitionFinder->has($request)) {
+            // try to bail-out client called service. We'll assemble a new reflection definition and will,
+            // if class exists, try to resolve all dependencies and instantiate the object if possible.
+            $def = $this->assembleBindDefinition((string) $key, (string) $key);
+            $request->getDefinitionsMap()->add($def);
+        }
+
+        $returnValue = $this->factory->build($request);
+        unset($this->buildingKeys[$key]);
+
+        return $returnValue;
     }
 }

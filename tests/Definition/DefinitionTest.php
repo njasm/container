@@ -15,33 +15,33 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
 
     public function testGetType()
     {
-        $d = new Definition("primitive", array("a"), new DefinitionType(DefinitionType::PRIMITIVE));
+        $d = new Definition("primitive", array("a"), DefinitionType::PRIMITIVE);
         $this->assertTrue($d->getType() === DefinitionType::PRIMITIVE);
     }
 
     public function testGetKey()
     {
         $key = "primitive";
-        $d = new Definition($key, array("a"),  new DefinitionType(DefinitionType::PRIMITIVE));
+        $d = new Definition($key, array("a"), DefinitionType::PRIMITIVE);
         $this->assertTrue($d->getKey() === $key);
     }
 
     public function testGetDefinition()
     {
-        $d = new Definition("primitive", array("a"),  new DefinitionType(DefinitionType::PRIMITIVE));
+        $d = new Definition("primitive", array("a"), DefinitionType::PRIMITIVE);
         $this->assertEquals(array("a"), $d->getConcrete());
     }
 
     public function testInvalidKey()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        $d = new Definition(null, "A",  new DefinitionType(DefinitionType::PRIMITIVE));
+        $d = new Definition(null, "A", DefinitionType::PRIMITIVE);
     }
 
     public function testGetConstructorArguments()
     {
         $key = "primitive";
-        $d = new Definition($key, array("a"),  new DefinitionType(DefinitionType::PRIMITIVE));
+        $d = new Definition($key, array("a"), DefinitionType::PRIMITIVE);
         $this->assertEmpty($d->getConstructorArguments());
         $this->assertEmpty($d->getProperties());
         $this->assertEmpty($d->getCallMethods());
@@ -62,7 +62,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     public function testProperties()
     {
         $key = "primitive";
-        $d = new Definition($key, array("a"),  new DefinitionType(DefinitionType::PRIMITIVE));
+        $d = new Definition($key, array("a"), DefinitionType::PRIMITIVE);
 
         // setter
         $d->setProperties(array('name' => 2));
@@ -80,7 +80,7 @@ class DefinitionTest extends \PHPUnit_Framework_TestCase
     public function testCallMethods()
     {
         $key = "primitive";
-        $d = new Definition($key, array("a"),  new DefinitionType(DefinitionType::PRIMITIVE));
+        $d = new Definition($key, array("a"), DefinitionType::PRIMITIVE);
 
         // setter
         $d->callMethods(array('setName' => array(1, 2)));

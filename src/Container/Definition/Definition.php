@@ -12,13 +12,13 @@ class Definition implements DefinitionInterface
     /** @var mixed */
     protected $concrete;
 
-    /** @var DefinitionType */
+    /** @var string */
     protected $type;
 
     /** @var DependencyBag */
     protected $dependencyBag;
 
-    public function __construct($key, $concrete, DefinitionType $type, DependencyBag $dependencyBag = null)
+    public function __construct($key, $concrete, $type, DependencyBag $dependencyBag = null)
     {
         if (empty($key)) {
             throw new \InvalidArgumentException("key cannot be empty.");
@@ -42,7 +42,7 @@ class Definition implements DefinitionInterface
 
     public function getType()
     {
-        return $this->type->__toString();
+        return $this->type;
     }
 
     public function setConstructorArgument($argumentIndex, $value)

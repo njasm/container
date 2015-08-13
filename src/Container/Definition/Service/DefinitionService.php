@@ -50,14 +50,14 @@ class DefinitionService
         $definitionType = null;
 
         if ($concrete instanceof \Closure) {
-            $definitionType = new DefinitionType(DefinitionType::CLOSURE);
+            $definitionType = DefinitionType::CLOSURE;
         } elseif (is_object($concrete)) {
-            $definitionType = new DefinitionType(DefinitionType::OBJECT);
+            $definitionType = DefinitionType::OBJECT;
         } elseif (is_scalar($concrete)) {
-            $definitionType = new DefinitionType(DefinitionType::PRIMITIVE);
+            $definitionType = DefinitionType::PRIMITIVE;
         }
 
-        if (!$definitionType instanceof DefinitionType) {
+        if (is_null($definitionType)) {
             throw new \OutOfBoundsException("Unknown definition type.");
         }
 
@@ -73,7 +73,7 @@ class DefinitionService
      */
     public function assembleAliasDefinition($key, $concrete)
     {
-        return new Definition($key, $concrete, new DefinitionType(DefinitionType::ALIAS));
+        return new Definition($key, $concrete, DefinitionType::ALIAS);
     }
 
     /**
@@ -86,7 +86,7 @@ class DefinitionService
      */
     public function assembleBindDefinition($key, $concrete, DependencyBag $dependencyBag = null)
     {
-        return new Definition($key, $concrete, new DefinitionType(DefinitionType::REFLECTION), $dependencyBag);
+        return new Definition($key, $concrete, DefinitionType::REFLECTION, $dependencyBag);
     }
 
     /**

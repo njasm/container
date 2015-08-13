@@ -68,7 +68,7 @@ class Container implements ServicesProviderInterface
         array $properties = array(),
         array $methods = array()
     ) {
-        $dependencyBag = $this->getDependencyBag($construct, $properties, $methods);
+        $dependencyBag = new DependencyBag($construct, $properties, $methods);
         $definition = $this->service->assemble($key, $concrete, $dependencyBag);
         $this->definitionsMap->add($definition);
 
@@ -116,7 +116,7 @@ class Container implements ServicesProviderInterface
         array $properties = array(),
         array $methods = array()
     ) {
-        $dependencyBag = $this->getDependencyBag($construct, $properties, $methods);
+        $dependencyBag = new DependencyBag($construct, $properties, $methods);
         $definition = $this->service->assembleBindDefinition($key, $concrete, $dependencyBag);
         $this->definitionsMap->add($definition);
 
@@ -208,7 +208,7 @@ class Container implements ServicesProviderInterface
      */
     public function get($key, array $construct = array(), array $properties = array(), array $methods = array())
     {
-        $dependencyBag = $this->getDependencyBag($construct, $properties, $methods);
+        $dependencyBag = new DependencyBag($construct, $properties, $methods);
         $request = $this->getRequest($key, $dependencyBag);
 
         if (isset($this->registry[$key])) {
@@ -259,22 +259,6 @@ class Container implements ServicesProviderInterface
     protected function isSingleton($key)
     {
         return isset($this->singletons[$key]);
-    }
-
-    /**
-     * Build a new DependencyBag value object.
-     *
-     * @param   array           $construct
-     * @param   array           $properties
-     * @param   array           $methods
-     * @return  DependencyBag
-     */
-    protected function getDependencyBag(
-        array $construct = array(),
-        array $properties = array(),
-        array $methods = array()
-    ) {
-        return new DependencyBag($construct, $properties, $methods);
     }
 
     /**

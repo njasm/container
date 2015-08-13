@@ -99,10 +99,17 @@ class DefinitionService
     {
         $key = (string) $request->getKey();
         $this->guardAgainstCircularDependency($key);
-        $this->buildingKeys[$key] = true;
-        $factory = $this->getFactory($request);
+
+        if (!$this->has($request)) {
+            // try to bail-out client called service. We'll assemble a new reflection definition and will,
+            // if class exists, try to resolve all dependencies and instantiate the object if possible.
+            $key = $request->getKey();
+            $def = $this->assembleBindDefinition((string) $key, (string) $key);
+            $request->getDefinitionsMap()->add($def);
+        }
+
+        $factory = new DefinitionFactory();
         $returnValue = $factory->build($request);
-        $this->injectValues($returnValue, $request);
         unset($this->buildingKeys[$key]);
 
         return $returnValue;
@@ -121,88 +128,7 @@ class DefinitionService
         if (array_key_exists($key, $this->buildingKeys)) {
             throw new ContainerException("Circular Dependency detected for {$key}");
         }
-    }
 
-    /**
-     * Return a factory to build the service.
-     *
-     * @param   Request     $request
-     * @return  DefinitionFactoryf
-     */
-    protected function getFactory(Request $request)
-    {
-        if ($this->has($request)) {
-            return new DefinitionFactory();
-        }
-
-        // try to bail-out client called service.
-        // We'll assemble a new reflection definition and will,
-        // if class exists, try to resolve all dependencies
-        // and instantiate the object if possible.
-        $key = $request->getKey();
-        $def = $this->assembleBindDefinition((string) $key, (string) $key);
-        $request->getDefinitionsMap()->add($def);
-        return new DefinitionFactory();
-    }
-
-    /**
-     * Inject Properties of the Service.
-     *
-     * @param   mixed       $service
-     * @param   Request     $request
-     * @return  void
-     */
-    protected function injectParams($service, Request $request)
-    {
-        $paramsToInject = $request->getProperties();
-        $defaultParams  = $request->getDefaultProperties();
-
-        if (empty($paramsToInject)) {
-            $paramsToInject = $defaultParams;
-        }
-
-        // array_map() might be faster or not, need further testing.
-        foreach ($paramsToInject as $param => $value) {
-            $service->{$param} = $value;
-        }
-    }
-
-    /**
-     * Call Methods of the Service.
-     *
-     * @param   mixed       $service
-     * @param   Request     $request
-     * @return  void
-     */
-    protected function callMethods($service, Request $request)
-    {
-        $methodsToCall = $request->getMethodCalls();
-        $defaultMethods = $request->getDefaultMethodCalls();
-
-        if (empty($methodsToCall)) {
-            $methodsToCall = $defaultMethods;
-        }
-
-        // array_map() might be faster or not, need further testing.
-        foreach ($methodsToCall as $methodName => $values) {
-            call_user_func_array(array($service, $methodName), (array) $values);
-        }
-    }
-
-    /**
-     * Inject properties and call methods on Objects already instantiated.
-     *
-     * @param   Object  $concrete
-     * @param   Request $request
-     * @return  mixed
-     */
-    public function injectValues($concrete, Request $request)
-    {
-        if (is_object($concrete) && !$concrete instanceof \Closure) {
-            $this->injectParams($concrete, $request);
-            $this->callMethods($concrete, $request);
-        }
-
-        return $concrete;
+        $this->buildingKeys[$key] = true;
     }
 }

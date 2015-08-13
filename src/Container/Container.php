@@ -211,13 +211,19 @@ class Container implements ServicesProviderInterface
         $dependencyBag = new DependencyBag($construct, $properties, $methods);
         $request = $this->getRequest($key, $dependencyBag);
 
-        if (isset($this->registry[$key])) {
-            return $this->service->injectValues($this->registry[$key], $request);
+        if (!isset($this->registry[$key])) {
+            $returnValue = $this->service->build($request);
+        } else {
+            $returnValue = $this->registry[$key];
         }
 
-        $returnValue = $this->service->build($request);
+        $this->injectValues($returnValue, $request);
 
-        return $this->isSingleton($key) ? $this->registry[$key] = $returnValue : $returnValue;
+        if ($this->isSingleton($key)) {
+            return $this->registry[$key] = $returnValue;
+        }
+
+        return $returnValue;
     }
 
     /**
@@ -271,5 +277,66 @@ class Container implements ServicesProviderInterface
     protected function getRequest($key, DependencyBag $dependencyBag = null)
     {
         return new Request($key, $this->definitionsMap, $this->providers, $this, $dependencyBag);
+    }
+
+    /**
+     * Inject Properties of the Service.
+     *
+     * @param   mixed       $service
+     * @param   Request     $request
+     * @return  void
+     */
+    protected function injectParams($service, Request $request)
+    {
+        $paramsToInject = $request->getProperties();
+        $defaultParams  = $request->getDefaultProperties();
+
+        if (empty($paramsToInject)) {
+            $paramsToInject = $defaultParams;
+        }
+
+        // array_map() might be faster or not, need further testing.
+        foreach ($paramsToInject as $param => $value) {
+            $service->{$param} = $value;
+        }
+    }
+
+    /**
+     * Call Methods of the Service.
+     *
+     * @param   mixed       $service
+     * @param   Request     $request
+     * @return  void
+     */
+    protected function callMethods($service, Request $request)
+    {
+        $methodsToCall = $request->getMethodCalls();
+        $defaultMethods = $request->getDefaultMethodCalls();
+
+        if (empty($methodsToCall)) {
+            $methodsToCall = $defaultMethods;
+        }
+
+        // array_map() might be faster or not, need further testing.
+        foreach ($methodsToCall as $methodName => $values) {
+            call_user_func_array(array($service, $methodName), (array) $values);
+        }
+    }
+
+    /**
+     * Inject properties and call methods on Objects already instantiated.
+     *
+     * @param   Object  $concrete
+     * @param   Request $request
+     * @return  mixed
+     */
+    public function injectValues($concrete, Request $request)
+    {
+        if (is_object($concrete) && !$concrete instanceof \Closure) {
+            $this->injectParams($concrete, $request);
+            $this->callMethods($concrete, $request);
+        }
+
+        return $concrete;
     }
 }

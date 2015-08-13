@@ -6,9 +6,6 @@ use Njasm\Container\Definition\Service\Request;
 
 class DefinitionFinder
 {
-    protected $isLocal = false;
-    protected $isProvider = false;
-
     protected function localHas(Request $request)
     {
          return $request->getDefinitionsMap()->has($request->getKey());
@@ -31,27 +28,9 @@ class DefinitionFinder
     public function has(Request $request)
     {
         if ($this->localHas($request)) {
-            $this->isProvider = false;
-
-            return $this->isLocal = true;
-        }
-        if ($this->providerHas($request)) {
-            $this->isLocal = false;
-
-            return $this->isProvider = true;
+            return true;
         }
 
-        return false;
+        return $this->providerHas($request);
     }
-
-    public function foundInLocal()
-    {
-        return $this->isLocal;
-    }
-
-    public function foundInProvider()
-    {
-        return $this->isProvider;
-    }
-
 }

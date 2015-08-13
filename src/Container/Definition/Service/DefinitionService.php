@@ -103,7 +103,7 @@ class DefinitionService
      */
     public function build(Request $request)
     {
-        $key = (string) $request->getKey();
+        $key = $request->getKey();
 
         // circular dependency guard
         if (array_key_exists($key, $this->buildingKeys)) {
@@ -115,7 +115,7 @@ class DefinitionService
         if (!$this->definitionFinder->has($request)) {
             // try to bail-out client called service. We'll assemble a new reflection definition and will,
             // if class exists, try to resolve all dependencies and instantiate the object if possible.
-            $def = $this->assembleBindDefinition((string) $key, (string) $key);
+            $def = $this->assembleBindDefinition($key, $key);
             $request->getDefinitionsMap()->add($def);
         }
 

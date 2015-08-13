@@ -48,7 +48,7 @@ class Container implements ServicesProviderInterface
      */
     public function has($key)
     {
-        return $this->service->has($this->getRequest($key));
+        return $this->service->has(new Request($key, $this));
     }
 
     /**
@@ -78,7 +78,7 @@ class Container implements ServicesProviderInterface
             $definitionType === Definition\DefinitionType::OBJECT
             || $definitionType === Definition\DefinitionType::PRIMITIVE
         ) {
-            $this->registerSingleton($key);
+            $this->singletons[$key] = true;
         }
 
         return $definition;
@@ -141,7 +141,7 @@ class Container implements ServicesProviderInterface
         array $methods = array()
     ) {
         $definition = $this->bind($key, $concrete, $construct, $properties, $methods);
-        $this->registerSingleton($key);
+        $this->singletons[$key] = true;
 
         return $definition;
     }
@@ -164,22 +164,9 @@ class Container implements ServicesProviderInterface
         array $methods = array()
     ) {
         $definition = $this->set($key, $concrete, $construct, $properties, $methods);
-        $this->registerSingleton($key);
-
-        return $definition;
-    }
-
-    /**
-     * Register a service key as singleton.
-     *
-     * @param   string      $key
-     * @return  Container
-     */
-    protected function registerSingleton($key)
-    {
         $this->singletons[$key] = true;
 
-        return $this;
+        return $definition;
     }
 
     /**
@@ -213,7 +200,7 @@ class Container implements ServicesProviderInterface
         }
 
         $dependencyBag = new DependencyBag($construct, $properties, $methods);
-        $request = $this->getRequest($key, $dependencyBag);
+        $request = new Request($key, $this, $dependencyBag);
         $returnValue = $this->service->build($request);
         $this->injectValues($returnValue, $request);
 
@@ -263,18 +250,6 @@ class Container implements ServicesProviderInterface
     protected function isSingleton($key)
     {
         return isset($this->singletons[$key]);
-    }
-
-    /**
-     * Build a new Request value object.
-     *
-     * @param   string              $key
-     * @param   null|DependencyBag       $dependencyBag
-     * @return  Request
-     */
-    protected function getRequest($key, DependencyBag $dependencyBag = null)
-    {
-        return new Request($key, $this->definitionsMap, $this->providers, $this, $dependencyBag);
     }
 
     /**
@@ -336,5 +311,25 @@ class Container implements ServicesProviderInterface
         }
 
         return $concrete;
+    }
+
+    /**
+     * Returns Definitions Map.
+     *
+     * @return \Njasm\Container\Definition\DefinitionMap
+     */
+    public function getDefinitionsMap()
+    {
+        return $this->definitionsMap;
+    }
+
+    /**
+     * Returns registered Service Providers.
+     *
+     * @return array
+     */
+    public function getProviders()
+    {
+        return $this->providers;
     }
 }

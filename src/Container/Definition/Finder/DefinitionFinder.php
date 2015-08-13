@@ -6,13 +6,12 @@ use Njasm\Container\Definition\Service\Request;
 
 class DefinitionFinder
 {
-    protected function localHas(Request $request)
+    public function has(Request $request)
     {
-         return $request->getDefinitionsMap()->has($request->getKey());
-    }
+        if ($request->getDefinitionsMap()->has($request->getKey())) {
+            return true;
+        }
 
-    protected function providerHas(Request $request)
-    {
         $key = $request->getKey();
         $providers = $request->getProviders();
 
@@ -23,14 +22,5 @@ class DefinitionFinder
         }
 
         return false;
-    }
-
-    public function has(Request $request)
-    {
-        if ($this->localHas($request)) {
-            return true;
-        }
-
-        return $this->providerHas($request);
     }
 }

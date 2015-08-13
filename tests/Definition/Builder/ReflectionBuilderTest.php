@@ -13,13 +13,6 @@ class ReflectionBuilderTest extends \PHPUnit_Framework_TestCase
         $this->container = new Container();
     }
 
-    public function testReflection()
-    {
-        $returnValue = $this->container->get('\Njasm\Container\Tests\Definition\Builder\NoConstructArgs');
-
-        $this->assertInstanceOf('\Njasm\Container\Tests\Definition\Builder\NoConstructArgs', $returnValue);
-    }
-
     public function testArgsNull()
     {
         $returnValue = $this->container->get('\Njasm\Container\Tests\Definition\Builder\ConstructArgsNull');
@@ -47,12 +40,6 @@ class ReflectionBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('\Exception');
         $returnValue = $this->container->get('\Njasm\Container\Tests\Definition\Builder\ConstructUnableResolve');
-    }
-
-    public function testUnreachableObject()
-    {
-        $this->setExpectedException('\Interop\Container\Exception\ContainerException');
-        $returnValue = $this->container->get('Njasm\Container\Non\Existent');
     }
 
     public function testComplex()

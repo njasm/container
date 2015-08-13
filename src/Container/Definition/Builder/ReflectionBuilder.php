@@ -13,9 +13,12 @@ class ReflectionBuilder implements BuilderInterface
     public function execute(Request $request)
     {
         $concrete   = $request->getConcrete();
-        $reflected  = $this->getReflected($concrete);
+        $reflected  = new \ReflectionClass($concrete);
 
-        $this->guardAgainstNonInstantiable($reflected);
+        // abstract class or interface?
+        if (!$reflected->isInstantiable()) {
+            throw new ContainerException('Non-instantiable class [' . $reflected->name . ']');
+        }
 
         $constructor = $reflected->getConstructor();
 
@@ -24,12 +27,7 @@ class ReflectionBuilder implements BuilderInterface
                 return $reflected->newInstanceArgs();
             };
 
-            $bag = new DependencyBag(
-                $request->getDefaultConstructorArguments(),
-                $request->getDefaultProperties(),
-                $request->getDefaultMethodCalls()
-            );
-
+            $bag = new DependencyBag(array(), $request->getDefaultProperties(), $request->getDefaultMethodCalls());
             $definition = new Definition($request->getKey(), $cacheDefinition, DefinitionType::CLOSURE_CACHE, $bag);
             $request->getDefinitionsMap()->add($definition);
 
@@ -42,36 +40,11 @@ class ReflectionBuilder implements BuilderInterface
             return $reflected->newInstanceArgs(empty($suppliedParameters) ? $parameters : $suppliedParameters);
         };
 
-        $bag = new DependencyBag(
-            $parameters,
-            $request->getDefaultProperties(),
-            $request->getDefaultMethodCalls()
-        );
-
+        $bag = new DependencyBag($parameters, $request->getDefaultProperties(), $request->getDefaultMethodCalls());
         $definition = new Definition($request->getKey(), $cacheDefinition, DefinitionType::CLOSURE_CACHE, $bag);
         $request->getDefinitionsMap()->add($definition);
 
         return $reflected->newInstanceArgs($parameters);
-    }
-
-    protected function getReflected($key)
-    {
-        try {
-            $reflected = new \ReflectionClass($key);
-        } catch (\ReflectionException $e) {
-            $this->raiseException($e->getMessage());
-        }
-
-        return $reflected;
-    }
-
-    protected function guardAgainstNonInstantiable(\ReflectionClass $reflected)
-    {
-        // abstract class or interface
-        if (!$reflected->isInstantiable()) {
-            $message = "Non-instantiable class [{$reflected->name}]";
-            $this->raiseException($message);
-        }
     }
 
     protected function getConstructorArguments(\ReflectionMethod $constructor, Request $request)
@@ -110,15 +83,9 @@ class ReflectionBuilder implements BuilderInterface
         $dependency = $param->getClass();
 
         if (is_null($dependency)) {
-            $message = "Unable to resolve [{$param->name}] in {$param->getDeclaringClass()->getName()}";
-            $this->raiseException($message);
+            throw new ContainerException('Unable to resolve [' . $param->name .'] in ' . $param->getDeclaringClass()->getName());
         }
 
         return $container->get($dependency->name);
-    }
-
-    protected function raiseException($message = null)
-    {
-        throw new ContainerException($message);
     }
 }

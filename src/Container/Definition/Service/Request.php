@@ -13,31 +13,12 @@ class Request
     /** @var ServicesProviderInterface */
     protected $container;
 
-    /** @var DefinitionsMap */
-    protected $definitionsMap;
-
-    /** @var array */
-    protected $providers;
-
     /** @var DependencyBag */
     protected $dependencyBag;
 
-    public function __construct(
-        $key,
-        DefinitionsMap $definitionsMap,
-        array $providers,
-        ServicesProviderInterface $container,
-        DependencyBag $dependencyBag = null
-    ) {
-        $key = trim($key);
-
-        if (empty($key)) {
-            throw new \InvalidArgumentException("Key cannot be empty.");
-        }
-
+    public function __construct($key, ServicesProviderInterface $container, DependencyBag $dependencyBag = null)
+    {
         $this->key              = $key;
-        $this->definitionsMap   = $definitionsMap;
-        $this->providers        = $providers;
         $this->container        = $container;
         $this->dependencyBag    = $dependencyBag ?: new DependencyBag();
     }
@@ -69,7 +50,7 @@ class Request
      */
     public function getDefinitionsMap()
     {
-        return $this->definitionsMap;
+        return $this->container->getDefinitionsMap();
     }
 
     /**
@@ -79,7 +60,7 @@ class Request
      */
     public function getProviders()
     {
-        return $this->providers;
+        return $this->container->getProviders();
     }
 
     /**
@@ -99,7 +80,7 @@ class Request
      */
     protected function definitionExists()
     {
-        return $this->definitionsMap->has($this->key);
+        return $this->getDefinitionsMap()->has($this->key);
     }
 
     /**
@@ -109,7 +90,7 @@ class Request
      */
     protected function getDefinition()
     {
-        return $this->definitionsMap->get($this->key);
+        return $this->getDefinitionsMap()->get($this->key);
     }
 
     /**

@@ -17,57 +17,42 @@ class DefinitionFactory implements FactoryInterface
 
         switch ($defType) {
             case DefinitionType::ALIAS :
-                return $this->buildAlias($request);
+
+                return $request->getContainer()->get($request->getConcrete());
+
             case DefinitionType::CLOSURE_CACHE :
+
+                $concrete   = $request->getConcrete();
+                $arguments  = $request->getConstructorArguments();
+
+                return call_user_func_array($concrete, array($arguments));
+
             case DefinitionType::CLOSURE :
-                return $this->buildClosure($request);
+
+                $concrete   = $request->getConcrete();
+                $arguments  = $request->getConstructorArguments();
+
+                return call_user_func_array($concrete, $arguments);
+
             case DefinitionType::OBJECT :
             case DefinitionType::PRIMITIVE :
-                return $this->buildConcrete($request);
+
+                return $request->getConcrete();
+
             case DefinitionType::REFLECTION :
-                return $this->buildReflection($request);
+
+                $builder = new ReflectionBuilder();
+
+                return $builder->execute($request);
+
             default :
-                return $this->buildFromProviders($request);
-        }
-    }
+                $key = $request->getKey();
 
-    protected function buildAlias(Request $request)
-    {
-        return $request->getContainer()->get($request->getConcrete());
-    }
-
-    protected function buildClosure(Request $request)
-    {
-        $concrete           = $request->getConcrete();
-        $arguments          = $request->getConstructorArguments();
-        $defType            = $request->getDefinitionsMap()->get($request->getKey())->getType();
-
-        return call_user_func_array(
-            $concrete,
-            $defType == DefinitionType::CLOSURE_CACHE ? array($arguments) : $arguments
-        );
-    }
-
-    protected function buildConcrete(Request $request)
-    {
-        return $request->getConcrete();
-    }
-
-    protected function buildReflection(Request $request)
-    {
-        $builder = new ReflectionBuilder();
-
-        return $builder->execute($request);
-    }
-
-    protected function buildFromProviders(Request $request)
-    {
-        $key = $request->getKey();
-
-        foreach ($request->getProviders() as $provider) {
-            if ($provider->has($key)) {
-                return $provider->get($key);
-            }
+                foreach ($request->getProviders() as $provider) {
+                    if ($provider->has($key)) {
+                        return $provider->get($key);
+                    }
+                }
         }
     }
 }

@@ -266,9 +266,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $name2 = 'Jane Doe';
         $email2 = 'jane@localhost';
 
-        $this->container->set(
+        $this->container->bind(
             $key,
-            new PropertyInjections(),
+            'Njasm\Container\Tests\PropertyInjections',
             array(),
             array(
                 'name' => $name,

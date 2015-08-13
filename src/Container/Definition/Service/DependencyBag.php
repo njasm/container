@@ -82,7 +82,6 @@ class DependencyBag
     }
 
     /**
-     * @todo    validate array, key as propertyName, value as property value.
      * @param array $properties
      */
     public function setProperties(array $properties)
@@ -112,7 +111,6 @@ class DependencyBag
     }
 
     /**
-     * @todo    validate array with key as methodName and value as method arguments
      * @param   array $methods
      */
     public function callMethods(array $methods = array())

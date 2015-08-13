@@ -33,9 +33,7 @@ class DefinitionFactory implements FactoryInterface
 
     protected function buildAlias(Request $request)
     {
-        $value = $request->getConcrete();
-
-        return $request->getContainer()->get($value);
+        return $request->getContainer()->get($request->getConcrete());
     }
 
     protected function buildClosure(Request $request)

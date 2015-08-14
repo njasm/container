@@ -74,16 +74,6 @@ class Request
     }
 
     /**
-     * Check if Definition exists for this key.
-     *
-     * @return bool
-     */
-    protected function definitionExists()
-    {
-        return $this->getDefinitionsMap()->has($this->key);
-    }
-
-    /**
      * Return Definition for this key if definition exists, null otherwise.
      *
      * @return \Njasm\container\Definition\Definition|null
@@ -140,7 +130,7 @@ class Request
      */
     public function getDefaultProperties()
     {
-        if (!$this->definitionExists()) {
+        if (!$this->getDefinitionsMap()->has($this->key)) {
             return array();
         }
 
@@ -154,7 +144,7 @@ class Request
      */
     public function getDefaultMethodCalls()
     {
-        if (!$this->definitionExists()) {
+        if (!$this->getDefinitionsMap()->has($this->key)) {
             return array();
         }
 

@@ -333,64 +333,64 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($month, $obj->getMonth());
     }
 
-//    public function testMethodCallsThoughDefinition()
-//    {
-//        $key = 'PropertyInjections';
-//        $name = 'John Doe';
-//        $email = 'john@localhost';
-//        $age = 20;
-//        $month = 01;
-//
-//        $name2 = 'Jane Doe';
-//        $email2 = 'jane@localhost';
-//        $age2 = 40;
-//        $month2 = 12;
-//
-//        //$definition = $this->container->set($key, new MethodCalls());
-//        $definition = $this->container->bind($key, '\Njasm\Container\Tests\MethodCalls');
-//        $definition->callMethod('setName', array($name));
-//        $definition->callMethod('setEmail', array($email));
-//        $definition->callMethod('setAgeAndBirthMonth', array($age, $month));
-//
-//        $obj = $this->container->get($key);
-//
-//        $this->assertEquals($email, $obj->getEmail());
-//        $this->assertEquals($name, $obj->getName());
-//        $this->assertEquals($age, $obj->getAge());
-//        $this->assertEquals($month, $obj->getMonth());
-//
-//        // call override
-//        $obj = $this->container->get(
-//            $key, array(), array(),
-//            array('setName' => array($name2), 'setEmail' => array($email2), 'setAgeAndBirthMonth' => array($age2, $month2))
-//        );
-//
-//        $this->assertEquals($email2, $obj->getEmail());
-//        $this->assertEquals($name2, $obj->getName());
-//        $this->assertEquals($age2, $obj->getAge());
-//        $this->assertEquals($month2, $obj->getMonth());
-//    }
+    public function testMethodCallsThoughDefinition()
+    {
+        $key = 'PropertyInjections';
+        $name = 'John Doe';
+        $email = 'john@localhost';
+        $age = 20;
+        $month = 01;
 
-//    public function testConstructorInjection()
-//    {
-//        $key = 'ConstructorInjection';
-//        $name = 'John Doe';
-//        $email = 'john@localhost';
-//
-//        $name2 = 'Jane Doe';
-//        $email2 = 'jane@localhost';
-//
-//        $this->container->bind($key, '\Njasm\Container\Tests\ConstructorInjection', array($name, $email));
-//
-//        $object = $this->container->get($key);
-//        $this->assertEquals($name, $object->getName());
-//        $this->assertEquals($email, $object->getEmail());
-//
-//        //override call
-//        $object2 = $this->container->get($key, array($name2, $email2));
-//        $this->assertEquals($name2, $object2->getName());
-//        $this->assertEquals($email2, $object2->getEmail());
-//    }
+        $name2 = 'Jane Doe';
+        $email2 = 'jane@localhost';
+        $age2 = 40;
+        $month2 = 12;
+
+        //$definition = $this->container->set($key, new MethodCalls());
+        $definition = $this->container->bind($key, '\Njasm\Container\Tests\MethodCalls');
+        $definition->callMethod('setName', array($name));
+        $definition->callMethod('setEmail', array($email));
+        $definition->callMethod('setAgeAndBirthMonth', array($age, $month));
+
+        $obj = $this->container->get($key);
+
+        $this->assertEquals($email, $obj->getEmail());
+        $this->assertEquals($name, $obj->getName());
+        $this->assertEquals($age, $obj->getAge());
+        $this->assertEquals($month, $obj->getMonth());
+
+        // call override
+        $obj = $this->container->get(
+            $key, array(), array(),
+            array('setName' => array($name2), 'setEmail' => array($email2), 'setAgeAndBirthMonth' => array($age2, $month2))
+        );
+
+        $this->assertEquals($email2, $obj->getEmail());
+        $this->assertEquals($name2, $obj->getName());
+        $this->assertEquals($age2, $obj->getAge());
+        $this->assertEquals($month2, $obj->getMonth());
+    }
+
+    public function testConstructorInjection()
+    {
+        $key = 'ConstructorInjection';
+        $name = 'John Doe';
+        $email = 'john@localhost';
+
+        $name2 = 'Jane Doe';
+        $email2 = 'jane@localhost';
+
+        $this->container->bind($key, '\Njasm\Container\Tests\ConstructorInjection', array($name, $email));
+
+        $object = $this->container->get($key);
+        $this->assertEquals($name, $object->getName());
+        $this->assertEquals($email, $object->getEmail());
+
+        //override call
+        $object2 = $this->container->get($key, array($name2, $email2));
+        $this->assertEquals($name2, $object2->getName());
+        $this->assertEquals($email2, $object2->getEmail());
+    }
 
     public function testDefinitionAssembleException()
     {

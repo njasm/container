@@ -5,16 +5,10 @@ namespace Njasm\Container;
 use Njasm\Container\Definition\AliasDefinition;
 use Njasm\Container\Definition\BindDefinition;
 use Njasm\Container\Definition\ClosureDefinition;
-use Njasm\Container\Definition\Definition;
-use Njasm\Container\Definition\DefinitionType;
-use Njasm\Container\Definition\DefinitionsMap;
 use Njasm\Container\Definition\ObjectDefinition;
 use Njasm\Container\Definition\ProviderDefinition;
-use Njasm\Container\Definition\Service\DependencyBag;
-use Njasm\Container\Definition\Service\Request;
 use Njasm\Container\Definition\ValueDefinition;
 use Njasm\Container\Exception\NotFoundException;
-use Njasm\Container\Factory\DefinitionFactory;
 use Njasm\Container\Exception\ContainerException;
 
 class Container implements ServicesProviderInterface
@@ -390,16 +384,6 @@ class Container implements ServicesProviderInterface
         unset($this->buildingKeys[$key]);
 
         return $returnValue;
-    }
-
-    /**
-     * Returns Definitions Map.
-     *
-     * @return \Njasm\Container\Definition\DefinitionMap
-     */
-    public function getDefinitionsMap()
-    {
-        return $this->definitionsMap;
     }
 
     /**

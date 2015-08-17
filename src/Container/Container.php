@@ -2,11 +2,17 @@
 
 namespace Njasm\Container;
 
+use Njasm\Container\Definition\AliasDefinition;
+use Njasm\Container\Definition\BindDefinition;
+use Njasm\Container\Definition\ClosureDefinition;
 use Njasm\Container\Definition\Definition;
 use Njasm\Container\Definition\DefinitionType;
 use Njasm\Container\Definition\DefinitionsMap;
+use Njasm\Container\Definition\ObjectDefinition;
+use Njasm\Container\Definition\ProviderDefinition;
 use Njasm\Container\Definition\Service\DependencyBag;
 use Njasm\Container\Definition\Service\Request;
+use Njasm\Container\Definition\ValueDefinition;
 use Njasm\Container\Exception\NotFoundException;
 use Njasm\Container\Factory\DefinitionFactory;
 use Njasm\Container\Exception\ContainerException;
@@ -14,7 +20,7 @@ use Njasm\Container\Exception\ContainerException;
 class Container implements ServicesProviderInterface
 {
     /**
-     * @var \Njasm\Container\Definition\DefinitionsMap
+     * @var array
      */
     protected $definitionsMap;
 
@@ -58,8 +64,7 @@ class Container implements ServicesProviderInterface
         $this->providers = array();
         $this->registry = array();
         $this->singletons = array();
-        $this->definitionsMap = new DefinitionsMap();
-        $this->factory = new DefinitionFactory();
+        $this->definitionsMap = array();
         
         $this->set('Njasm\Container\Container', $this);
         $this->alias('Container', 'Njasm\Container\Container');
@@ -73,12 +78,19 @@ class Container implements ServicesProviderInterface
      */
     public function has($key)
     {
-        if ($this->definitionsMap->has($key)) {
+        if (isset($this->definitionsMap[$key])) {
             return true;
         }
 
+        return $this->providersHas($key);
+    }
+
+    protected function providersHas($key)
+    {
         foreach ($this->providers as $provider) {
             if ($provider->has($key)) {
+                $this->definitionsMap[$key] = new ProviderDefinition($key, $this);
+
                 return true;
             }
         }
@@ -103,24 +115,17 @@ class Container implements ServicesProviderInterface
         array $properties = array(),
         array $methods = array()
     ) {
-        $dependencyBag = new DependencyBag($construct, $properties, $methods);
-        $definition = null;
 
         if ($concrete instanceof \Closure) {
-            $definition = new Definition($key, $concrete, DefinitionType::CLOSURE, $dependencyBag);
+            $definition = new ClosureDefinition($key, $concrete, $this, $construct, $properties, $methods);
         } elseif (is_object($concrete)) {
-            $definition = new Definition($key, $concrete, DefinitionType::OBJECT, $dependencyBag);
-            $this->singletons[$key] = true;
-        } elseif (is_scalar($concrete)) {
-            $definition = new Definition($key, $concrete, DefinitionType::PRIMITIVE, $dependencyBag);
+            $definition = new ObjectDefinition($key, $concrete, $this, $properties, $methods);
+        } else {
+            $definition = new ValueDefinition($key, $concrete, $this, $construct, $properties, $methods);
             $this->singletons[$key] = true;
         }
 
-        if (is_null($definition)) {
-            throw new \OutOfBoundsException("Unknown definition type.");
-        }
-
-        $this->definitionsMap->add($definition);
+        $this->definitionsMap[$key] = $definition;
 
         return $definition;
     }
@@ -134,8 +139,8 @@ class Container implements ServicesProviderInterface
      */
     public function alias($alias, $key)
     {
-        $definition = new Definition($alias, $key, DefinitionType::ALIAS);
-        $this->definitionsMap->add($definition);
+        $definition = new AliasDefinition($alias, $key, $this, array(), array(), array());
+        $this->definitionsMap[$alias] = $definition;
 
         return $definition;
     }
@@ -157,9 +162,18 @@ class Container implements ServicesProviderInterface
         array $properties = array(),
         array $methods = array()
     ) {
-        $dependencyBag = new DependencyBag($construct, $properties, $methods);
-        $definition = new Definition($key, $concrete, DefinitionType::REFLECTION, $dependencyBag);
-        $this->definitionsMap->add($definition);
+        try {
+            $reflected = new \ReflectionClass($concrete);
+            if (!$reflected->isInstantiable()) {
+                throw new ContainerException($reflected->getName() . ' Is Not Instantiable.');
+            }
+            $concrete = $reflected;
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+        $definition = new BindDefinition($key, $concrete, $this, $construct, $properties, $methods);
+        $this->definitionsMap[$key] = $definition;
 
         return $definition;
     }
@@ -240,14 +254,21 @@ class Container implements ServicesProviderInterface
             return $this->registry[$key];
         }
 
-        $dependencyBag = new DependencyBag($construct, $properties, $methods);
-        $request = new Request($key, $this, $dependencyBag);
-        $returnValue = $this->build($request);
-
-        if (is_object($returnValue) && !$returnValue instanceof \Closure) {
-            $this->injectParams($returnValue, $request);
-            $this->callMethods($returnValue, $request);
+        // circular dependency guard
+        if (array_key_exists($key, $this->buildingKeys)) {
+            throw new ContainerException("Circular Dependency detected for {$key}");
         }
+
+        $this->buildingKeys[$key] = true;
+
+        if (!$this->has($key)) {
+            // try to bail-out client called service. We'll assemble a new reflection definition and will,
+            // if class exists, try to resolve all dependencies and instantiate the object if possible.
+            $this->definitionsMap[$key] = $this->bind($key, $key, $construct, $properties, $methods);
+        }
+
+        $returnValue = $this->definitionsMap[$key]->build($construct, $properties, $methods);
+        unset($this->buildingKeys[$key]);
 
         if (isset($this->singletons[$key])) {
             return $this->registry[$key] = $returnValue;
@@ -361,7 +382,7 @@ class Container implements ServicesProviderInterface
         if (!$this->has($key)) {
             // try to bail-out client called service. We'll assemble a new reflection definition and will,
             // if class exists, try to resolve all dependencies and instantiate the object if possible.
-            $definition = new Definition($key, $key, DefinitionType::REFLECTION);
+            $definition = new BindDefinition($key, $key, $this);
             $request->getDefinitionsMap()->add($definition);
         }
 

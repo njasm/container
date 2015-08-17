@@ -392,12 +392,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($email2, $object2->getEmail());
     }
 
-    public function testDefinitionAssembleException()
-    {
-        $this->setExpectedException('OutOfBoundsException');
-        $this->container->set("test-key", null);
-    }
-
     public function testClosureWithAndWithoutArguments()
     {
         $defaultValue = "default@example.com";

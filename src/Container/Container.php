@@ -14,27 +14,22 @@ use Njasm\Container\Exception\ContainerException;
 class Container implements ServicesProviderInterface
 {
     /**
-     * @var array
+     * @var array Definitions map.
      */
     protected $definitionsMap;
 
     /**
-     * @var DefinitionFactory
-     */
-    protected $factory;
-
-    /**
-     * @var array
+     * @var array Nested service providers.
      */
     protected $providers;
 
     /**
-     * @var array
+     * @var array Singleton services instances.
      */
     protected $registry;
 
     /**
-     * @var array
+     * @var array Singleton services map.
      */
     protected $singletons;
 
@@ -79,6 +74,12 @@ class Container implements ServicesProviderInterface
         return $this->providersHas($key);
     }
 
+    /**
+     * Check if service is registered in nested Containers.
+     *
+     * @param   string      $key
+     * @return  boolean
+     */
     protected function providersHas($key)
     {
         foreach ($this->providers as $provider) {
@@ -100,7 +101,7 @@ class Container implements ServicesProviderInterface
      * @param   array       $construct
      * @param   array       $properties
      * @param   array       $methods
-     * @return  Definition
+     * @return  Definition\AbstractDefinition
      */
     public function set(
         $key,
@@ -111,11 +112,11 @@ class Container implements ServicesProviderInterface
     ) {
 
         if ($concrete instanceof \Closure) {
-            $definition = new ClosureDefinition($key, $concrete, $this, $construct, $properties, $methods);
+            $definition = new ClosureDefinition($key, $concrete, $this, $construct);
         } elseif (is_object($concrete)) {
             $definition = new ObjectDefinition($key, $concrete, $this, $properties, $methods);
         } else {
-            $definition = new ValueDefinition($key, $concrete, $this, $construct, $properties, $methods);
+            $definition = new ValueDefinition($key, $concrete, $this);
             $this->singletons[$key] = true;
         }
 
@@ -129,11 +130,11 @@ class Container implements ServicesProviderInterface
      *
      * @param   string      $alias
      * @param   string      $key
-     * @return  Definition\Definition
+     * @return  Definition\AliasDefinition
      */
     public function alias($alias, $key)
     {
-        $definition = new AliasDefinition($alias, $key, $this, array(), array(), array());
+        $definition = new AliasDefinition($alias, $key, $this);
         $this->definitionsMap[$alias] = $definition;
 
         return $definition;
@@ -147,7 +148,7 @@ class Container implements ServicesProviderInterface
      * @param   array       $construct
      * @param   array       $properties
      * @param   array       $methods
-     * @return  Definition\Definition
+     * @return  Definition\BindDefinition
      */
     public function bind(
         $key,
@@ -310,80 +311,6 @@ class Container implements ServicesProviderInterface
     protected function isSingleton($key)
     {
         return isset($this->singletons[$key]);
-    }
-
-    /**
-     * Inject Properties of the Service.
-     *
-     * @param   mixed       $service
-     * @param   Request     $request
-     * @return  void
-     */
-    protected function injectParams($service, Request $request)
-    {
-        $paramsToInject = $request->getProperties();
-        $defaultParams  = $request->getDefaultProperties();
-
-        if (empty($paramsToInject)) {
-            $paramsToInject = $defaultParams;
-        }
-
-        // array_map() might be faster or not, need further testing.
-        foreach ($paramsToInject as $param => $value) {
-            $service->{$param} = $value;
-        }
-    }
-
-    /**
-     * Call Methods of the Service.
-     *
-     * @param   mixed       $service
-     * @param   Request     $request
-     * @return  void
-     */
-    protected function callMethods($service, Request $request)
-    {
-        $methodsToCall = $request->getMethodCalls();
-        $defaultMethods = $request->getDefaultMethodCalls();
-
-        if (empty($methodsToCall)) {
-            $methodsToCall = $defaultMethods;
-        }
-
-        // array_map() might be faster or not, need further testing.
-        foreach ($methodsToCall as $methodName => $values) {
-            call_user_func_array(array($service, $methodName), (array) $values);
-        }
-    }
-
-    /**
-     * Build the requested service.
-     *
-     * @param   Request     $request
-     * @return  mixed
-     */
-    protected function build(Request $request)
-    {
-        $key = $request->getKey();
-
-        // circular dependency guard
-        if (array_key_exists($key, $this->buildingKeys)) {
-            throw new ContainerException("Circular Dependency detected for {$key}");
-        }
-
-        $this->buildingKeys[$key] = true;
-
-        if (!$this->has($key)) {
-            // try to bail-out client called service. We'll assemble a new reflection definition and will,
-            // if class exists, try to resolve all dependencies and instantiate the object if possible.
-            $definition = new BindDefinition($key, $key, $this);
-            $request->getDefinitionsMap()->add($definition);
-        }
-
-        $returnValue = $this->factory->build($request);
-        unset($this->buildingKeys[$key]);
-
-        return $returnValue;
     }
 
     /**

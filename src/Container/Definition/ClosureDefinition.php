@@ -12,14 +12,7 @@ class ClosureDefinition extends AbstractDefinition
     /** @var array */
     protected $defaultConstructor = array();
 
-    public function __construct(
-        $key,
-        $concrete,
-        ServicesProviderInterface $container,
-        array $constructor = array(),
-        array $properties = array(),
-        array $methods = array()
-    ) {
+    public function __construct($key, $concrete, ServicesProviderInterface $container, array $constructor = array()) {
         parent::__construct($key, $container);
         $this->concrete = $concrete;
         $this->defaultConstructor = $constructor;

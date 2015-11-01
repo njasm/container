@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/njasm/container.svg?branch=master)](https://travis-ci.org/njasm/container) [![Code Coverage](https://scrutinizer-ci.com/g/njasm/container/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/njasm/container/?branch=master) [![Code Climate](https://codeclimate.com/github/njasm/container.png)](https://codeclimate.com/github/njasm/container) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/njasm/container/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/njasm/container/?branch=master)
+[![Build Status](https://travis-ci.org/njasm/container.svg?branch=master)](https://travis-ci.org/njasm/container) [![Code Coverage](https://scrutinizer-ci.com/g/njasm/container/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/njasm/container/?branch=master) 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/njasm/container/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/njasm/container/?branch=master)
+[![Total Downloads](https://poser.pugx.org/njasm/container/downloads.png)](https://packagist.org/packages/njasm/container) 
 [![Latest Stable Version](https://poser.pugx.org/njasm/container/v/stable.png)](https://packagist.org/packages/njasm/container) [![License](https://poser.pugx.org/njasm/container/license.png)](https://packagist.org/packages/njasm/container) 
 [![HHVM Status](http://hhvm.h4cc.de/badge/njasm/container.png)](http://hhvm.h4cc.de/package/njasm/container)
 

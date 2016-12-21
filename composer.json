@@ -15,33 +15,33 @@
         "issues": "https://github.com/njasm/container/issues",
         "source": "https://github.com/njasm/container"
     },
-    "minimum-stability": "dev",
+    "minimum-stability"               : "dev",
     "require-dev": {
-        "phpunit/phpunit": "4.4.*@dev",
-        "satooshi/php-coveralls": "dev-master",
-        "mnapoli/php-di": "~4.0",
-        "aura/di": "~1.0",
-        "pimple/pimple": "~3.0",
-        "zendframework/zend-di": "~2.0",
+        "phpunit/phpunit"             : "4.4.*@dev",
+        "satooshi/php-coveralls"      : "dev-master",
+        "mnapoli/php-di"              : "~4.0",
+        "aura/di"                     : "~1.0",
+        "pimple/pimple"               : "~3.0",
+        "zendframework/zend-di"       : "~2.0",
         "symfony/dependency-injection": "~2.5",
-        "illuminate/container": "~4.2",
-        "nette/di": "~2.2",
-        "ray/di": "~1.4",
-        "orno/di": "~2.0",
-        "joomla/di": "~1.2"
+        "illuminate/container"        : "~4.2",
+        "nette/di"                    : "~2.2",
+        "ray/di"                      : "~1.4",
+        "orno/di"                     : "~2.0",
+        "joomla/di"                   : "~1.2"
     },
     "require": {
-        "php": ">=5.3",
+        "php"                                : ">=5.3||>=5.4",
         "container-interop/container-interop": "~1.0"
     },
     "autoload": {
         "psr-4": {
-            "Njasm\\": "src/"
+            "Njasm\\"                        : "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Njasm\\Container\\Tests\\": "tests/",
+            "Njasm\\Container\\Tests\\"   : "tests/",
             "Njasm\\Container\\Examples\\": "example/"
         }
     }

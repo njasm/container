@@ -2,8 +2,8 @@
 
 namespace Njasm\Container\Tests;
 
+use Njasm\Container\Container;
 use Njasm\Container\Exception\CircularDependencyException;
-use Njasm\Container\Exception\ContainerException;
 use Njasm\Container\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -15,7 +15,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
     public function setUp()
     {
-        $this->container = new \Njasm\Container\Container();
+        $this->container = new Container();
     }
 
     public function testHas()
@@ -425,7 +425,7 @@ class ContainerTest extends \PHPUnit\Framework\TestCase
 
     protected function getServiceProvider($key = "SingleClassOnServiceProvider")
     {
-        $provider = new \Njasm\Container\Container();
+        $provider = new Container();
 
         $provider->set(
             $key,

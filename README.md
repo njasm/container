@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/njasm/container.svg?branch=master)](https://travis-ci.org/njasm/container) [![Code Coverage](https://scrutinizer-ci.com/g/njasm/container/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/njasm/container/?branch=master) [![Code Climate](https://codeclimate.com/github/njasm/container.png)](https://codeclimate.com/github/njasm/container) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/njasm/container/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/njasm/container/?branch=master)
+[![Build Status](https://travis-ci.org/njasm/container.svg?branch=2.0)](https://travis-ci.org/njasm/container) [![Code Coverage](https://scrutinizer-ci.com/g/njasm/container/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/njasm/container/?branch=2.0) [![Code Climate](https://codeclimate.com/github/njasm/container.png)](https://codeclimate.com/github/njasm/container) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/njasm/container/badges/quality-score.png?b=2.0)](https://scrutinizer-ci.com/g/njasm/container/?branch=2.0)
 [![Latest Stable Version](https://poser.pugx.org/njasm/container/v/stable.png)](https://packagist.org/packages/njasm/container) [![License](https://poser.pugx.org/njasm/container/license.png)](https://packagist.org/packages/njasm/container) 
 [![HHVM Status](http://hhvm.h4cc.de/badge/njasm/container.png)](http://hhvm.h4cc.de/package/njasm/container)
 
@@ -20,6 +20,7 @@ Branch 2.x.x is a Breaking Changes version in regard to version 1.x.x
  - Support for public Properties/Attributes Injection after Service instantiation
  - Ability to override existing dependency (Properties & Setters) declarations by supplying new ones when call to ``Container::get``
  - Nested Containers support - They must implement ``\Psr\Container\ContainerInterface``
+ 
 ### Requirements
 
  - PHP 7.0 or higher.

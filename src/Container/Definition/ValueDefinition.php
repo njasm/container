@@ -2,14 +2,14 @@
 
 namespace Njasm\Container\Definition;
 
-use Njasm\Container\ServicesProviderInterface;
+use Psr\Container\ContainerInterface;
 
 class ValueDefinition extends AbstractDefinition
 {
     /** @var mixed */
     protected $concrete;
 
-    public function __construct($key, $concrete, ServicesProviderInterface $container)
+    public function __construct($key, $concrete, ContainerInterface $container)
     {
         parent::__construct($key, $container);
         $this->concrete = $concrete;

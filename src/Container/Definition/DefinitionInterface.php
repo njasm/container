@@ -4,21 +4,21 @@ namespace Njasm\Container\Definition;
 
 interface DefinitionInterface
 {
-    public function getKey();
+    public function getKey() : string;
     public function getConcrete();
-    public function getType();
+    public function getType() : string;
 
-    public function setConstructorArgument($argumentIndex, $value);
+    public function setConstructorArgument(int $argumentIndex, mixed $value);
     public function setConstructorArguments(array $arguments);
     public function getConstructorArguments();
-    public function getConstructorArgument($index);
+    public function getConstructorArgument(int $index);
 
-    public function setProperty($propertyName, $value);
+    public function setProperty(string $propertyName, mixed $value);
     public function setProperties(array $properties);
-    public function getProperty($propertyName);
-    public function getProperties();
+    public function getProperty(string $propertyName);
+    public function getProperties() : array;
 
-    public function callMethod($methodName, array $methodArguments = array());
+    public function callMethod(string $methodName, array $methodArguments = []) : void;
     public function callMethods(array $methods);
     public function getCallMethod($methodName);
     public function getCallMethods();

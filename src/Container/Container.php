@@ -2,16 +2,20 @@
 
 namespace Njasm\Container;
 
+use Njasm\Container\Definition\AbstractDefinition;
 use Njasm\Container\Definition\AliasDefinition;
 use Njasm\Container\Definition\BindDefinition;
 use Njasm\Container\Definition\ClosureDefinition;
 use Njasm\Container\Definition\ObjectDefinition;
 use Njasm\Container\Definition\ProviderDefinition;
 use Njasm\Container\Definition\ValueDefinition;
+use Njasm\Container\Exception\CircularDependencyException;
 use Njasm\Container\Exception\NotFoundException;
 use Njasm\Container\Exception\ContainerException;
 
-class Container implements ServicesProviderInterface
+use Psr\Container\ContainerInterface;
+
+class Container implements ServiceProviderInterface
 {
     /**
      * @var array Definitions map.
@@ -50,28 +54,25 @@ class Container implements ServicesProviderInterface
      */
     protected function initialize()
     {
-        $this->providers = array();
-        $this->registry = array();
-        $this->singletons = array();
-        $this->definitionsMap = array();
+        $this->providers = [];
+        $this->registry = [];
+        $this->singletons = [];
+        $this->definitionsMap = [];
         
-        $this->set('Njasm\Container\Container', $this);
-        $this->alias('Container', 'Njasm\Container\Container');
+        $this->set(self::class, $this);
+        $this->alias('Container', self::class);
     }
 
     /**
-     * Check if service is registered.
-     *
-     * @param   string      $key
-     * @return  boolean
+     * @inheritdoc
      */
-    public function has($key)
+    public function has($id)
     {
-        if (isset($this->definitionsMap[$key])) {
+        if (isset($this->definitionsMap[$id])) {
             return true;
         }
 
-        return $this->providersHas($key);
+        return $this->providersHas($id);
     }
 
     /**
@@ -94,22 +95,11 @@ class Container implements ServicesProviderInterface
     }
 
     /**
-     * Register a new service in the container.
-     *
-     * @param   string      $key
-     * @param   mixed       $concrete
-     * @param   array       $construct
-     * @param   array       $properties
-     * @param   array       $methods
-     * @return  Definition\AbstractDefinition
+     * @inheritdoc
      */
     public function set(
-        $key,
-        $concrete,
-        array $construct = array(),
-        array $properties = array(),
-        array $methods = array()
-    ) {
+        string $key, $concrete, array $construct = [], array $properties = [], array $methods = []
+    ) : AbstractDefinition {
 
         if ($concrete instanceof \Closure) {
             $definition = new ClosureDefinition($key, $concrete, $this, $construct);
@@ -126,13 +116,9 @@ class Container implements ServicesProviderInterface
     }
 
     /**
-     * Register an alias to a service key.
-     *
-     * @param   string      $alias
-     * @param   string      $key
-     * @return  Definition\AliasDefinition
+     * @inheritdoc
      */
-    public function alias($alias, $key)
+    public function alias(string $alias, string $key) : AbstractDefinition
     {
         $definition = new AliasDefinition($alias, $key, $this);
         $this->definitionsMap[$alias] = $definition;
@@ -163,8 +149,8 @@ class Container implements ServicesProviderInterface
                 throw new ContainerException($reflected->getName() . ' Is Not Instantiable.');
             }
             $concrete = $reflected;
-        } catch (\Exception $e) {
-            throw $e;
+        } catch (\Throwable $e) {
+            throw new NotFoundException($e->getMessage(), $e->getCode(), $e);
         }
 
         $definition = new BindDefinition($key, $concrete, $this, $construct, $properties, $methods);
@@ -222,10 +208,10 @@ class Container implements ServicesProviderInterface
     /**
      * Registers another services provider container.
      *
-     * @param   ServicesProviderInterface   $provider
+     * @param   ContainerInterface   $provider
      * @return  Container
      */
-    public function provider(ServicesProviderInterface $provider)
+    public function provider(ContainerInterface $provider)
     {
         $this->providers[] = $provider;
 
@@ -251,7 +237,7 @@ class Container implements ServicesProviderInterface
 
         // circular dependency guard
         if (array_key_exists($key, $this->buildingKeys)) {
-            throw new ContainerException("Circular Dependency detected for {$key}");
+            throw new CircularDependencyException("Circular Dependency detected for {$key}");
         }
 
         $this->buildingKeys[$key] = true;
@@ -273,13 +259,9 @@ class Container implements ServicesProviderInterface
     }
 
     /**
-     * Removes a service from the container.
-     * This will NOT remove services from other nested providers.
-     *
-     * @param   string  $key
-     * @return  boolean
+     * @inheritdoc
      */
-    public function remove($key)
+    public function remove($key) : bool
     {
         if (isset($this->definitionsMap[$key])) {
             unset($this->definitionsMap[$key]);
@@ -293,11 +275,9 @@ class Container implements ServicesProviderInterface
     }
 
     /**
-     * Reset container settings.
-     *
-     * @return  void
+     * @inheritdoc
      */
-    public function reset()
+    public function reset() : void
     {
         $this->initialize();
     }
@@ -314,11 +294,9 @@ class Container implements ServicesProviderInterface
     }
 
     /**
-     * Returns registered Service Providers.
-     *
-     * @return array
+     * @inheritdoc
      */
-    public function getProviders()
+    public function getProviders() : array
     {
         return $this->providers;
     }

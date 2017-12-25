@@ -3,8 +3,9 @@
 namespace Njasm\Container\Tests\Definition\Builder;
 
 use Njasm\Container\Container;
+use Psr\Container\NotFoundExceptionInterface;
 
-class ReflectionBuilderTest extends \PHPUnit_Framework_TestCase
+class ReflectionBuilderTest extends \PHPUnit\Framework\TestCase
 {
     protected $container;
 
@@ -38,7 +39,7 @@ class ReflectionBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testUnresolvable()
     {
-        $this->setExpectedException('\Exception');
+        $this->expectException('\Exception');
         $returnValue = $this->container->get('\Njasm\Container\Tests\Definition\Builder\ConstructUnableResolve');
     }
 
@@ -81,7 +82,7 @@ class ReflectionBuilderTest extends \PHPUnit_Framework_TestCase
     public function testComplexUnresolvableInterface()
     {
         // missing interface binding, will throw exception
-        $this->setExpectedException('\Interop\Container\Exception\ContainerException');
+        $this->expectException(NotFoundExceptionInterface::class);
 
         $this->container->set('Njasm\Container\Tests\Definition\Builder\NoConstructArgs', new NoConstructArgs());
         $this->container->get('Njasm\Container\Tests\Definition\Builder\ComplexDependency');
@@ -90,7 +91,7 @@ class ReflectionBuilderTest extends \PHPUnit_Framework_TestCase
     public function testVariableNoDefaultValue()
     {
         // and also test Container-Interop Exception
-        $this->setExpectedException('\Interop\Container\Exception\ContainerException');
+        $this->expectException(\Exception::class);
         $returnValue = $this->container->get('\Njasm\Container\Tests\Definition\Builder\VariableNoDefaultValue');
     }
 }

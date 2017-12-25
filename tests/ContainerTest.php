@@ -2,8 +2,15 @@
 
 namespace Njasm\Container\Tests;
 
-class ContainerTest extends \PHPUnit_Framework_TestCase
+use Njasm\Container\Exception\CircularDependencyException;
+use Njasm\Container\Exception\ContainerException;
+use Njasm\Container\ServiceProviderInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+
+class ContainerTest extends \PHPUnit\Framework\TestCase
 {
+    /** @var ServiceProviderInterface */
     private $container;
 
     public function setUp()
@@ -32,7 +39,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($value, $returnValue);
     }
 
-    public function testAliasCircularDependency()
+    public function testAliasCircularDependencyException()
     {
         $key = 'really\long\FQCN\Class';
         $alias = 'short';
@@ -41,20 +48,20 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->alias($alias, $key);
         $this->container->alias($key, $alias);
 
-        $this->setExpectedException('Interop\Container\Exception\ContainerException');
+        $this->expectException(CircularDependencyException::class);
         $this->container->get($alias);
     }
 
     public function testGetException()
     {
         // ReflectionException
-        $this->setExpectedException('\Exception');
+        $this->expectException('\Exception');
         $this->container->get("Non-existent-service");
     }
 
-    public function testContainerInterop()
+    public function testContainerPsrInterface()
     {
-        $this->assertInstanceOf('Interop\Container\ContainerInterface', $this->container);
+        $this->assertInstanceOf(ContainerInterface::class, $this->container);
     }
 
     public function testSetAndGet()
@@ -132,7 +139,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             }
         );
 
-        $this->setExpectedException('Interop\Container\Exception\ContainerException');
+        $this->expectException(CircularDependencyException::class);
         $this->container->get($key1);
     }
 
@@ -153,8 +160,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $singleton = $this->container->get("SingleClass");
         // now get a dependent go get the singleton and compare if it's the same object and not a new instance
         $dependent = $this->container->get("DependentClass");
-        $this->assertInstanceOf("Njasm\\Container\\Tests\\DependentClass", $dependent);
-        $this->assertInstanceOf("Njasm\\Container\\Tests\\SingleClass", $dependent->getInjectedClass());
+        $this->assertInstanceOf(DependentClass::class, $dependent);
+        $this->assertInstanceOf(SingleClass::class, $dependent->getInjectedClass());
 
         $this->assertTrue($singleton === $dependent->getInjectedClass());
     }
@@ -221,19 +228,20 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->container->has("SingleClass"));
         $this->container->reset();
 
-        $this->setExpectedException('\Exception');
+        $this->expectException(NotFoundExceptionInterface::class);
         $this->container->get("SingleClass");
     }
 
     public function testResetSingleton()
     {
-        $this->container->singleton("SingleClass", new singleClass());
+        $id = "SingleClass";
+        $this->container->singleton($id, new singleClass());
 
-        $this->assertTrue($this->container->has("SingleClass"));
+        $this->assertTrue($this->container->has($id));
         $this->container->reset();
 
-        $this->setExpectedException('\Exception');
-        $this->container->get("SingleClass");
+        $this->expectException(NotFoundExceptionInterface::class);
+        $this->container->get($id);
     }
 
     public function testBind()
@@ -269,11 +277,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->bind(
             $key,
             'Njasm\Container\Tests\PropertyInjections',
-            array(),
-            array(
-                'name' => $name,
-                'email' => $email
-            )
+            [],
+            ['name' => $name, 'email' => $email]
         );
 
         $obj = $this->container->get($key);
@@ -282,7 +287,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($name, $obj->name);
 
         // call override
-        $obj = $this->container->get($key, array(), array('name' => $name2, 'email' => $email2));
+        $obj = $this->container->get($key, [], ['name' => $name2, 'email' => $email2]);
 
         $this->assertEquals($email2, $obj->email);
         $this->assertEquals($name2, $obj->name);
@@ -316,13 +321,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->set(
             $key,
             new MethodCalls(),
-            array(),
-            array(),
-            array(
-                'setName' => array($name),
-                'setEmail' => array($email),
-                'setAgeAndBirthMonth' => array($age, $month)
-            )
+            [],
+            [],
+            ['setName' => [$name], 'setEmail' => [$email], 'setAgeAndBirthMonth' => [$age, $month]]
         );
 
         $obj = $this->container->get($key);
@@ -347,10 +348,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $month2 = 12;
 
         //$definition = $this->container->set($key, new MethodCalls());
-        $definition = $this->container->bind($key, '\Njasm\Container\Tests\MethodCalls');
-        $definition->callMethod('setName', array($name));
-        $definition->callMethod('setEmail', array($email));
-        $definition->callMethod('setAgeAndBirthMonth', array($age, $month));
+        $definition = $this->container->bind($key, MethodCalls::class);
+        $definition->callMethod('setName', [$name]);
+        $definition->callMethod('setEmail', [$email]);
+        $definition->callMethod('setAgeAndBirthMonth', [$age, $month]);
 
         $obj = $this->container->get($key);
 
@@ -361,8 +362,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         // call override
         $obj = $this->container->get(
-            $key, array(), array(),
-            array('setName' => array($name2), 'setEmail' => array($email2), 'setAgeAndBirthMonth' => array($age2, $month2))
+            $key, [], [],
+            ['setName' => [$name2], 'setEmail' => [$email2], 'setAgeAndBirthMonth' => [$age2, $month2]]
         );
 
         $this->assertEquals($email2, $obj->getEmail());
@@ -380,14 +381,14 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $name2 = 'Jane Doe';
         $email2 = 'jane@localhost';
 
-        $this->container->bind($key, '\Njasm\Container\Tests\ConstructorInjection', array($name, $email));
+        $this->container->bind($key, ConstructorInjection::class, [$name, $email]);
 
         $object = $this->container->get($key);
         $this->assertEquals($name, $object->getName());
         $this->assertEquals($email, $object->getEmail());
 
         //override call
-        $object2 = $this->container->get($key, array($name2, $email2));
+        $object2 = $this->container->get($key, [$name2, $email2]);
         $this->assertEquals($name2, $object2->getName());
         $this->assertEquals($email2, $object2->getEmail());
     }
@@ -407,16 +408,16 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         // providing non empty arguments
         $this->assertNotEquals(
             $defaultValue,
-            $this->container->get("closure", array($nonDefaultValue))
+            $this->container->get("closure", [$nonDefaultValue])
         );
 
         $this->assertEquals(
             $nonDefaultValue,
-            $this->container->get("closure", array($nonDefaultValue))
+            $this->container->get("closure", [$nonDefaultValue])
         );
 
         // providing empty arguments to closure
-        $this->assertEquals($defaultValue, $this->container->get("closure", array()));
+        $this->assertEquals($defaultValue, $this->container->get("closure", []));
         $this->assertEquals($defaultValue, $this->container->get("closure"));
     }
 

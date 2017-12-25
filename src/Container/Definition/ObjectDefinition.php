@@ -2,7 +2,7 @@
 
 namespace Njasm\Container\Definition;
 
-use Njasm\Container\ServicesProviderInterface;
+use Njasm\Container\ServiceProviderInterface;
 
 class ObjectDefinition extends AbstractDefinition implements ObjectDefinitionInterface
 {
@@ -10,17 +10,14 @@ class ObjectDefinition extends AbstractDefinition implements ObjectDefinitionInt
     protected $concrete;
 
     /** @var array */
-    protected $defaultProperties = array();
+    protected $defaultProperties = [];
 
     /** @var array */
-    protected $defaultMethods = array();
+    protected $defaultMethods = [];
 
     public function __construct(
-        $key,
-        $concrete,
-        ServicesProviderInterface $container,
-        array $properties = array(),
-        array $methods = array()
+        string $key, $concrete, ServiceProviderInterface $container,
+        array $properties = [], array $methods = []
     ) {
         parent::__construct($key, $container);
         $this->concrete = $concrete;
@@ -28,7 +25,7 @@ class ObjectDefinition extends AbstractDefinition implements ObjectDefinitionInt
         $this->defaultMethods = $methods;
     }
 
-    public function build(array $constructor = array(), array $properties = array(), array $methods = array())
+    public function build(array $constructor = [], array $properties = [], array $methods = [])
     {
         $properties = !empty($properties) ? $properties : $this->defaultProperties;
         foreach($properties as $property => $value) {
@@ -44,40 +41,36 @@ class ObjectDefinition extends AbstractDefinition implements ObjectDefinitionInt
     }
 
 
-    public function getProperties()
+    public function getProperties() : array
     {
         return $this->defaultProperties;
     }
 
-    public function setProperties(array $properties)
+    public function setProperties(array $properties) : ObjectDefinitionInterface
     {
         $this->defaultProperties = $properties;
-
         return $this;
     }
 
-    public function setProperty($propertyName, $value)
+    public function setProperty(string $propertyName, $value) : ObjectDefinitionInterface
     {
         $this->defaultProperties[$propertyName] = $value;
-
         return $this;
     }
 
-    public function callMethod($methodName, array $methodArguments = array())
+    public function callMethod(string $methodName, array $methodArguments = []) : ObjectDefinitionInterface
     {
         $this->defaultMethods[$methodName] = $methodArguments;
-
         return $this;
     }
 
-    public function callMethods(array $methods)
+    public function callMethods(array $methods) : ObjectDefinitionInterface
     {
         $this->defaultMethods = $methods;
-
         return $this;
     }
 
-    public function getCallMethods()
+    public function getCallMethods() : array
     {
         return $this->defaultMethods;
     }

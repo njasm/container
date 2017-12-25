@@ -3,6 +3,7 @@
 namespace Njasm\Container\Definition;
 
 use Njasm\Container\ServicesProviderInterface;
+use Psr\Container\ContainerInterface;
 
 class ClosureDefinition extends AbstractDefinition
 {
@@ -12,13 +13,13 @@ class ClosureDefinition extends AbstractDefinition
     /** @var array */
     protected $defaultConstructor = array();
 
-    public function __construct($key, $concrete, ServicesProviderInterface $container, array $constructor = array()) {
+    public function __construct($key, $concrete, ContainerInterface $container, array $constructor = []) {
         parent::__construct($key, $container);
         $this->concrete = $concrete;
         $this->defaultConstructor = $constructor;
     }
 
-    public function build(array $constructor = array(), array $properties = array(), array $methods = array())
+    public function build(array $constructor = [], array $properties = [], array $methods = [])
     {
         $constructor = !empty($constructor) ? $constructor : $this->defaultConstructor;
 

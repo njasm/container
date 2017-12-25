@@ -2,8 +2,8 @@
 
 namespace Njasm\Container\Exception;
 
-use Interop\Container\Exception\ContainerException as InteropContainerException;
+use Psr\Container\ContainerExceptionInterface;
 
-class ContainerException extends \Exception implements InteropContainerException
+class ContainerException extends \Exception implements ContainerExceptionInterface
 {
 }

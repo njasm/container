@@ -4,9 +4,12 @@
 
 ## Dependency Container / Service Locator
 
+### Breaking Changes notice.
+Branch 2.x.x is a Breaking Changes version in regard to version 1.x.x
 
 ### Features
  
+ - Common Container Interface (PHP FIG PSR-11) Compliance
  - Alias Service Keys support
  - Circular Dependency guard
  - Primitive data-types registration
@@ -16,23 +19,10 @@
  - Support for public Setter injection/Method calls after service instantiation
  - Support for public Properties/Attributes Injection after Service instantiation
  - Ability to override existing dependency (Properties & Setters) declarations by supplying new ones when call to ``Container::get``
- - Nested Providers/Containers support
-     - [x] [Aura.DI ](https://github.com/auraphp/Aura.Di)
-     - [x] [Joomla DI](https://github.com/joomla-framework/di)
-     - [x] [Laravel](https://github.com/illuminate/container)
-     - [x] [Nette DI](https://github.com/nette/di)
-     - [x] [Orno DI](https://github.com/orno/di)
-     - [x] [Pimple](https://github.com/fabpot/pimple)
-     - [x] [PHP-DI](https://github.com/mnapoli/PHP-DI)
-     - [x] [Ray.DI](https://github.com/koriym/Ray.Di)
-     - [x] [Symfony](https://github.com/symfony/DependencyInjection)
-     - [x] [zf2 DI](https://github.com/zendframework/Component_ZendDi)
-     - [ ] more to come...
- - Comply with ``Container-Interop`` interfaces
-
+ - Nested Containers support - They must implement ``\Psr\Container\ContainerInterface``
 ### Requirements
 
- - PHP 5.3 or higher.
+ - PHP 7.0 or higher.
 
 ### Installation
 
@@ -41,7 +31,7 @@ Include ``njasm\container`` in your project, by adding it to your ``composer.jso
 ```javascript
 {
     "require": {
-        "njasm/container": "~1.0"
+        "njasm/container": "~2.0"
     }
 }
 ```
@@ -95,12 +85,12 @@ echo $container->get("Username");
 You can bind a ``key`` to a instantiable FCQN ``value``.
 
  ```php
- $container->bind("MyKey", "\My\Namespace\SomeClass");
+ $container->bind("MyKey", SomeClass::class);
  ```
  
 If you want to bind a Service, and register that Service as a ``Singleton`` Service.
  ```php
- $container->bindSingleton("MyKey", "\My\Namespace\SomeClass");
+ $container->bindSingleton("MyKey", SomeClass::class);
  ```
  
 Both ``Container::bind`` and ``Container::bindSingleton`` uses Lazy Loading approach, 
@@ -135,18 +125,18 @@ class Person {
 }
 
 $container->bind(
-    "Person",                       // key
-    "\App\Actors\Person",           // FQCN
-    array("Jane"),                  // constructor dependencies
-    array("genre" => "Female"),     // attributes injection
-    array("setAge" => array(33))    // call methods
+    "Person",                      // key
+    Person::class,                 // FQCN
+    ["Jane"],                      // constructor dependencies
+    ["genre" => "Female"],         // attributes injection
+    ["setAge" => [33]]             // call methods
 );
 
 // binding with chaining methods 
-$container->bind("Person", '\App\Actors\Person')
-    ->setConstructorArguments(array("Jane"))        // setConstructorArgument($index, $argument)
-    ->setProperty("genre" => "Female")              // setProperties(array("genre" => "Female", ...) also work
-    ->callMethod("setAge", array(33));              // callMethods(array('methodName' => 'methodValue', ...));
+$container->bind("Person", Person::class)
+    ->setConstructorArguments(["Jane"])    // setConstructorArgument($index, $argument)
+    ->setProperty("genre", "Female")       // setProperties(["genre" => "Female", ...] also work
+    ->callMethod("setAge", [33]);          // callMethods(['methodName' => 'methodValue', ...]);
     
 // retrieving the object    
 $person = $container->get("Person");
@@ -157,9 +147,9 @@ echo $person->genre      // Female
 // calling services and overriding declared dependencies 
 $person2 = $container->get(
     "Person", 
-    array("Mark"), 
-    array("genre" => "Male"), 
-    array("setAge" => array(55))
+    ["Mark"], 
+    ["genre" => "Male"], 
+    ["setAge" => [55]]
 );
 echo $person2->getName(); // Mark
 echo $person2->getAge();  // 55
@@ -179,9 +169,9 @@ $mailer = new \Namespace\For\My\MailTransport(
 $container->set(
     "Mail.Transport", 
     $mailer, 
-    array(), // constructor args 
-    array(), // public properties injection
-    array("withSSL" => array(false)) // calling methods
+    [], // constructor args 
+    [], // public properties injection
+    ["withSSL" => [false]] // calling methods
 );
 
 $mailerTransport = $container->get("Mail.Transport");
@@ -191,17 +181,14 @@ Overwriting existent declared dependencies is also possible for ``set`` definiti
 ```php
 // calling methods and injecting attributes is also possible
 $mailerTransportSsl = $container->get(
-    "Mail.Transport", 
-    array(), 
-    array(), 
-    array("withSSL" => array(true))
+    "Mail.Transport", [], [], ["withSSL" => [true]]
 );
 ```
 
 #### Defining Services - Complex builds (Lazy Loading)
 
-There are time when you'll want to instantiate an object, but the build process is reall complex and you want to
-control that process. You use anonymous functions for that.
+There are time when you'll want to instantiate an object, but the build process is somewaht complex and you want to
+control that process. You can use an anonymous function for that.
 
 ```php
 $container->set(
@@ -218,7 +205,7 @@ $container->set(
 $complex = $container->get("Complex");
 
 // injecting closure dependencies is also possible
-$complexJane = $container->get("Complex", array("Jane", "Fonda")); 
+$complexJane = $container->get("Complex", ["Jane", "Fonda"]); 
 ```
 
 #### Defining Services - Complex builds With Nested Dependencies (Lazy Loading)
@@ -265,8 +252,8 @@ $container->singleton(
     }
 );
 
-// MyDatabase is instantiated and stored, for future requests to this service, 
-// and then returned.
+// My\Database is instantiated and is kept a reference to it, 
+// so future requests for this service, return this object. 
 $db = $container->get("Database.Connection");
 $db2 = $container->get("Database.Connection");
 
@@ -275,18 +262,16 @@ $db2 = $container->get("Database.Connection");
 
 ### Defining Sub/Nested Containers
 
-Nesting container is possible as long as you use an existing Container Adapter for your application existing container.
-The Adapter class must implement the ``ServicesProviderInterface`` for more examples please see the ``Adapter``folder.
+Nesting container is possible as long as your container implements ``Psr\Container\ContainerInterface``.
+Multiple providers can be registered, and keys are queried on those providers by order 
+of registration. Once a key is found it's value is returned.
  
 ```php
-$pimple; // is your instantiated pimple container
-$pimple["Name"] = $pimple->factory(function() {
-   return "John";
-}
- 
-$pimpleAdapter = new \Njasm\Container\Adapter\PimpleAdapter($pimple);
+$myAppPsrContainer = new OtherPsrContainer();
+$myAppPsrContainer->set("Name", 'John');
+
 $mainContainer = new \Njasm\Container\Container();
-$mainContainer->provider($pimpleAdapter);
+$mainContainer->provider($myAppPsrContainer);
  
 $mainContainer->has("Name"); // TRUE
 echo $mainContainer->get("Name"); // John
@@ -307,26 +292,18 @@ class Something
 
 // without registering the Something class in the container you can...
 $container = new Njasm\Container\Container();
-$something = $container->get('My\Name\Space\Something');
+$something = $container->get(Something::class);
 
 //$something instanceof 'My\Name\Space\Something' == true
 
 //once again you can also inject dependencies when calling get method.
 $something = $container->get(
     "My\Name\Space\Something", 
-    array("constructor value 1", "constructor value 2"),
-    array("attributeName" => "value 1"), // attributes
-    array("methodName" => array("value 1", "value 2"))
+    ["constructor value 1", "constructor value 2"],
+    ["attributeName" => "value 1"], // attributes
+    ["methodName" => ["value 1", "value 2"]]
 );
 ```
-
-
-### Roadmap
-
-In no Particular order - check Milestones for a more organized picture.
-
- - [ ] Load definitions from configuration files
- - [ ] Optimizations
 
 ### Contributing
 

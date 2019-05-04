@@ -5,6 +5,7 @@
 [![HHVM Status](http://hhvm.h4cc.de/badge/njasm/container.png)](http://hhvm.h4cc.de/package/njasm/container)
 
 ## Dependency Container / Service Locator
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/njasm/container?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 ### Features
